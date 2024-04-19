@@ -1,0 +1,49 @@
+Requisitos Funcionais:
+
+    Intro sliders:
+        Apresentar uma série de sliders introdutórios que introduzem os recursos e funcionalidades da aplicação.
+
+    Criar conta:
+        Permitir que os utilizadores criem uma conta na aplicação fornecendo informações como nome, email, fotografia, username e password.
+
+    Iniciar sessão:
+        Permitir que os utilizadores iniciem sessão na aplicação utilizando as credenciais fornecidas durante o registo.
+
+    Gestão de perfil:
+        Permitir aos utilizadores editar o seu perfil, incluindo nome, email, fotografia e password.
+
+    Criar, listar, editar e/ou remover viagens:
+        Possibilitar aos utilizadores criar, visualizar, editar e eliminar viagens pessoais.
+
+    Associar locais às viagens:
+        Permitir aos utilizadores adicionar locais específicos às suas viagens.
+        Catalogar locais (restaurantes, museus, jardins, etc…).
+        Associar fotografias aos locais.
+        Associar localização geográfica aos locais.
+        Associar dados relevantes como descrição, data, classificação, etc., aos locais.
+
+    Associar dados relevantes às viagens:
+        Permitir aos utilizadores adicionar informações relevantes às suas viagens, como descrição, data, classificação, etc.
+
+    Partilhar viagens com outros utilizadores:
+        Permitir que os utilizadores partilhem as suas viagens com outros utilizadores da aplicação.
+
+Requisitos Não Funcionais:
+
+    Armazenamento local de dados:
+        Capacidade de armazenar dados localmente no dispositivo do utilizador em caso de falta de conexão à internet.
+
+    Sincronização com a API:
+        Capacidade de sincronizar os dados locais com uma API quando a conexão à internet é estabelecida.
+
+    Segurança da informação:
+        Implementar medidas de segurança para proteger os dados dos utilizadores, como criptografia de dados e autenticação segura.
+
+    Desempenho da aplicação:
+        Garantir que a aplicação seja responsiva e tenha um bom desempenho, mesmo quando lidando com grandes volumes de dados.
+
+    Interface do utilizador intuitiva:
+        Criar uma interface de utilizador intuitiva e fácil de usar, com design atrativo e navegação fluida.
+
+    Documentação da API:
+        Fornecer documentação clara e abrangente para a API, incluindo endpoints disponíveis, parâmetros necessários e formatos de resposta esperados.
