@@ -1,8 +1,6 @@
 package dev.tiagooliveira.tripguru.auth
 
 import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface AuthApi {
@@ -17,8 +15,8 @@ interface AuthApi {
         @Body request: AuthRequest
     ): TokenResponse
 
-    @GET("authenticate")
-    suspend fun authenticate(
-        @Header("Authorization") token: String
-    )
+//    @GET("authenticate")
+//    suspend fun authenticate(
+//        @Header("Authorization") token: String
+//    )
 }
