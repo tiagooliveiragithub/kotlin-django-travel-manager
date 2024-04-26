@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("dev.tiagooliveira.tripguru", appContext.packageName)
+        assertEquals("com.plcoding.jwtauthktorandroid", appContext.packageName)
     }
 }
