@@ -152,8 +152,10 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-CORS_ALLOWED_ORIGINS = [
-    'http://*',
-    'https://*',
-]
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOW_CREDENTIALS = True
+
+APPEND_SLASH=False
+
+AUTH_USER_MODEL = 'api.CustomUser'

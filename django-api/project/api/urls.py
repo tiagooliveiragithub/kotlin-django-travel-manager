@@ -9,8 +9,8 @@ urlpatterns = [
     path('travels/<int:pk>/', TravelDeleteView.as_view(), name='travel-delete'),
 
     # User
-    path('user/register/', CreateUserView.as_view(), name='register'),
+    path('users/register/', CreateUserView.as_view(), name='register'),
     path('token/', TokenObtainPairView.as_view(), name='token'),
     path('token/refresh/', TokenRefreshView.as_view(), name='refresh'),
-    path('auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

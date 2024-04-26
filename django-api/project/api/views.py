@@ -1,8 +1,8 @@
-from django.contrib.auth.models import User
 from rest_framework import generics
 from .serializers import UserSerializer, TravelSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Travel
+from .models import Travel, CustomUser
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 class TravelListCreateView(generics.ListCreateAPIView):
@@ -11,7 +11,7 @@ class TravelListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Travel.objects.filter(user=user)
+        return user.travels.all()
 
     def perform_create(self, serializer):
         if(serializer.is_valid()):
@@ -25,10 +25,11 @@ class TravelDeleteView(generics.DestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Travel.objects.filter(user=user)
+        return user.travels.all()
 
 
 class CreateUserView(generics.CreateAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+    

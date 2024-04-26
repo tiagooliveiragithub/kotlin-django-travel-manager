@@ -1,17 +1,17 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Travel
+from .models import Travel, CustomUser
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['id', 'username', 'email', 'password']
         extra_kwargs = {
             'password': {'write_only': True}
         }
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = CustomUser.objects.create_user(**validated_data)
         return user
 
     def update(self, instance, validated_data):
@@ -27,9 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 class TravelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Travel
-        fields = ['id', 'title', 'description', 'created_at', 'date']
-        extra_kwargs = {
-            'user': {'read_only': True}
-        }
+        fields = '__all__'
+        read_only_fields = ['users']
 
 
