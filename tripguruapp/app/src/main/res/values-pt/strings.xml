@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">tripguruapp</string>
+    <string name="first_name_hint">Primeiro Nome</string>
+    <string name="last_name_hint">Último Nome</string>
+    <string name="password_hint">Senha</string>
+    <string name="confirm_password_hint">Confirme a Senha</string>
+    <string name="avatar_button_label">foto</string>
+    <string name="signup_button_label">Criar</string>
+    <string name="already_registered_label">Já registado? Clica aqui</string>
+    <string name="login_button_label">Entrar</string>
+    <string name="forgot_password_label">Esqueceste a tua senha?</string>
+    <string name="sign_up_label">Cria uma conta aqui</string>
+</resources>
