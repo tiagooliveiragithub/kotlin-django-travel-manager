@@ -1,13 +1,14 @@
-package online.tripguru.tripguruapp
+package online.tripguru.tripguruapp.views.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityMainBinding
-import online.tripguru.tripguruapp.fragments.HomeFragment
-import online.tripguru.tripguruapp.fragments.ProfileFragment
-import online.tripguru.tripguruapp.fragments.SearchFragment
-import online.tripguru.tripguruapp.fragments.TripFragment
+import online.tripguru.tripguruapp.views.ui.fragments.HomeFragment
+import online.tripguru.tripguruapp.views.ui.fragments.ProfileFragment
+import online.tripguru.tripguruapp.views.ui.fragments.SearchFragment
+import online.tripguru.tripguruapp.views.ui.fragments.TripFragment
 
 
 class MainActivity : AppCompatActivity() {

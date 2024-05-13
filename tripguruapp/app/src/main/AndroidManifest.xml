@@ -13,19 +13,19 @@
         android:theme="@style/Theme.Tripguruapp"
         tools:targetApi="31">
         <activity
-            android:name=".CreateLocalActivity"
+            android:name=".views.ui.CreateLocalActivity"
             android:exported="false" />
         <activity
-            android:name=".CreateTripActivity"
+            android:name=".views.ui.CreateTripActivity"
             android:exported="false" />
         <activity
             android:name=".CreateActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".views.ui.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".views.ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".views.ui.MainActivity"
             android:exported="false" />
     </application>
 

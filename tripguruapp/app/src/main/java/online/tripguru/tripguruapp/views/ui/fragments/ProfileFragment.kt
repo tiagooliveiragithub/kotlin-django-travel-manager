@@ -1,4 +1,4 @@
-package online.tripguru.tripguruapp.fragments
+package online.tripguru.tripguruapp.views.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

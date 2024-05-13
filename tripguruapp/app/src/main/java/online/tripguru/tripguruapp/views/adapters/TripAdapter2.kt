@@ -1,4 +1,4 @@
-package online.tripguru.tripguruapp.adapters
+package online.tripguru.tripguruapp.views.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,11 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import online.tripguru.tripguruapp.R
+import online.tripguru.tripguruapp.models.Trip
 
 
 class TripAdapter2(entityList: List<Trip>) :
     RecyclerView.Adapter<TripAdapter2.TripViewHolder>() {
-    private val entityList: List<Trip>
+    private var entityList: List<Trip>
 
     init {
         this.entityList = entityList
@@ -29,15 +30,17 @@ class TripAdapter2(entityList: List<Trip>) :
         holder.textViewTitle.text = trip.tripName
         holder.textViewDate.text = trip.startDate
 
-        // Set click listener if needed
         holder.itemView.setOnClickListener {
-            // Handle item click event here
-            // You can use position to get the clicked item
         }
     }
 
     override fun getItemCount(): Int {
         return entityList.size
+    }
+
+    fun setTrips(it: List<Trip>) {
+        entityList = it
+        notifyDataSetChanged()
     }
 
     class TripViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

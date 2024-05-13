@@ -1,4 +1,4 @@
-package online.tripguru.tripguruapp
+package online.tripguru.tripguruapp.views.ui
 
 import android.content.Intent
 import android.os.Bundle

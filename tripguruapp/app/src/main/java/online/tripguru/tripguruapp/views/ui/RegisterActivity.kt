@@ -1,4 +1,4 @@
-package online.tripguru.tripguruapp
+package online.tripguru.tripguruapp.views.ui
 
 import android.os.Bundle
 import android.widget.Toast
