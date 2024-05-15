@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="2dp"
                 android:text="Add Local"
-                android:id="@+id/buttonCreateLocal"
+                android:id="@+id/buttonCreateLocalPage"
                 android:backgroundTint="@color/purple"/>
             <Button
                 android:layout_width="60dp"

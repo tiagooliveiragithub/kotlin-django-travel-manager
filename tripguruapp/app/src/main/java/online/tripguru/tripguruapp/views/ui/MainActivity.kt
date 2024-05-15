@@ -3,6 +3,7 @@ package online.tripguru.tripguruapp.views.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityMainBinding
 import online.tripguru.tripguruapp.views.ui.fragments.HomeFragment
@@ -11,6 +12,7 @@ import online.tripguru.tripguruapp.views.ui.fragments.SearchFragment
 import online.tripguru.tripguruapp.views.ui.fragments.TripFragment
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -21,8 +23,21 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(HomeFragment())
 
+
+        replaceFragment(HomeFragment())
+        buttonNavigationListener()
+
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().apply {
+            replace(binding.contentFrame.id, fragment)
+            commit()
+        }
+    }
+
+    private fun buttonNavigationListener() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.icon_home -> {
@@ -43,13 +58,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
-        }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.content_frame, fragment)
-            commit()
         }
     }
 

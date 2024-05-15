@@ -1,19 +1,17 @@
 package online.tripguru.tripguruapp.views.ui
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.ActivityCreateTripBinding
-import online.tripguru.tripguruapp.helpers.TripViewModelFactory
-import online.tripguru.tripguruapp.local.database.AppDatabase
-import online.tripguru.tripguruapp.models.Trip
-import online.tripguru.tripguruapp.repositories.TripRepository
 import online.tripguru.tripguruapp.viewmodels.TripViewModel
 
+@AndroidEntryPoint
 class CreateTripActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateTripBinding
-    private lateinit var tripViewModel: TripViewModel
+    private val tripViewModel: TripViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,21 +19,15 @@ class CreateTripActivity : AppCompatActivity() {
         binding = ActivityCreateTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val tripDao = AppDatabase.getDatabase(this).tripDao()
-        val repository = TripRepository(tripDao)
-        val viewModelFactory = TripViewModelFactory(repository)
+        buttonCreateTripListener()
 
-        tripViewModel = ViewModelProvider(this, viewModelFactory)[TripViewModel::class.java]
+    }
 
+    private fun buttonCreateTripListener() {
         binding.buttonCreateTrip.setOnClickListener {
-            val title = binding.editTextTitle.text.toString()
-            val description = binding.editTextDescription.text.toString()
-
-            // Create a new Trip object
-            val trip = Trip(tripName = title, startDate = description)
-
-            // Use the ViewModel to insert the new trip into the database
-            tripViewModel.insert(trip)
+            val name = binding.editTextTitle.text.toString()
+            val startDate = binding.editTextDescription.text.toString()
+            tripViewModel.insert(name, startDate)
             finish()
         }
     }

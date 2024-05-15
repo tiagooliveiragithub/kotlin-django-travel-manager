@@ -3,14 +3,14 @@ package online.tripguru.tripguruapp.views.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import online.tripguru.tripguruapp.databinding.BoxItemBinding
+import online.tripguru.tripguruapp.databinding.BoxItemVerticalBinding
 import online.tripguru.tripguruapp.models.Trip
 
-class TripAdapter : RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
+class TripAdapterVertical : RecyclerView.Adapter<TripAdapterVertical.TripViewHolder>() {
 
     private var tripList = listOf<Trip>()
 
-    inner class TripViewHolder(private val binding: BoxItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class TripViewHolder(private val binding: BoxItemVerticalBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: Trip) {
             binding.textViewTitle.text = trip.tripName
             binding.textViewDate.text = trip.startDate
@@ -18,7 +18,7 @@ class TripAdapter : RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
-        val itemList = BoxItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemList = BoxItemVerticalBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TripViewHolder(itemList)
     }
 

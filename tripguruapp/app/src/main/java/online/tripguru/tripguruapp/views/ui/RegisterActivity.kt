@@ -3,8 +3,10 @@ package online.tripguru.tripguruapp.views.ui
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.ActivityRegisterBinding
 
+@AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityRegisterBinding
@@ -15,6 +17,17 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        // TODO: Implement the logic for the sign up
+
+        // Temporary logic for the sign up
+        buttonSignUpListener()
+        textViewAlreadyRegisteredListener()
+
+    }
+
+
+    private fun buttonSignUpListener() {
         binding.buttonSignUp.setOnClickListener {
             val email = binding.editTextUsername.text.toString()
             val password = binding.editTextPassword.text.toString()
@@ -28,9 +41,12 @@ class RegisterActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
 
+    private fun textViewAlreadyRegisteredListener() {
         binding.textViewAlreadyRegistered.setOnClickListener {
             finish()
         }
     }
+
 }

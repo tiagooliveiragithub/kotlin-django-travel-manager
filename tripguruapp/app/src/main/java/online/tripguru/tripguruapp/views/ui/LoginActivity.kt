@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.ActivityLoginBinding
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityLoginBinding
@@ -16,6 +18,16 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // TODO: Implement the logic for the sign in
+
+        // Temporary logic for the sign in
+
+        buttonLoginListener()
+        textViewSignUpListener()
+
+    }
+
+    private fun buttonLoginListener() {
         binding.buttonLogin.setOnClickListener {
             val email = binding.editTextUsername.text.toString()
             val password = binding.editTextPassword.text.toString()
@@ -30,7 +42,9 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
+    private fun textViewSignUpListener() {
         binding.textViewSignUp.setOnClickListener {
             Intent(this, RegisterActivity::class.java).also {
                 startActivity(it)
