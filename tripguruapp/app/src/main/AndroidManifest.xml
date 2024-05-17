@@ -20,13 +20,13 @@
             android:name=".views.ui.CreateTripActivity"
             android:exported="false" />
         <activity
-            android:name=".CreateActivity"
-            android:exported="false" />
-        <activity
             android:name=".views.ui.RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".views.ui.LoginActivity"
+            android:exported="false"></activity>
+        <activity
+            android:name=".views.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,9 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".views.ui.MainActivity"
-            android:exported="false" />
     </application>
 
 </manifest>

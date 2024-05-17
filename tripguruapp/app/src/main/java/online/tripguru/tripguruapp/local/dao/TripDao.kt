@@ -13,4 +13,6 @@ interface TripDao {
     fun getTrips(): LiveData<List<Trip>>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(trip: Trip)
+    @Query("SELECT * FROM trip LIMIT 1")
+    fun getFirstTrip(): LiveData<Trip>
 }

@@ -22,7 +22,7 @@ object AppModule {
             context.applicationContext,
             AppDatabase::class.java,
             "trip_database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Singleton
@@ -30,4 +30,5 @@ object AppModule {
     fun provideTripRepository(appDatabase: AppDatabase): TripRepository {
         return TripRepository(appDatabase)
     }
+
 }

@@ -11,4 +11,8 @@
     <string name="login_button_label">Entrar</string>
     <string name="forgot_password_label">Esqueceste a tua senha?</string>
     <string name="sign_up_label">Cria uma conta aqui</string>
+    <string name="editlocal_button_label">Editar Local</string>
+    <string name="createlocal_button_label">Criar Local</string>
+    <string name="edittrip_button_label">Editar Viagem</string>
+    <string name="createtrip_button_label">Criar Viagem</string>
 </resources>

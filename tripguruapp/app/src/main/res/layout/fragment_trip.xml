@@ -13,8 +13,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Trip to Madeira"
-            android:textSize="30dp" />
+            android:text="Trip Title"
+            android:textSize="30dp"
+            android:id="@+id/textViewTripName"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
