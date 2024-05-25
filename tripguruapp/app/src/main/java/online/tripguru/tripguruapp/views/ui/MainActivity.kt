@@ -9,7 +9,6 @@ import online.tripguru.tripguruapp.databinding.ActivityMainBinding
 import online.tripguru.tripguruapp.views.ui.fragments.HomeFragment
 import online.tripguru.tripguruapp.views.ui.fragments.ProfileFragment
 import online.tripguru.tripguruapp.views.ui.fragments.SearchFragment
-import online.tripguru.tripguruapp.views.ui.fragments.TripFragment
 
 
 @AndroidEntryPoint
@@ -43,10 +42,10 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(HomeFragment())
                     true
                 }
-                R.id.icon_trip -> {
-                    replaceFragment(TripFragment())
-                    true
-                }
+//                R.id.icon_trip -> {
+//                    replaceFragment(TripFragment())
+//                    true
+//                }
                 R.id.icon_user -> {
                     replaceFragment(ProfileFragment())
                     true

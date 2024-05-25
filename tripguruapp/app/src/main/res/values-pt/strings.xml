@@ -15,4 +15,12 @@
     <string name="createlocal_button_label">Criar Local</string>
     <string name="edittrip_button_label">Editar Viagem</string>
     <string name="createtrip_button_label">Criar Viagem</string>
+    <string name="deletetrip_button_label">Eliminar Viagem</string>
+    <string name="nametrip_label">Nome da Viagem</string>
+    <string name="hometext_label">Gere as tuas viagens aqui.</string>
+    <string name="hometitle_label">Olá Tiago!</string>
+    <string name="yourlocals_label">Os teus Locais</string>
+    <string name="triplocals_label">Locais da Viagem</string>
+    <string name="saveprofile_label">Salvar Mudanças no Perfil</string>
+    <string name="profile_label">Perfil</string>
 </resources>

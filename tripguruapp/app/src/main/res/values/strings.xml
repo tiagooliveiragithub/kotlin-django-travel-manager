@@ -18,4 +18,13 @@
     <string name="createlocal_button_label">Create Local</string>
     <string name="edittrip_button_label">Edit Trip</string>
     <string name="createtrip_button_label">Create Trip</string>
+    <string name="deletetrip_button_label">Delete Trip</string>
+    <string name="nametrip_label">Trip Name</string>
+    <string name="hometext_label">Manage your trips here.</string>
+    <string name="hometitle_label">Hello Tiago!</string>
+    <string name="yourlocals_label">Your Locals</string>
+    <string name="triplocals_label">Trip Locals</string>
+    <string name="saveprofile_label">Save Profile Changes</string>
+    <string name="profilename_label" translatable="false">Tiago Oliveira</string>
+    <string name="profile_label">Profile</string>
 </resources>

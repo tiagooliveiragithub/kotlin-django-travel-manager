@@ -11,18 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.FragmentTripBinding
 import online.tripguru.tripguruapp.models.Local
-import online.tripguru.tripguruapp.models.Trip
 import online.tripguru.tripguruapp.viewmodels.TripViewModel
 import online.tripguru.tripguruapp.views.adapters.LocalAdapterVertical
 import online.tripguru.tripguruapp.views.adapters.OnLocalClickListener
 import online.tripguru.tripguruapp.views.ui.CreateLocalActivity
+import online.tripguru.tripguruapp.views.ui.CreateTripActivity
 
 @AndroidEntryPoint
 class TripFragment : Fragment(), OnLocalClickListener {
     private lateinit var localAdapter: LocalAdapterVertical
     private lateinit var binding: FragmentTripBinding
     private val tripViewModel: TripViewModel by activityViewModels()
-    private var trip : Trip? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,10 +34,13 @@ class TripFragment : Fragment(), OnLocalClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        pageSetup()
+
         setUpRecyclerView()
+
+        buttonEditTripListener()
         buttonCreateLocalPageListener()
 
-        pageSetup()
         observer()
     }
 
@@ -68,13 +70,16 @@ class TripFragment : Fragment(), OnLocalClickListener {
         }
     }
 
-    private fun pageSetup() {
-        // get the first trip
-        if (tripViewModel.getSelectedTrip() == null) {
-            trip = tripViewModel.allTrips.value?.get(0)
-        } else trip = tripViewModel.getSelectedTrip()
-
-        binding.textViewTripName.text = trip?.tripName
+    private fun buttonEditTripListener() {
+        binding.buttonEditTripPage.setOnClickListener {
+            startActivity(Intent(context, CreateTripActivity::class.java))
+        }
     }
 
+    private fun pageSetup() {
+        val trip = tripViewModel.getSelectedTrip()
+        if (trip != null) {
+            binding.textViewTripName.text = trip.tripName
+        }
+    }
 }

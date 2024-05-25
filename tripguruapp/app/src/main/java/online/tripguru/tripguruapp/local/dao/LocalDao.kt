@@ -16,4 +16,7 @@ interface LocalDao {
 
      @Query("SELECT * FROM local WHERE id = :localId")
      fun getLocalById(localId: Int): LiveData<Local>
+
+     @Query("SELECT * FROM local")
+     fun getLocals(): LiveData<List<Local>>
 }

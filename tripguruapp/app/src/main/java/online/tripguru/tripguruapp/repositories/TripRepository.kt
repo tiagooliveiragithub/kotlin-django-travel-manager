@@ -16,6 +16,7 @@ class TripRepository @Inject constructor(
     private var localSelected: Local? = null
     private var tripSelected: Trip? = null
     val allTrips: LiveData<List<Trip>> = tripDao.getTrips()
+    val allLocals: LiveData<List<Local>> = localDao.getLocals()
 
     fun insert(trip: Trip) {
         tripDao.insert(trip)
@@ -46,15 +47,9 @@ class TripRepository @Inject constructor(
     }
 
     fun getSelectedTrip(): Trip? {
-        if(tripSelected == null) {
-            return getFirstTrip().value
-        }
         return tripSelected
     }
 
-    private fun getFirstTrip(): LiveData<Trip> {
-        return tripDao.getFirstTrip()
-    }
 
 
 }

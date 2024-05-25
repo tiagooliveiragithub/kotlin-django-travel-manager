@@ -41,11 +41,9 @@ class CreateTripActivity : AppCompatActivity() {
         tripViewModel.setSelectedTrip(null)
         if (trip != null) {
             binding.editTextTitle.setText(trip?.tripName)
-            binding.editTextDescription.setText(trip?.startDate)
             binding.buttonCreateTrip.text = getString(R.string.edittrip_button_label)
         } else {
             binding.buttonCreateTrip.text = getString(R.string.createtrip_button_label)
         }
-
     }
 }

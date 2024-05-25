@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.ui.fragments.HomeFragment">
 
     <LinearLayout
@@ -15,24 +16,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Hello Tiago!"
-            android:textSize="30dp"
+            android:text="@string/hometitle_label"
+            android:textSize="30sp"
             android:textColor="@color/dark"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Manage your trips here."
-            android:textSize="15dp"
+            android:text="@string/hometext_label"
+            android:textSize="15sp"
             android:textColor="@color/light_letter"/>
 
         <Button
             android:id="@+id/buttonCreateTrip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Trip"
+            android:text="@string/createtrip_button_label"
             android:layout_marginVertical="20dp"
-            android:backgroundTint="@color/purple"/>
+            android:backgroundTint="@color/purple"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -42,9 +45,15 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Your Locals"
-            android:textSize="20dp" />
+            android:layout_marginVertical="20dp"
+            android:text="@string/yourlocals_label"
+            android:textSize="20sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewVertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="horizontal" />
 
     </LinearLayout>
 </FrameLayout>

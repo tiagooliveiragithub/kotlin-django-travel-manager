@@ -17,6 +17,7 @@ class TripViewModel @Inject constructor(
     private val repository: TripRepository
 ) : ViewModel() {
     var allTrips: LiveData<List<Trip>> = repository.allTrips
+    var allLocals: LiveData<List<Local>> = repository.allLocals
 
     fun insert(name: String, startDate: String) {
         if (name.isEmpty() || startDate.isEmpty()) {

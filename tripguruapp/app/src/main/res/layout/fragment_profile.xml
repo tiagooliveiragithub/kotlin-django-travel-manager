@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.ui.fragments.ProfileFragment"
     android:background="@color/normal">
     <LinearLayout
@@ -18,13 +19,13 @@
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/ic_launcher_background"/>
+                android:src="@drawable/ic_launcher_background" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"
-                android:text="Tiago Oliveira"
-                android:textSize="30dp" />
+                android:text="@string/profilename_label"
+                android:textSize="30sp" />
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -34,8 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Profile"
-                android:textSize="20dp" />
+                android:text="@string/profile_label"
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/editTextFirstName"
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="@string/first_name_hint"
-                android:inputType="text"/>
+                android:inputType="text" />
 
             <EditText
                 android:id="@+id/editTextLastName"
@@ -82,8 +83,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Save Profile Changes"
-                android:backgroundTint="@color/purple"/>
+                android:text="@string/saveprofile_label"
+                android:backgroundTint="@color/purple"
+                app:cornerRadius="5dp"
+                android:padding="10dp"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

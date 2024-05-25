@@ -11,20 +11,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.FragmentHomeBinding
+import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.models.Trip
 import online.tripguru.tripguruapp.viewmodels.TripViewModel
+import online.tripguru.tripguruapp.views.adapters.LocalAdapterVertical
+import online.tripguru.tripguruapp.views.adapters.OnLocalClickListener
 import online.tripguru.tripguruapp.views.adapters.OnTripClickListener
 import online.tripguru.tripguruapp.views.adapters.TripAdapter
+import online.tripguru.tripguruapp.views.ui.CreateLocalActivity
 import online.tripguru.tripguruapp.views.ui.CreateTripActivity
 import online.tripguru.tripguruapp.views.ui.MainActivity
 
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), OnTripClickListener {
+class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
 
     private val tripViewModel: TripViewModel by activityViewModels()
     private lateinit var binding: FragmentHomeBinding
     private lateinit var adapterTrip: TripAdapter
+    private lateinit var adapterLocal: LocalAdapterVertical
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,8 +43,8 @@ class HomeFragment : Fragment(), OnTripClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         setRecyclerView()
+        setRecyclerViewVertical()
         buttonCreateTripListener()
-
         observer()
     }
 
@@ -48,6 +53,13 @@ class HomeFragment : Fragment(), OnTripClickListener {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         adapterTrip = TripAdapter(this)
         recyclerView.adapter = adapterTrip
+    }
+
+    private fun setRecyclerViewVertical() {
+        val recyclerView = binding.recyclerViewVertical
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        adapterLocal = LocalAdapterVertical(this)
+        recyclerView.adapter = adapterLocal
     }
 
     private fun buttonCreateTripListener() {
@@ -62,15 +74,27 @@ class HomeFragment : Fragment(), OnTripClickListener {
                 adapterTrip.setTrips(it)
             }
         }
+        tripViewModel.allLocals.observe(viewLifecycleOwner) { locals ->
+            locals?.let {
+                adapterLocal.setLocals(it)
+            }
+        }
     }
 
     override fun onTripClick(trip: Trip) {
         tripViewModel.setSelectedTrip(trip)
-        (activity as MainActivity).supportFragmentManager.beginTransaction()
-            .replace(R.id.content_frame, TripFragment())
-            .commit()
-        (activity as MainActivity).binding.bottomNavigation.selectedItemId = R.id.icon_trip
+        (activity as MainActivity).supportFragmentManager.beginTransaction().apply {
+            replace((activity as MainActivity).binding.contentFrame.id, TripFragment())
+            addToBackStack(null)
+            commit()
+            // change icon navigation
+            (activity as MainActivity).binding.bottomNavigation.selectedItemId = R.id.icon_trip
+        }
+    }
 
+    override fun onLocalClick(local: Local) {
+        tripViewModel.setSelectedLocal(local)
+        startActivity(Intent(context, CreateLocalActivity::class.java))
     }
 
 }

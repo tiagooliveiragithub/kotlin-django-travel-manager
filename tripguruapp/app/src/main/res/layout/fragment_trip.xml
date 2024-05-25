@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,40 +14,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Trip Title"
-            android:textSize="30dp"
+            android:text="@string/nametrip_label"
+            android:textSize="30sp"
             android:id="@+id/textViewTripName"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="2dp"
-                android:text="Edit Trip"
-                android:backgroundTint="@color/purple"/>
+                android:text="@string/edittrip_button_label"
+                android:id="@+id/buttonEditTripPage"
+                android:backgroundTint="@color/purple"
+                app:cornerRadius="5dp"
+                android:padding="10dp"/>
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="2dp"
-                android:text="Add Local"
+                android:text="@string/createlocal_button_label"
                 android:id="@+id/buttonCreateLocalPage"
-                android:backgroundTint="@color/purple"/>
+                android:backgroundTint="@color/purple"
+                app:cornerRadius="5dp"
+                android:padding="10dp"
+                android:layout_marginHorizontal="5dp"/>
+
             <Button
-                android:layout_width="60dp"
+                android:id="@+id/buttonDeleteTrip"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="2dp"
-                android:text=">"
-                android:backgroundTint="@color/purple"/>
+                android:backgroundTint="@color/red"
+                android:text="@string/deletetrip_button_label"
+                app:cornerRadius="5dp"
+                android:padding="10dp"/>
         </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Your Locals"
-            android:textSize="20dp" />
+            android:layout_marginVertical="20dp"
+            android:text="@string/triplocals_label"
+            android:textSize="20sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewVertical"
