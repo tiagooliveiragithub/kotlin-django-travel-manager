@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 class TravelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Travel
-        fields = '__all__'
-        read_only_fields = ['users']
+        fields = ['id', 'title', 'description']
+        read_only_fields = ['created_at', 'users', 'spots', 'id']
 
 
