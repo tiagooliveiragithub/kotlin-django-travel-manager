@@ -16,8 +16,8 @@ import javax.inject.Inject
 class TripViewModel @Inject constructor(
     private val repository: TripRepository
 ) : ViewModel() {
-    var allTrips: LiveData<List<Trip>> = repository.allTrips
     var allLocals: LiveData<List<Local>> = repository.allLocals
+    var allTrips: LiveData<List<Trip>> = repository.allTrips
 
     fun insert(name: String, startDate: String) {
         if (name.isEmpty() || startDate.isEmpty()) {
@@ -61,5 +61,9 @@ class TripViewModel @Inject constructor(
         return repository.getSelectedTrip()
     }
 
-
+    fun refreshAllTrips() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.refreshAllTrips()
+        }
+    }
 }

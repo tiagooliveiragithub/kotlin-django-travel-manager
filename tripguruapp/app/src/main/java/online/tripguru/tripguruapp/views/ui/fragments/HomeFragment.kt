@@ -5,14 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.FragmentHomeBinding
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.models.Trip
+import online.tripguru.tripguruapp.network.ConnectivityLiveData
 import online.tripguru.tripguruapp.viewmodels.TripViewModel
 import online.tripguru.tripguruapp.views.adapters.LocalAdapterVertical
 import online.tripguru.tripguruapp.views.adapters.OnLocalClickListener
@@ -21,6 +24,7 @@ import online.tripguru.tripguruapp.views.adapters.TripAdapter
 import online.tripguru.tripguruapp.views.ui.CreateLocalActivity
 import online.tripguru.tripguruapp.views.ui.CreateTripActivity
 import online.tripguru.tripguruapp.views.ui.MainActivity
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -30,6 +34,7 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var adapterTrip: TripAdapter
     private lateinit var adapterLocal: LocalAdapterVertical
+    @Inject lateinit var connectivityLiveData: ConnectivityLiveData
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,24 +47,21 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setRecyclerView()
-        setRecyclerViewVertical()
+        setRecyclerViews()
         buttonCreateTripListener()
         observer()
     }
 
-    private fun setRecyclerView() {
+    private fun setRecyclerViews() {
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         adapterTrip = TripAdapter(this)
         recyclerView.adapter = adapterTrip
-    }
 
-    private fun setRecyclerViewVertical() {
-        val recyclerView = binding.recyclerViewVertical
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        val recyclerViewVertical = binding.recyclerViewVertical
+        recyclerViewVertical.layoutManager = LinearLayoutManager(context)
         adapterLocal = LocalAdapterVertical(this)
-        recyclerView.adapter = adapterLocal
+        recyclerViewVertical.adapter = adapterLocal
     }
 
     private fun buttonCreateTripListener() {
@@ -79,6 +81,13 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
                 adapterLocal.setLocals(it)
             }
         }
+        connectivityLiveData.observe(viewLifecycleOwner, Observer { isConnected ->
+            if (isConnected) {
+                tripViewModel.refreshAllTrips()
+            } else {
+                Toast.makeText(requireContext(), "Disconnected from the internet", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onTripClick(trip: Trip) {

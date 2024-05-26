@@ -23,4 +23,5 @@
     <string name="triplocals_label">Locais da Viagem</string>
     <string name="saveprofile_label">Salvar Mudanças no Perfil</string>
     <string name="profile_label">Perfil</string>
+    <string name="yourtrips_label">As tuas Viagens</string>
 </resources>

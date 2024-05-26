@@ -3,13 +3,16 @@ package online.tripguru.tripguruapp.views.ui
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.ActivityLoginBinding
+import online.tripguru.tripguruapp.network.auth.RequestResult
+import online.tripguru.tripguruapp.viewmodels.AuthViewModel
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-
+    private val authViewModel: AuthViewModel by viewModels()
     lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,29 +21,38 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // TODO: Implement the logic for the sign in
-
-        // Temporary logic for the sign in
-
         buttonLoginListener()
         textViewSignUpListener()
 
+        observeSignInResult()
+
+    }
+
+    private fun observeSignInResult() {
+        authViewModel.signInResult.observe(this) { result ->
+            when (result) {
+                is RequestResult.Authorized -> {
+                    Intent(this, MainActivity::class.java).also {
+                        startActivity(it)
+                        finish()
+                    }
+                }
+                is RequestResult.Unauthorized -> {
+                    Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show()
+                }
+                is RequestResult.UnknownError -> {
+                    Toast.makeText(this, "An unknown error occurred", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun buttonLoginListener() {
+        // Login using auth repository
         binding.buttonLogin.setOnClickListener {
-            val email = binding.editTextUsername.text.toString()
+            val username = binding.editTextUsername.text.toString()
             val password = binding.editTextPassword.text.toString()
-
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show()
-            } else if (email == "admin" && password == "admin") {
-                Intent(this, MainActivity::class.java).also {
-                    startActivity(it)
-                }
-            } else {
-                Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show()
-            }
+            authViewModel.signIn(username, password)
         }
     }
 

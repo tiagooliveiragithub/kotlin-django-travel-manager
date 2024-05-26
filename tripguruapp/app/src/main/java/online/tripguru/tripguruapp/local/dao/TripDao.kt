@@ -15,4 +15,10 @@ interface TripDao {
     fun insert(trip: Trip)
     @Query("SELECT * FROM trip LIMIT 1")
     fun getFirstTrip(): LiveData<Trip>
+    @Query("DELETE FROM trip WHERE id = :id")
+    fun deletebyId(id: Int)
+    @Query("DELETE FROM trip")
+    fun deleteAll()
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(trips: List<Trip>)
 }

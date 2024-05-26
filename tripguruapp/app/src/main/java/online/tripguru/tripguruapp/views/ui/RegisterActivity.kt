@@ -1,15 +1,20 @@
 package online.tripguru.tripguruapp.views.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.ActivityRegisterBinding
+import online.tripguru.tripguruapp.network.auth.RequestResult
+import online.tripguru.tripguruapp.viewmodels.AuthViewModel
 
 @AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityRegisterBinding
+    val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,29 +22,41 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        // TODO: Implement the logic for the sign up
-
-        // Temporary logic for the sign up
         buttonSignUpListener()
         textViewAlreadyRegisteredListener()
 
+        observerSignUpResult()
+    }
+
+    private fun observerSignUpResult() {
+        authViewModel.signUpResult.observe(this) { result ->
+            when (result) {
+                is RequestResult.Authorized -> {
+                    Intent(this, MainActivity::class.java).also {
+                        startActivity(it)
+                        finish()
+                    }
+                }
+                is RequestResult.Unauthorized -> {
+                    Toast.makeText(this, "Invalid Data for registration", Toast.LENGTH_SHORT).show()
+                }
+                is RequestResult.UnknownError -> {
+                    Toast.makeText(this, "An unknown error occurred", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
 
     private fun buttonSignUpListener() {
         binding.buttonSignUp.setOnClickListener {
-            val email = binding.editTextUsername.text.toString()
+            val username = binding.editTextUsername.text.toString()
+            val firstname = binding.editTextFirstName.text.toString()
+            val lastname = binding.editTextLastName.text.toString()
+            val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPassword.text.toString()
             val confirmPassword = binding.editTextConfirmPassword.text.toString()
-
-            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show()
-            } else if (password != confirmPassword) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-            } else {
-                finish()
-            }
+            authViewModel.signUp(username, firstname, lastname, email, password, confirmPassword)
         }
     }
 
@@ -48,5 +65,4 @@ class RegisterActivity : AppCompatActivity() {
             finish()
         }
     }
-
 }

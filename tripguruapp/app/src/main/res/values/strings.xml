@@ -27,4 +27,5 @@
     <string name="saveprofile_label">Save Profile Changes</string>
     <string name="profilename_label" translatable="false">Tiago Oliveira</string>
     <string name="profile_label">Profile</string>
+    <string name="yourtrips_label">Your Trips</string>
 </resources>

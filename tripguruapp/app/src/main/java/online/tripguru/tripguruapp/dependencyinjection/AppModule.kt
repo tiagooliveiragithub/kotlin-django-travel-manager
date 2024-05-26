@@ -1,6 +1,9 @@
 package online.tripguru.tripguruapp.dependencyinjection
 
+import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -8,7 +11,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import online.tripguru.tripguruapp.local.database.AppDatabase
+import online.tripguru.tripguruapp.network.ApiInterface
+import online.tripguru.tripguruapp.repositories.AuthRepository
+import online.tripguru.tripguruapp.repositories.AuthRepositoryImpl
 import online.tripguru.tripguruapp.repositories.TripRepository
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -27,8 +35,36 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideTripRepository(appDatabase: AppDatabase): TripRepository {
-        return TripRepository(appDatabase)
+    fun provideTripRepository(appDatabase: AppDatabase, api: ApiInterface, prefs: SharedPreferences): TripRepository {
+        return TripRepository(appDatabase, api, prefs)
+    }
+
+    @Singleton
+    @Provides
+    fun provideApi(): ApiInterface {
+        return Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8000/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiInterface::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPref(app: Application): SharedPreferences {
+        return app.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(api: ApiInterface, prefs: SharedPreferences): AuthRepository {
+        return AuthRepositoryImpl(api, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
 }
