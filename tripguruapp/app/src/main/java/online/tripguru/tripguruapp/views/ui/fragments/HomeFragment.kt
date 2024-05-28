@@ -84,8 +84,10 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
         connectivityLiveData.observe(viewLifecycleOwner, Observer { isConnected ->
             if (isConnected) {
                 tripViewModel.refreshAllTrips()
+                binding.buttonCreateTrip.isEnabled = true
             } else {
-                Toast.makeText(requireContext(), "Disconnected from the internet", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Disconnected from the internet", Toast.LENGTH_LONG).show()
+                binding.buttonCreateTrip.isEnabled = false
             }
         })
     }

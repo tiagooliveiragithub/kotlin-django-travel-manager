@@ -2,13 +2,13 @@ package online.tripguru.tripguruapp.repositories
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
+import online.tripguru.tripguruapp.helpers.convertResponseToTrip
 import online.tripguru.tripguruapp.local.dao.LocalDao
 import online.tripguru.tripguruapp.local.dao.TripDao
 import online.tripguru.tripguruapp.local.database.AppDatabase
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.models.Trip
 import online.tripguru.tripguruapp.network.ApiInterface
-import online.tripguru.tripguruapp.network.trip.TripResponse
 import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -69,23 +69,14 @@ class TripRepository @Inject constructor(
         try {
             val token = prefs.getString("access", null) ?: throw Exception("Token not found")
             val response = api.getTrips("Bearer $token")
-            val trips = response.map { convertToTrip(it) }
+            val trips = response.map { convertResponseToTrip(it) }
             tripDao.deleteAll()
             tripDao.insertAll(trips)
         } catch (e: HttpException) {
-            // Handle exception
+            // Handle error
         }
         return allTrips
 }
 
-
-    private fun convertToTrip(tripResponse: TripResponse): Trip{
-        // Replace with your actual conversion logic
-        return Trip(
-            id = tripResponse.id,
-            tripName = tripResponse.title,
-            startDate = tripResponse.description
-        )
-    }
 }
 
