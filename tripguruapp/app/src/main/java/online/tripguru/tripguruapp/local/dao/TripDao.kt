@@ -12,13 +12,11 @@ interface TripDao {
     @Query("SELECT * FROM trip")
     fun getTrips(): LiveData<List<Trip>>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(trip: Trip)
-    @Query("SELECT * FROM trip LIMIT 1")
-    fun getFirstTrip(): LiveData<Trip>
-    @Query("DELETE FROM trip WHERE id = :id")
-    fun deletebyId(id: Int)
+    fun insertAll(trips: List<Trip>)
     @Query("DELETE FROM trip")
     fun deleteAll()
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(trips: List<Trip>)
+    fun insertTrip(trip: Trip)
+    @Query("DELETE FROM trip WHERE id = :id")
+    fun deleteTrip(id: Int)
 }

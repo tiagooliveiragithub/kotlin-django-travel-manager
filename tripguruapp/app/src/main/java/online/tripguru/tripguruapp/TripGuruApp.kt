@@ -1,8 +1,7 @@
-package online.tripguru.tripguruapp.dependencyinjection
+package online.tripguru.tripguruapp
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
-
 
 @HiltAndroidApp
 class TripGuruApp: Application()

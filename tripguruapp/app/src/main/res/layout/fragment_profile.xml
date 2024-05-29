@@ -79,11 +79,19 @@
                 android:inputType="textPassword"/>
 
             <Button
-                android:id="@+id/buttonSignUp"
+                android:id="@+id/buttonSaveChanges"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="@string/saveprofile_label"
+                android:backgroundTint="@color/purple"
+                app:cornerRadius="5dp"
+                android:padding="10dp"/>
+            <Button
+                android:id="@+id/buttonSignOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/signout_label"
                 android:backgroundTint="@color/purple"
                 app:cornerRadius="5dp"
                 android:padding="10dp"/>

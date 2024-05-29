@@ -14,8 +14,8 @@ class TripAdapter (
 
     inner class TripViewHolder(private val binding: BoxItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: Trip) {
-            binding.textViewTitle.text = trip.tripName
-            binding.textViewDate.text = trip.startDate
+            binding.textViewTitle.text = trip.name
+            binding.textViewDescription.text = trip.description
         }
     }
 

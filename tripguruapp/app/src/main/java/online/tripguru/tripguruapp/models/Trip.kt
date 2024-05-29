@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class Trip(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,
-    var tripName: String,
-    var startDate: String
+    var name: String,
+    var description: String
 )

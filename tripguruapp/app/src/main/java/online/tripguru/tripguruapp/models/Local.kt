@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class Local(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,
-    val tripId: Int? = null,
-    val name: String
+    var tripId: Int? = null,
+    var name: String
 )

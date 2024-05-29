@@ -8,28 +8,42 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.ActivityRegisterBinding
 import online.tripguru.tripguruapp.network.auth.RequestResult
-import online.tripguru.tripguruapp.viewmodels.AuthViewModel
+import online.tripguru.tripguruapp.viewmodels.UserViewModel
 
 @AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityRegisterBinding
-    val authViewModel: AuthViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        buttonSignUpListener()
-        textViewAlreadyRegisteredListener()
+        listeners()
+        observers()
+    }
 
+    private fun observers() {
+        observeIfOnline()
         observerSignUpResult()
     }
 
+    private fun observeIfOnline() {
+        userViewModel.isOnline().observe(this) { isOnline ->
+            if (!isOnline) {
+                binding.buttonSignUp.isEnabled = false
+                Toast.makeText(this, "No internet available", Toast.LENGTH_SHORT).show()
+            } else {
+                binding.buttonSignUp.isEnabled = true
+            }
+
+        }
+    }
+
     private fun observerSignUpResult() {
-        authViewModel.signUpResult.observe(this) { result ->
+        userViewModel.signUpResult.observe(this) { result ->
             when (result) {
                 is RequestResult.Authorized -> {
                     Intent(this, MainActivity::class.java).also {
@@ -43,10 +57,17 @@ class RegisterActivity : AppCompatActivity() {
                 is RequestResult.UnknownError -> {
                     Toast.makeText(this, "An unknown error occurred", Toast.LENGTH_SHORT).show()
                 }
+                is RequestResult.NoInternet -> {
+                    Toast.makeText(this, "No internet available", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
+    private fun listeners() {
+        buttonSignUpListener()
+        textViewAlreadyRegisteredListener()
+    }
 
     private fun buttonSignUpListener() {
         binding.buttonSignUp.setOnClickListener {
@@ -56,7 +77,7 @@ class RegisterActivity : AppCompatActivity() {
             val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPassword.text.toString()
             val confirmPassword = binding.editTextConfirmPassword.text.toString()
-            authViewModel.signUp(username, firstname, lastname, email, password, confirmPassword)
+            userViewModel.signUp(username, firstname, lastname, email, password, confirmPassword)
         }
     }
 

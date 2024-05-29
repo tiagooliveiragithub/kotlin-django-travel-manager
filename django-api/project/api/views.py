@@ -15,9 +15,18 @@ class TravelListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         if(serializer.is_valid()):
-            serializer.save(user=self.request.user)
+            serializer.save(users=[self.request.user])
         else:
             print(serializer.errors)
+
+class TravelRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TravelSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.travels.all()
+
        
 class TravelDeleteView(generics.DestroyAPIView):
     serializer_class = TravelSerializer

@@ -12,9 +12,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import online.tripguru.tripguruapp.local.database.AppDatabase
 import online.tripguru.tripguruapp.network.ApiInterface
-import online.tripguru.tripguruapp.repositories.AuthRepository
-import online.tripguru.tripguruapp.repositories.AuthRepositoryImpl
+import online.tripguru.tripguruapp.network.ConnectivityLiveData
+import online.tripguru.tripguruapp.repositories.LocalRepository
 import online.tripguru.tripguruapp.repositories.TripRepository
+import online.tripguru.tripguruapp.repositories.UserRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -35,8 +36,14 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideTripRepository(appDatabase: AppDatabase, api: ApiInterface, prefs: SharedPreferences): TripRepository {
-        return TripRepository(appDatabase, api, prefs)
+    fun provideTripRepository(appDatabase: AppDatabase, api: ApiInterface, userRepository: UserRepository): TripRepository {
+        return TripRepository(appDatabase, api, userRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLocalRepository(appDatabase: AppDatabase, api: ApiInterface, userRepository: UserRepository): LocalRepository {
+        return LocalRepository(appDatabase, api, userRepository)
     }
 
     @Singleton
@@ -57,8 +64,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(api: ApiInterface, prefs: SharedPreferences): AuthRepository {
-        return AuthRepositoryImpl(api, prefs)
+    fun provideUserRepository(api: ApiInterface, prefs: SharedPreferences, connectivityLiveData: ConnectivityLiveData): UserRepository {
+        return UserRepository(api, prefs, connectivityLiveData)
     }
 
     @Provides

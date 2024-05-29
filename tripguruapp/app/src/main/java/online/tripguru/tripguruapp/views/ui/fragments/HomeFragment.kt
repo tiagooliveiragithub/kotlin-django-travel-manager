@@ -11,12 +11,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.FragmentHomeBinding
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.models.Trip
-import online.tripguru.tripguruapp.network.ConnectivityLiveData
-import online.tripguru.tripguruapp.viewmodels.TripViewModel
+import online.tripguru.tripguruapp.viewmodels.MainViewModel
+import online.tripguru.tripguruapp.viewmodels.UserViewModel
 import online.tripguru.tripguruapp.views.adapters.LocalAdapterVertical
 import online.tripguru.tripguruapp.views.adapters.OnLocalClickListener
 import online.tripguru.tripguruapp.views.adapters.OnTripClickListener
@@ -24,17 +23,16 @@ import online.tripguru.tripguruapp.views.adapters.TripAdapter
 import online.tripguru.tripguruapp.views.ui.CreateLocalActivity
 import online.tripguru.tripguruapp.views.ui.CreateTripActivity
 import online.tripguru.tripguruapp.views.ui.MainActivity
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
 
-    private val tripViewModel: TripViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
+    private val authViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentHomeBinding
     private lateinit var adapterTrip: TripAdapter
     private lateinit var adapterLocal: LocalAdapterVertical
-    @Inject lateinit var connectivityLiveData: ConnectivityLiveData
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +46,8 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         setRecyclerViews()
-        buttonCreateTripListener()
-        observer()
+        listeners()
+        observers()
     }
 
     private fun setRecyclerViews() {
@@ -64,48 +62,55 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
         recyclerViewVertical.adapter = adapterLocal
     }
 
-    private fun buttonCreateTripListener() {
+    private fun listeners() {
         binding.buttonCreateTrip.setOnClickListener {
+            mainViewModel.updateSelectedTrip(null)
             startActivity(Intent(context, CreateTripActivity::class.java))
         }
     }
 
-    private fun observer() {
-        tripViewModel.allTrips.observe(viewLifecycleOwner) { trips ->
-            trips?.let {
-                adapterTrip.setTrips(it)
-            }
-        }
-        tripViewModel.allLocals.observe(viewLifecycleOwner) { locals ->
-            locals?.let {
-                adapterLocal.setLocals(it)
-            }
-        }
-        connectivityLiveData.observe(viewLifecycleOwner, Observer { isConnected ->
-            if (isConnected) {
-                tripViewModel.refreshAllTrips()
-                binding.buttonCreateTrip.isEnabled = true
-            } else {
+    private fun observers() {
+        observeIfOnline()
+        observeRecyclerLists()
+    }
+
+    private fun observeIfOnline() {
+        authViewModel.isOnline().observe(viewLifecycleOwner, Observer { isConnected ->
+            if (!isConnected) {
                 Toast.makeText(requireContext(), "Disconnected from the internet", Toast.LENGTH_LONG).show()
                 binding.buttonCreateTrip.isEnabled = false
+            } else {
+                mainViewModel.refreshAllTrips()
+                binding.buttonCreateTrip.isEnabled = true
             }
         })
     }
 
-    override fun onTripClick(trip: Trip) {
-        tripViewModel.setSelectedTrip(trip)
-        (activity as MainActivity).supportFragmentManager.beginTransaction().apply {
-            replace((activity as MainActivity).binding.contentFrame.id, TripFragment())
-            addToBackStack(null)
-            commit()
-            // change icon navigation
-            (activity as MainActivity).binding.bottomNavigation.selectedItemId = R.id.icon_trip
+    private fun observeRecyclerLists() {
+        mainViewModel.allTrips.observe(viewLifecycleOwner) { trips ->
+            trips?.let {
+                adapterTrip.setTrips(it)
+            }
+        }
+        mainViewModel.allLocals.observe(viewLifecycleOwner) { locals ->
+            locals?.let {
+                adapterLocal.setLocals(it)
+            }
         }
     }
 
+    override fun onTripClick(trip: Trip) {
+        mainViewModel.updateSelectedTrip(trip)
+        changeToHomeFragment()
+    }
+
     override fun onLocalClick(local: Local) {
-        tripViewModel.setSelectedLocal(local)
+        // mainViewModel.updateSelectedLocal(local)
         startActivity(Intent(context, CreateLocalActivity::class.java))
+    }
+
+    private fun changeToHomeFragment() {
+        (activity as MainActivity).replaceFragment(TripFragment())
     }
 
 }

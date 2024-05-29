@@ -9,14 +9,12 @@ import online.tripguru.tripguruapp.models.Local
 
 @Dao
 interface LocalDao {
-     @Query("SELECT * FROM local WHERE tripId = :tripId")
-     fun getLocalsForTrip(tripId: Int): LiveData<List<Local>>
-     @Insert(onConflict = OnConflictStrategy.REPLACE)
-     fun insert(local: Local)
-
-     @Query("SELECT * FROM local WHERE id = :localId")
-     fun getLocalById(localId: Int): LiveData<Local>
-
      @Query("SELECT * FROM local")
      fun getLocals(): LiveData<List<Local>>
+
+     @Insert(onConflict = OnConflictStrategy.REPLACE)
+     fun insertAll(locals: List<Local>)
+
+     @Insert(onConflict = OnConflictStrategy.REPLACE)
+     fun insertLocals(locals: List<Local>)
 }

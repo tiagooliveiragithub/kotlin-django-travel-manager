@@ -15,15 +15,15 @@ class CustomUser(AbstractUser):
         return self.username
 
 class Travel(models.Model):
-    title = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
     description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    date = models.DateField()
+    # created_at = models.DateTimeField(auto_now_add=True)
+    # date = models.DateField()
     users = models.ManyToManyField(CustomUser, related_name='travels', blank=True)
-    spots = models.ManyToManyField('Spot', related_name='travels', blank=True)
+    # spots = models.ManyToManyField('Spot', related_name='travels', blank=True)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 class Spot(models.Model):
     name = models.CharField(max_length=200)

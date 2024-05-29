@@ -8,28 +8,39 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.ActivityLoginBinding
 import online.tripguru.tripguruapp.network.auth.RequestResult
-import online.tripguru.tripguruapp.viewmodels.AuthViewModel
+import online.tripguru.tripguruapp.viewmodels.UserViewModel
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-    private val authViewModel: AuthViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
     lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        listeners()
+        observe()
+    }
 
-        buttonLoginListener()
-        textViewSignUpListener()
-
+    private fun observe() {
+        observeIfAuthorized()
         observeSignInResult()
+    }
 
+    private fun observeIfAuthorized() {
+        userViewModel.isAuthorized().observe(this) { isAuthorized ->
+            if (isAuthorized) {
+                Intent(this, MainActivity::class.java).also {
+                    startActivity(it)
+                    finish()
+                }
+            }
+        }
     }
 
     private fun observeSignInResult() {
-        authViewModel.signInResult.observe(this) { result ->
+        userViewModel.signInResult.observe(this) { result ->
             when (result) {
                 is RequestResult.Authorized -> {
                     Intent(this, MainActivity::class.java).also {
@@ -43,20 +54,27 @@ class LoginActivity : AppCompatActivity() {
                 is RequestResult.UnknownError -> {
                     Toast.makeText(this, "An unknown error occurred", Toast.LENGTH_SHORT).show()
                 }
+                is RequestResult.NoInternet -> {
+                    Toast.makeText(this, "No internet available", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        userViewModel.isSignedIn().observe(this) { isSignedIn ->
+            if (isSignedIn) {
+                Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show()
+                Intent(this, MainActivity::class.java).also {
+                    startActivity(it)
+                    finish()
+                }
             }
         }
     }
-
-    private fun buttonLoginListener() {
-        // Login using auth repository
+    private fun listeners() {
         binding.buttonLogin.setOnClickListener {
             val username = binding.editTextUsername.text.toString()
             val password = binding.editTextPassword.text.toString()
-            authViewModel.signIn(username, password)
+            userViewModel.signIn(username, password)
         }
-    }
-
-    private fun textViewSignUpListener() {
         binding.textViewSignUp.setOnClickListener {
             Intent(this, RegisterActivity::class.java).also {
                 startActivity(it)
