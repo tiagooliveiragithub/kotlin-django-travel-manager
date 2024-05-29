@@ -13,7 +13,6 @@
     <string name="login_button_label">Login</string>
     <string name="forgot_password_label">Forgot your password?</string>
     <string name="sign_up_label">Create an account here</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="editlocal_button_label">Update Local</string>
     <string name="createlocal_button_label">Create Local</string>
     <string name="edittrip_button_label">Edit Trip</string>
@@ -29,4 +28,7 @@
     <string name="profile_label">Profile</string>
     <string name="yourtrips_label">Your Trips</string>
     <string name="signout_label" >Sign Out</string>
+    <string name="description_hint">Description</string>
+    <string name="name_hint">Name</string>
+    <string name="descriptiontrip_label">Description of Trip</string>
 </resources>

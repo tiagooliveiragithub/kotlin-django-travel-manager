@@ -26,8 +26,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Title"
-            android:textSize="15dp"
+            android:text="@string/name_hint"
+            android:textSize="15sp"
             android:textColor="@color/light_letter"/>
 
         <EditText
@@ -35,21 +35,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:hint="Title"
+            android:hint="@string/name_hint"
             android:inputType="text" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:textSize="15dp"
+            android:text="@string/description_hint"
+            android:textSize="15sp"
             android:textColor="@color/light_letter"/>
 
         <EditText
             android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description"
+            android:hint="@string/description_hint"
             android:inputType="text" />
 
         <Button
@@ -57,9 +57,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Create Trip"
-            android:backgroundTint="@color/purple"/>
-
+            android:text="@string/createtrip_button_label"
+            android:backgroundTint="@color/purple"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
     </LinearLayout>
 
 </LinearLayout>

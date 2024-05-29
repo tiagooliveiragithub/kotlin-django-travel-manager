@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:orientation="vertical"
     android:padding="35dp"
@@ -9,20 +10,45 @@
     android:textColor="@color/light_letter"
     tools:context=".views.ui.CreateLocalActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/name_hint"
+        android:textSize="15sp"
+        android:textColor="@color/light_letter"/>
+
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:hint="Description"
+        android:hint="@string/name_hint"
+        android:inputType="text" />
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/description_hint"
+        android:textSize="15sp"
+        android:textColor="@color/light_letter"/>
+
+    <EditText
+        android:id="@+id/editTextDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:hint="@string/description_hint"
         android:inputType="text" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Category"
-        android:textSize="15dp"
-        android:textColor="@color/light_letter"/>
+        android:textSize="15sp"
+        android:textColor="@color/light_letter"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,7 +62,9 @@
             android:layout_marginEnd="4dp"
             android:text="Park"
             android:textSize="10dp"
-            android:backgroundTint="@color/purple"/>
+            android:backgroundTint="@color/purple"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
 
         <Button
             android:layout_width="100dp"
@@ -46,7 +74,9 @@
             android:text="Museum"
             android:textColor="#2E3A59"
             android:textSize="10dp"
-            android:backgroundTint="@color/light"/>
+            android:backgroundTint="@color/light"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
 
         <Button
             android:layout_width="100dp"
@@ -56,7 +86,9 @@
             android:text="Restaurant"
             android:textColor="#2E3A59"
             android:textSize="10dp"
-            android:backgroundTint="@color/light"/>
+            android:backgroundTint="@color/light"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
 
     </LinearLayout>
     <LinearLayout
@@ -73,7 +105,9 @@
             android:text="Bar"
             android:textColor="#2E3A59"
             android:textSize="10dp"
-            android:backgroundTint="@color/light"/>
+            android:backgroundTint="@color/light"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
 
         <Button
             android:layout_width="100dp"
@@ -83,7 +117,9 @@
             android:text="Party"
             android:textColor="#2E3A59"
             android:textSize="10dp"
-            android:backgroundTint="@color/light"/>
+            android:backgroundTint="@color/light"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
 
         <Button
             android:layout_width="100dp"
@@ -93,7 +129,9 @@
             android:text="Garden"
             android:textColor="#2E3A59"
             android:textSize="10dp"
-            android:backgroundTint="@color/light"/>
+            android:backgroundTint="@color/light"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
 
     </LinearLayout>
 
@@ -117,7 +155,9 @@
             android:text="+ Coords"
             android:textColor="#2E3A59"
             android:textSize="10dp"
-            android:backgroundTint="@color/light"/>
+            android:backgroundTint="@color/light"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
 
     </LinearLayout>
     <TextView
@@ -139,7 +179,9 @@
             android:text="+ Image"
             android:textColor="#2E3A59"
             android:textSize="10dp"
-            android:backgroundTint="@color/light"/>
+            android:backgroundTint="@color/light"
+            app:cornerRadius="5dp"
+            android:padding="10dp"/>
 
     </LinearLayout>
 
@@ -149,6 +191,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Create Local"
-        android:backgroundTint="@color/purple"/>
+        android:backgroundTint="@color/purple"
+        app:cornerRadius="5dp"
+        android:padding="10dp"/>
 
 </LinearLayout>

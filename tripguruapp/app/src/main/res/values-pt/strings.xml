@@ -25,4 +25,7 @@
     <string name="profile_label">Perfil</string>
     <string name="yourtrips_label">As tuas Viagens</string>
     <string name="signout_label" >Sair da Conta</string>
+    <string name="description_hint">Descrição</string>
+    <string name="name_hint">Nome</string>
+    <string name="descriptiontrip_label">Descrição da Viagem</string>
 </resources>
