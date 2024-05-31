@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.FragmentTripBinding
@@ -55,10 +54,18 @@ class TripFragment : Fragment(), OnLocalClickListener {
     }
 
     private fun observers() {
-        // TODO : Implement the observer for allLocals from SelectedTrip
-        authViewModel.isOnline().observe(viewLifecycleOwner, Observer { isConnected ->
+        mainViewModel.getAllLocals().observe(viewLifecycleOwner) { locals ->
+            locals?.let {
+                localAdapter.setLocals(it)
+            }
+        }
+        authViewModel.isOnline().observe(viewLifecycleOwner) { isConnected ->
             if (!isConnected) {
-                Toast.makeText(requireContext(), "Disconnected from the internet", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Disconnected from the internet",
+                    Toast.LENGTH_LONG
+                ).show()
                 binding.buttonEditTripPage.isEnabled = false
                 binding.buttonCreateLocalPage.isEnabled = false
                 binding.buttonDeleteTrip.isEnabled = false
@@ -67,13 +74,13 @@ class TripFragment : Fragment(), OnLocalClickListener {
                 binding.buttonCreateLocalPage.isEnabled = true
                 binding.buttonDeleteTrip.isEnabled = true
             }
-        })
-        mainViewModel.getSelectedTrip().observe(viewLifecycleOwner, Observer { trip ->
+        }
+        mainViewModel.getSelectedTrip().observe(viewLifecycleOwner) { trip ->
             trip?.let {
                 this.trip = it
                 binding.textViewTripName.text = it.name
             }
-        })
+        }
 
     }
 
@@ -82,6 +89,7 @@ class TripFragment : Fragment(), OnLocalClickListener {
             startActivity(Intent(context, CreateTripActivity::class.java))
         }
         binding.buttonCreateLocalPage.setOnClickListener {
+            mainViewModel.updateSelectedLocal(null)
             startActivity(Intent(context, CreateLocalActivity::class.java))
         }
         binding.buttonDeleteTrip.setOnClickListener {
@@ -91,11 +99,19 @@ class TripFragment : Fragment(), OnLocalClickListener {
     }
 
     override fun onLocalClick(local: Local) {
-        // mainViewModel.updateSelectedLocal(local)
+        mainViewModel.updateSelectedLocal(local)
         startActivity(Intent(context, CreateLocalActivity::class.java))
     }
 
     private fun changeToHomeFragment() {
         (activity as MainActivity).replaceFragment(HomeFragment())
     }
+
+    override fun onResume() {
+        super.onResume()
+        // TODO: temporary solution to update the list after deleting a local
+        mainViewModel.refreshAllLocals()
+    }
+
+
 }

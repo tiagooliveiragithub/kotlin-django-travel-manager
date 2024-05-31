@@ -128,7 +128,7 @@
             android:layout_marginVertical="3dp"
             android:text="Garden"
             android:textColor="#2E3A59"
-            android:textSize="10dp"
+            android:textSize="10sp"
             android:backgroundTint="@color/light"
             app:cornerRadius="5dp"
             android:padding="10dp"/>
@@ -139,7 +139,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Precise Localization (optional)"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:textColor="@color/light_letter"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -154,7 +154,7 @@
             android:layout_marginEnd="4dp"
             android:text="+ Coords"
             android:textColor="#2E3A59"
-            android:textSize="10dp"
+            android:textSize="10sp"
             android:backgroundTint="@color/light"
             app:cornerRadius="5dp"
             android:padding="10dp"/>
@@ -164,7 +164,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Gallery (optional)"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:textColor="@color/light_letter"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -178,7 +178,7 @@
             android:layout_marginEnd="4dp"
             android:text="+ Image"
             android:textColor="#2E3A59"
-            android:textSize="10dp"
+            android:textSize="10sp"
             android:backgroundTint="@color/light"
             app:cornerRadius="5dp"
             android:padding="10dp"/>
@@ -190,8 +190,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Create Local"
+        android:text="@string/createlocal_button_label"
         android:backgroundTint="@color/purple"
+        app:cornerRadius="5dp"
+        android:padding="10dp"/>
+
+    <Button
+        android:id="@+id/buttonDeleteLocal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/deletelocal_button_label"
+        android:backgroundTint="@color/red"
         app:cornerRadius="5dp"
         android:padding="10dp"/>
 

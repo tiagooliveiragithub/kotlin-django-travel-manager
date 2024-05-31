@@ -8,5 +8,6 @@ data class Local(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,
     var tripId: Int? = null,
-    var name: String
+    var name: String,
+    var description: String
 )

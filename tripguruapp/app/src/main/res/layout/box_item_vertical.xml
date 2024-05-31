@@ -18,20 +18,20 @@
         android:padding="20dp">
 
         <TextView
-            android:id="@+id/textViewTitle"
+            android:id="@+id/textViewName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nametrip_label"
+            android:text="@string/namelocal_label"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginBottom="10dp"
             android:textColor="@color/dark"/>
 
         <TextView
-            android:id="@+id/textViewDate"
+            android:id="@+id/textViewDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/descriptiontrip_label"
+            android:text="@string/descriptionlocal_label"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:textColor="@color/dark"/>

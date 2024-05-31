@@ -28,4 +28,7 @@
     <string name="description_hint">Descrição</string>
     <string name="name_hint">Nome</string>
     <string name="descriptiontrip_label">Descrição da Viagem</string>
+    <string name="descriptionlocal_label">Descrição do Local</string>
+    <string name="namelocal_label">Nome do Local</string>
+    <string name="deletelocal_button_label">Eliminar Local</string>
 </resources>

@@ -14,7 +14,8 @@ class LocalAdapterVertical (
 
     inner class LocalViewHolder(private val binding: BoxItemVerticalBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(local: Local) {
-            binding.textViewTitle.text = local.name
+            binding.textViewName.text = local.name
+            binding.textViewDescription.text = local.description
         }
     }
 

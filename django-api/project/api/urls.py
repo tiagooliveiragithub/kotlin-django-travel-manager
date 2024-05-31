@@ -1,12 +1,17 @@
 from django.urls import path, include
 
-from .views import CreateUserView, TravelListCreateView, TravelRetrieveUpdateDestroyView
+from .views import CreateUserView, TravelListCreateView, TravelRetrieveUpdateDestroyView, \
+                     SpotListCreateView, SpotRetrieveUpdateDestroyView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
     # Travel
     path('travels/', TravelListCreateView.as_view(), name='travel-list-create'),
     path('travels/<int:pk>/', TravelRetrieveUpdateDestroyView.as_view(), name='travel-edit'),
+
+    # Spot
+    path('spots/', SpotListCreateView.as_view(), name='spot-list-create'),
+    path('spots/<int:pk>/', SpotRetrieveUpdateDestroyView.as_view(), name='spot-edit'),
 
     # User
     path('users/register/', CreateUserView.as_view(), name='register'),

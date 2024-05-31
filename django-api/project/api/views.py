@@ -1,7 +1,7 @@
 from rest_framework import generics
-from .serializers import UserSerializer, TravelSerializer
+from .serializers import UserSerializer, TravelSerializer, SpotSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Travel, CustomUser
+from .models import CustomUser, Travel, Spot
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
@@ -35,6 +35,37 @@ class TravelDeleteView(generics.DestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return user.travels.all()
+
+
+class SpotListCreateView(generics.ListCreateAPIView):
+    serializer_class = SpotSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.spots.all()
+
+    def perform_create(self, serializer):
+        if(serializer.is_valid()):
+            serializer.save(users=[self.request.user])
+        else:
+            print(serializer.errors)
+
+class SpotRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = SpotSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.spots.all()
+
+class SpotDeleteView(generics.DestroyAPIView):
+    serializer_class = SpotSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.spots.all()
 
 
 class CreateUserView(generics.CreateAPIView):

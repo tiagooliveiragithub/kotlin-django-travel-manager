@@ -31,4 +31,7 @@
     <string name="description_hint">Description</string>
     <string name="name_hint">Name</string>
     <string name="descriptiontrip_label">Description of Trip</string>
+    <string name="descriptionlocal_label">Description of Local</string>
+    <string name="namelocal_label">Name of Local</string>
+    <string name="deletelocal_button_label">Delete Local</string>
 </resources>

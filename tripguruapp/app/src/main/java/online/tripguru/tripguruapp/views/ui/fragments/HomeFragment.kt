@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.FragmentHomeBinding
@@ -75,24 +74,29 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
     }
 
     private fun observeIfOnline() {
-        authViewModel.isOnline().observe(viewLifecycleOwner, Observer { isConnected ->
+        authViewModel.isOnline().observe(viewLifecycleOwner) { isConnected ->
             if (!isConnected) {
-                Toast.makeText(requireContext(), "Disconnected from the internet", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Disconnected from the internet",
+                    Toast.LENGTH_LONG
+                ).show()
                 binding.buttonCreateTrip.isEnabled = false
             } else {
                 mainViewModel.refreshAllTrips()
+                mainViewModel.refreshAllLocals()
                 binding.buttonCreateTrip.isEnabled = true
             }
-        })
+        }
     }
 
     private fun observeRecyclerLists() {
-        mainViewModel.allTrips.observe(viewLifecycleOwner) { trips ->
+        mainViewModel.getAllTrips().observe(viewLifecycleOwner) { trips ->
             trips?.let {
                 adapterTrip.setTrips(it)
             }
         }
-        mainViewModel.allLocals.observe(viewLifecycleOwner) { locals ->
+        mainViewModel.getAllLocals().observe(viewLifecycleOwner) { locals ->
             locals?.let {
                 adapterLocal.setLocals(it)
             }
@@ -105,7 +109,7 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
     }
 
     override fun onLocalClick(local: Local) {
-        // mainViewModel.updateSelectedLocal(local)
+        mainViewModel.updateSelectedLocal(local)
         startActivity(Intent(context, CreateLocalActivity::class.java))
     }
 

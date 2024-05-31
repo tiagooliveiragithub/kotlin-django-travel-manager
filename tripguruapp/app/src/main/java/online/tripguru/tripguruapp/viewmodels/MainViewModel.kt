@@ -17,8 +17,29 @@ class MainViewModel @Inject constructor(
     private val tripRepository: TripRepository,
     private val localRepository: LocalRepository
 ) : ViewModel() {
-    var allLocals: LiveData<List<Local>> = localRepository.allLocals
-    var allTrips: LiveData<List<Trip>> = tripRepository.allTrips
+
+    fun getAllTrips(): LiveData<List<Trip>> {
+        return tripRepository.allTrips
+    }
+
+    fun getAllLocals(): LiveData<List<Local>> {
+        return localRepository.allLocals
+    }
+    fun updateSelectedTrip(trip: Trip?) {
+        tripRepository.updateSelectedTrip(trip)
+    }
+
+    fun getSelectedTrip(): LiveData<Trip?> {
+        return tripRepository.getSelectedTrip()
+    }
+
+    fun updateSelectedLocal(local: Local?) {
+        localRepository.updateSelectedLocal(local)
+    }
+
+    fun getSelectedLocal(): LiveData<Local?> {
+        return localRepository.getSelectedLocal()
+    }
 
     fun refreshAllTrips() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -46,19 +67,34 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateSelectedTrip(trip: Trip?) {
-        tripRepository.updateSelectedTrip(trip)
+    fun refreshAllLocals() {
+        viewModelScope.launch(Dispatchers.IO) {
+            localRepository.refreshAllLocals()
+        }
     }
 
-    fun getSelectedTrip(): LiveData<Trip?> {
-        return tripRepository.getSelectedTrip()
+    fun insertLocal(name: String, description: String) {
+        val tripId = getSelectedTrip().value?.id ?: 0
+        val local = Local(tripId = tripId, name = name, description = description)
+        viewModelScope.launch(Dispatchers.IO) {
+            localRepository.insertLocal(local)
+        }
+        updateSelectedLocal(local)
     }
 
-    fun updateSelectedLocal(local: Local) {
-        localRepository.updateSelectedLocal(local)
+    fun updateLocal(id: Int, name: String, description: String) {
+        val tripId = getSelectedTrip().value?.id ?: 0
+        val local = Local(id = id, tripId = tripId, name = name, description = description)
+        viewModelScope.launch(Dispatchers.IO) {
+            localRepository.updateLocal(local)
+        }
+        updateSelectedLocal(local)
     }
 
-    fun getSelectedLocal(): LiveData<Local?> {
-        return localRepository.getSelectedLocal()
+    fun deleteLocal(local: Local) {
+        viewModelScope.launch(Dispatchers.IO) {
+            localRepository.deleteLocal(local)
+        }
+        updateSelectedLocal(null)
     }
 }
