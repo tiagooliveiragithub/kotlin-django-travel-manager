@@ -1,17 +1,17 @@
 from rest_framework import generics
-from .serializers import UserSerializer, TravelSerializer, SpotSerializer
+from .serializers import UserSerializer, TripSerializer, SpotSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import CustomUser, Travel, Spot
+from .models import CustomUser, Trip, Spot
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
-class TravelListCreateView(generics.ListCreateAPIView):
-    serializer_class = TravelSerializer
+class TripListCreateView(generics.ListCreateAPIView):
+    serializer_class = TripSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        return user.travels.all()
+        return user.trips.all()
 
     def perform_create(self, serializer):
         if(serializer.is_valid()):
@@ -19,22 +19,22 @@ class TravelListCreateView(generics.ListCreateAPIView):
         else:
             print(serializer.errors)
 
-class TravelRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = TravelSerializer
+class TripRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TripSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        return user.travels.all()
+        return user.trips.all()
 
        
-class TravelDeleteView(generics.DestroyAPIView):
-    serializer_class = TravelSerializer
+class TripDeleteView(generics.DestroyAPIView):
+    serializer_class = TripSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        return user.travels.all()
+        return user.trips.all()
 
 
 class SpotListCreateView(generics.ListCreateAPIView):

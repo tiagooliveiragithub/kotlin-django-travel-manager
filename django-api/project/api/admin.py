@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import CustomUser, Travel, Spot
+from .models import CustomUser, Trip, Spot
 
 admin.site.register(CustomUser)
-admin.site.register(Travel)
+admin.site.register(Trip)
 admin.site.register(Spot)
 
