@@ -19,5 +19,7 @@ interface LocalDao {
      fun insertLocal(local: Local)
      @Query("DELETE FROM local WHERE id = :id")
      fun deleteLocal(id: Int)
+     @Query("SELECT * FROM local WHERE tripId = :tripId")
+     fun getLocalsForTrip(tripId: Int): LiveData<List<Local>>
 
 }

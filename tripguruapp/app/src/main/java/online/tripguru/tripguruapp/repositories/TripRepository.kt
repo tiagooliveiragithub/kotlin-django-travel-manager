@@ -47,9 +47,9 @@ class TripRepository @Inject constructor(
 
     suspend fun insertTrip(trip: Trip) {
         try {
-            val tripResponse = convertTripToResponse(trip)
-            api.createTrip(userRepository.getUserToken(), tripResponse)
-            tripDao.insertTrip(trip)
+            val tripRequest = convertTripToResponse(trip)
+            val tripResponse = api.createTrip(userRepository.getUserToken(), tripRequest)
+            tripDao.insertTrip(convertResponseToTrip(tripResponse))
         } catch (e: HttpException) {
             Log.e("TripRepository", "Error: ${e.message()}")
         }
@@ -57,9 +57,9 @@ class TripRepository @Inject constructor(
 
     suspend fun updateTrip(trip: Trip) {
         try {
-            val tripResponse = convertTripToResponse(trip)
-            api.updateTrip(userRepository.getUserToken(), trip.id!!, tripResponse)
-            tripDao.insertTrip(trip)
+            val tripRequest = convertTripToResponse(trip)
+            val tripResponse = api.updateTrip(userRepository.getUserToken(), trip.id!!, tripRequest)
+            tripDao.insertTrip(convertResponseToTrip(tripResponse))
         } catch (e: HttpException) {
             Log.e("TripRepository", "Error: ${e.message()}")
         } catch (e: Exception) {
@@ -71,6 +71,7 @@ class TripRepository @Inject constructor(
         try {
             api.deleteTrip(userRepository.getUserToken(), trip.id!!)
             tripDao.deleteTrip(trip.id!!)
+            updateSelectedTrip(null)
         } catch (e: HttpException) {
             Log.e("TripRepository", "Error: ${e.message()}")
         } catch (e: Exception) {

@@ -16,12 +16,12 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
-class Travel(models.Model):
+class Trip(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     date = models.DateField(null=True, blank=True, default=timezone.now)
-    users = models.ManyToManyField(CustomUser, related_name='travels', blank=True)
+    users = models.ManyToManyField(CustomUser, related_name='trips', blank=True)
 
     def __str__(self):
         return self.name
@@ -31,6 +31,7 @@ class Spot(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(CustomUser, related_name='spots', blank=True)
+    tripId = models.ForeignKey(Trip, related_name='spots', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

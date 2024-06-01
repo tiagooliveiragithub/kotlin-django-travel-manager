@@ -117,4 +117,10 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
         (activity as MainActivity).replaceFragment(TripFragment())
     }
 
+    override fun onResume() {
+        super.onResume()
+        // TODO: temporary solution to update the list after deleting a local
+        mainViewModel.refreshAllLocals()
+    }
+
 }

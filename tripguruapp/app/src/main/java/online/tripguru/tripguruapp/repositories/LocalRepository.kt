@@ -30,6 +30,10 @@ class LocalRepository (
         return localSelected
     }
 
+    fun getLocalsForTrip(tripId: Int): LiveData<List<Local>> {
+        return localDao.getLocalsForTrip(tripId)
+    }
+
     suspend fun refreshAllLocals(): LiveData<List<Local>> {
         if (userRepository.isOnline().value == true) {
             try {
@@ -45,9 +49,9 @@ class LocalRepository (
 
     suspend fun insertLocal(local: Local) {
         try {
-            val localResponse = convertLocalToResponse(local)
-            api.createLocal(userRepository.getUserToken(), localResponse)
-            localDao.insertLocal(local)
+            val localRequest = convertLocalToResponse(local)
+            val localResponse = api.createLocal(userRepository.getUserToken(), localRequest)
+            localDao.insertLocal(convertResponseToLocal(localResponse))
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
         }
@@ -55,9 +59,9 @@ class LocalRepository (
 
     suspend fun updateLocal(local: Local) {
         try {
-            val localResponse = convertLocalToResponse(local)
-            api.updateLocal(userRepository.getUserToken(), local.id!!, localResponse)
-            localDao.insertLocal(local)
+            val localRequest = convertLocalToResponse(local)
+            val localResponse = api.updateLocal(userRepository.getUserToken(), local.id!!, localRequest)
+            localDao.insertLocal(convertResponseToLocal(localResponse))
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
         } catch (e: Exception) {
@@ -69,6 +73,7 @@ class LocalRepository (
         try {
             api.deleteLocal(userRepository.getUserToken(), local.id!!)
             localDao.deleteLocal(local.id!!)
+            updateSelectedLocal(null)
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
         } catch (e: Exception) {

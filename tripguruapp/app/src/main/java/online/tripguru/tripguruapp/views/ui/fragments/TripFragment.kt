@@ -54,7 +54,7 @@ class TripFragment : Fragment(), OnLocalClickListener {
     }
 
     private fun observers() {
-        mainViewModel.getAllLocals().observe(viewLifecycleOwner) { locals ->
+        mainViewModel.getAllLocalsforSelectedTrip().observe(viewLifecycleOwner) { locals ->
             locals?.let {
                 localAdapter.setLocals(it)
             }

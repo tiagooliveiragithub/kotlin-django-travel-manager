@@ -18,6 +18,11 @@ class MainViewModel @Inject constructor(
     private val localRepository: LocalRepository
 ) : ViewModel() {
 
+    fun getAllLocalsforSelectedTrip(): LiveData<List<Local>> {
+        if(getSelectedTrip().value == null) return localRepository.allLocals
+        return localRepository.getLocalsForTrip(getSelectedTrip().value!!.id ?: 0)
+    }
+
     fun getAllTrips(): LiveData<List<Trip>> {
         return tripRepository.allTrips
     }
@@ -52,14 +57,12 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             tripRepository.insertTrip(trip)
         }
-        updateSelectedTrip(trip)
     }
     fun updateTrip(id: Int, name: String, description: String) {
         val trip = Trip(id = id, name = name, description = description)
         viewModelScope.launch(Dispatchers.IO) {
             tripRepository.updateTrip(trip)
         }
-        updateSelectedTrip(trip)
     }
     fun deleteTrip(trip: Trip) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -79,7 +82,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             localRepository.insertLocal(local)
         }
-        updateSelectedLocal(local)
     }
 
     fun updateLocal(id: Int, name: String, description: String) {
@@ -95,6 +97,5 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             localRepository.deleteLocal(local)
         }
-        updateSelectedLocal(null)
     }
 }

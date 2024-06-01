@@ -31,31 +31,31 @@ interface ApiInterface {
         @Body request: AuthRegisterRequest
     )
 
-    @GET("api/travels/")
+    @GET("api/trips/")
     suspend fun getTrips(
         @Header("Authorization") token: String
     ): List<TripResponse>
 
-    @GET("api/travels/{pk}")
+    @GET("api/trips/{pk}")
     suspend fun getTrip(
         @Header("Authorization") token: String,
         @Path("pk") id: Int
     ): TripResponse
 
-    @POST("api/travels/")
+    @POST("api/trips/")
     suspend fun createTrip(
         @Header("Authorization") token: String,
         @Body trip: TripResponse
-    )
+    ) : TripResponse
 
-    @PUT("api/travels/{pk}/")
+    @PUT("api/trips/{pk}/")
     suspend fun updateTrip(
         @Header("Authorization") token: String,
         @Path("pk") id: Int,
         @Body trip: TripResponse
-    )
+    ) : TripResponse
 
-    @DELETE("api/travels/{pk}/")
+    @DELETE("api/trips/{pk}/")
     suspend fun deleteTrip(
         @Header("Authorization") token: String,
         @Path("pk") id: Int
@@ -76,14 +76,14 @@ interface ApiInterface {
     suspend fun createLocal(
         @Header("Authorization") token: String,
         @Body local: LocalResponse
-    )
+    ) : LocalResponse
 
     @PUT("api/spots/{pk}/")
     suspend fun updateLocal(
         @Header("Authorization") token: String,
         @Path("pk") id: Int,
         @Body local: LocalResponse
-    )
+    ) : LocalResponse
 
     @DELETE("api/spots/{pk}/")
     suspend fun deleteLocal(

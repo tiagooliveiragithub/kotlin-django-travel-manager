@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import CustomUser, Travel, Spot
+from .models import CustomUser, Trip, Spot
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,15 +24,15 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class TravelSerializer(serializers.ModelSerializer):
+class TripSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Travel
+        model = Trip
         fields = ['id', 'name', 'description', 'users']
         read_only_fields = ['id','date','users']
 
 class SpotSerializer(serializers.ModelSerializer):
     class Meta:
         model = Spot
-        fields = ['id', 'name', 'description', 'users']
+        fields = ['id', 'tripId', 'name', 'description', 'users']
         read_only_fields = ['created_at', 'id', 'users']
 
