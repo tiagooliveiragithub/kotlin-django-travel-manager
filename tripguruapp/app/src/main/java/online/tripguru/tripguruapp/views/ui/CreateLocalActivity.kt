@@ -9,6 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityCreateLocalBinding
 import online.tripguru.tripguruapp.models.Local
+import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.MainViewModel
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 
@@ -37,20 +38,46 @@ class CreateLocalActivity : AppCompatActivity() {
             } else {
                 binding.buttonCreateLocal.text = getString(R.string.createlocal_button_label)
                 binding.buttonDeleteLocal.visibility = View.GONE
-                    setupListenersCreate()
-            }
-        }
-        authViewModel.isAuthorized().observe(this) { isAuthorized ->
-            if (!isAuthorized) {
-                finish()
+                setupListenersCreate()
             }
         }
         authViewModel.isOnline().observe(this) { isOnline ->
             if (!isOnline) {
                 binding.buttonCreateLocal.isEnabled = false
-                Toast.makeText(this, "No internet available", Toast.LENGTH_SHORT).show()
+                binding.buttonDeleteLocal.isEnabled = false
             } else {
                 binding.buttonCreateLocal.isEnabled = true
+                binding.buttonDeleteLocal.isEnabled = true
+            }
+        }
+        mainViewModel.resultCreateLocal.observe(this) { result ->
+            if (result.status == Resource.Status.SUCCESS) {
+                Toast.makeText(
+                    this,
+                    "Local created successfully",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
+            }
+        }
+        mainViewModel.resultUpdateLocal.observe(this) { result ->
+            if (result.status == Resource.Status.SUCCESS) {
+                Toast.makeText(
+                    this,
+                    "Local updated successfully",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
+            }
+        }
+        mainViewModel.resultDeleteLocal.observe(this) { result ->
+            if (result.status == Resource.Status.SUCCESS) {
+                Toast.makeText(
+                    this,
+                    "Local deleted successfully",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
             }
         }
     }
@@ -60,7 +87,6 @@ class CreateLocalActivity : AppCompatActivity() {
             val name = binding.editTextName.text.toString()
             val description = binding.editTextDescription.text.toString()
             mainViewModel.insertLocal(name, description)
-            finish()
         }
     }
 
@@ -69,11 +95,10 @@ class CreateLocalActivity : AppCompatActivity() {
             val name = binding.editTextName.text.toString()
             val description = binding.editTextDescription.text.toString()
             mainViewModel.updateLocal(local.id!!, name, description)
-            finish()
+
         }
         binding.buttonDeleteLocal.setOnClickListener {
-            mainViewModel.deleteLocal(local)
-            finish()
+            mainViewModel.deleteLocal(local.id!!)
         }
     }
 }

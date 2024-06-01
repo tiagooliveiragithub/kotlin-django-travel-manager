@@ -1,13 +1,11 @@
 package online.tripguru.tripguruapp.views.ui
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityMainBinding
-import online.tripguru.tripguruapp.viewmodels.UserViewModel
 import online.tripguru.tripguruapp.views.ui.fragments.HomeFragment
 import online.tripguru.tripguruapp.views.ui.fragments.ProfileFragment
 import online.tripguru.tripguruapp.views.ui.fragments.SearchFragment
@@ -16,7 +14,6 @@ import online.tripguru.tripguruapp.views.ui.fragments.SearchFragment
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,15 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         replaceFragment(HomeFragment())
         buttonNavigationListener()
-        observers()
-    }
 
-    private fun observers() {
-        userViewModel.isAuthorized().observe(this) { isAuthorized ->
-            if (!isAuthorized) {
-                finish()
-            }
-        }
     }
 
     fun replaceFragment(fragment: Fragment) {

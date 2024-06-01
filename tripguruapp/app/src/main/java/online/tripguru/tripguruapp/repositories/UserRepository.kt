@@ -6,10 +6,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import online.tripguru.tripguruapp.network.ApiInterface
 import online.tripguru.tripguruapp.network.ConnectivityLiveData
-import online.tripguru.tripguruapp.network.auth.AuthRegisterRequest
-import online.tripguru.tripguruapp.network.auth.AuthRequest
-import online.tripguru.tripguruapp.network.auth.RequestResult
-import online.tripguru.tripguruapp.network.auth.TokenVerifyRequest
+import online.tripguru.tripguruapp.network.EditUserRequest
+import online.tripguru.tripguruapp.network.EditUserResponse
+import online.tripguru.tripguruapp.network.GetUserInfoResponse
+import online.tripguru.tripguruapp.network.LoginRequest
+import online.tripguru.tripguruapp.network.LoginResponse
+import online.tripguru.tripguruapp.network.Resource
+import online.tripguru.tripguruapp.network.SignupRequest
+import online.tripguru.tripguruapp.network.SignupResponse
+import online.tripguru.tripguruapp.network.TokenVerifyRequest
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -18,56 +23,75 @@ class UserRepository @Inject constructor(
     private val prefs: SharedPreferences,
     private val connectivityLiveData: ConnectivityLiveData
 ) {
-    private val isAuthorizedLiveData = MutableLiveData<Boolean>()
+    val isSignedIn = MutableLiveData<Boolean>()
 
-    suspend fun signUp(username: String, firstname: String, lastname: String, email: String, password: String): RequestResult<Unit> {
+    suspend fun signIn(loginRequest: LoginRequest): Resource<LoginResponse> {
         return try {
-            api.signUp(
-                request = AuthRegisterRequest(
-                    username = username,
-                    first_name = firstname,
-                    last_name = lastname,
-                    email = email,
-                    password = password
-                )
-            )
-            signIn(username, password)
-        } catch(e: HttpException) {
-            if(e.code() == 401) {
-                RequestResult.Unauthorized()
-            } else {
-                RequestResult.UnknownError()
-            }
-        } catch (e: Exception) {
-            RequestResult.UnknownError()
-        }
-    }
-
-    suspend fun signIn(username: String, password: String): RequestResult<Unit> {
-        return try {
-            val response = api.signIn(
-                request = AuthRequest(
-                    username = username,
-                    password = password
-                )
-            )
+            val response = api.signIn(loginRequest)
             prefs.edit()
                 .putString("access", response.access)
                 .apply()
             prefs.edit()
                 .putString("refresh", response.refresh)
                 .apply()
-            isAuthorizedLiveData.postValue(true)
-            RequestResult.Authorized()
+            Resource.success(response)
         } catch(e: HttpException) {
             if(e.code() == 401) {
-                RequestResult.Unauthorized()
+                Resource.error(e.message(), null)
             } else {
-                RequestResult.UnknownError()
+                Resource.error(e.message(), null)
             }
         } catch (e: Exception) {
-            Log.e("AuthRepositoryImpl", "signIn: ${e.message}", e)
-            RequestResult.UnknownError()
+            Log.e("UserRepository", "signIn: ${e.message}", e)
+            Resource.error(e.toString(), null)
+        }
+    }
+
+    suspend fun signUp(signupRequest: SignupRequest): Resource<SignupResponse> {
+        return try {
+            val response = api.signUp(signupRequest)
+            Resource.success(response)
+        } catch(e: HttpException) {
+            if(e.code() == 401) {
+                Resource.error(e.message(), null)
+            } else {
+                Resource.error(e.message(), null)
+            }
+        } catch (e: Exception) {
+            Log.e("UserRepository", "signUp: ${e.message}", e)
+            Resource.error(e.toString(), null)
+        }
+    }
+
+    suspend fun editUser(editUserRequest: EditUserRequest): Resource<EditUserResponse> {
+        return try {
+            val response = api.editUser(request = editUserRequest, token = getUserToken())
+            Resource.success(response)
+        } catch(e: HttpException) {
+            if(e.code() == 401) {
+                Resource.error(e.message(), null)
+            } else {
+                Resource.error(e.message(), null)
+            }
+        } catch (e: Exception) {
+            Log.e("UserRepository", "editUser: ${e.message}", e)
+            Resource.error(e.toString(), null)
+        }
+    }
+
+    suspend fun getUserInfo(): Resource<GetUserInfoResponse> {
+        return try {
+            val response = api.infoUser(token = getUserToken())
+            Resource.success(response)
+        } catch(e: HttpException) {
+            if(e.code() == 401) {
+                Resource.error(e.message(), null)
+            } else {
+                Resource.error(e.message(), null)
+            }
+        } catch (e: Exception) {
+            Log.e("UserRepository", "getUserInfo: ${e.message}", e)
+            Resource.error(e.toString(), null)
         }
     }
 
@@ -79,44 +103,36 @@ class UserRepository @Inject constructor(
             prefs.edit()
                 .remove("refresh")
                 .apply()
-            isAuthorizedLiveData.postValue(false)
+            isSignedIn.postValue(false)
         } catch (e: Exception) {
             Log.e("AuthRepositoryImpl", "signOut: ${e.message}", e)
         }
-
     }
 
      suspend fun isAuthorizedVerify(): LiveData<Boolean> {
          try {
             val token = prefs.getString("access", "") ?: ""
-            api.verifyToken(request = TokenVerifyRequest(token = token))
-            isAuthorizedLiveData.postValue(true)
+            api.verifyToken(TokenVerifyRequest(token = token))
+            isSignedIn.postValue(true)
         } catch(e: HttpException) {
             if(e.code() == 401) {
-                isAuthorizedLiveData.postValue(false)
+                isSignedIn.postValue(false)
             } else {
-                isAuthorizedLiveData.postValue(false)
+                isSignedIn.postValue(false)
             }
         } catch (e: Exception) {
             Log.e("AuthRepositoryImpl", "isAuthorizedVerify: ${e.message}", e)
-            isAuthorizedLiveData.postValue(false)
+            isSignedIn.postValue(false)
         }
-     return isAuthorizedLiveData
+        return isSignedIn
     }
 
     fun isOnline(): LiveData<Boolean> {
         return connectivityLiveData
     }
 
-    fun isAuthorized(): LiveData<Boolean> {
-        return isAuthorizedLiveData
-    }
-
     fun getUserToken(): String {
         val token = prefs.getString("access", "") ?: ""
-        if(token.isEmpty()) {
-            isAuthorizedLiveData.postValue(false)
-        }
         return "Bearer $token"
     }
 }

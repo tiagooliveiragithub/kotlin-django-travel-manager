@@ -34,9 +34,8 @@ class LocalAdapterVertical (
 
     override fun getItemCount(): Int = localList.size
 
-    // Método para atualizar a lista de viagens
     fun setLocals(locals: List<Local>) {
-        localList = locals
+        this.localList = locals
         notifyDataSetChanged()
     }
 }

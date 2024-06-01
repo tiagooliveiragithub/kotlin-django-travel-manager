@@ -1,11 +1,5 @@
 package online.tripguru.tripguruapp.network
 
-import online.tripguru.tripguruapp.network.auth.AuthRegisterRequest
-import online.tripguru.tripguruapp.network.auth.AuthRequest
-import online.tripguru.tripguruapp.network.auth.TokenResponse
-import online.tripguru.tripguruapp.network.auth.TokenVerifyRequest
-import online.tripguru.tripguruapp.network.trip.LocalResponse
-import online.tripguru.tripguruapp.network.trip.TripResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -18,8 +12,8 @@ interface ApiInterface {
 
     @POST("api/token/")
     suspend fun signIn(
-        @Body request: AuthRequest
-    ): TokenResponse
+        @Body request: LoginRequest
+    ): LoginResponse
 
     @POST("api/token/verify/")
     suspend fun verifyToken(
@@ -28,8 +22,19 @@ interface ApiInterface {
 
     @POST("api/users/register/")
     suspend fun signUp(
-        @Body request: AuthRegisterRequest
-    )
+        @Body request: SignupRequest
+    ) : SignupResponse
+
+    @PUT("api/users/edit/")
+    suspend fun editUser(
+        @Header("Authorization") token: String,
+        @Body request: EditUserRequest
+    ) : EditUserResponse
+
+    @GET("api/users/info/")
+    suspend fun infoUser(
+        @Header("Authorization") token: String,
+    ) : GetUserInfoResponse
 
     @GET("api/trips/")
     suspend fun getTrips(
@@ -45,14 +50,14 @@ interface ApiInterface {
     @POST("api/trips/")
     suspend fun createTrip(
         @Header("Authorization") token: String,
-        @Body trip: TripResponse
+        @Body trip: TripRequest
     ) : TripResponse
 
     @PUT("api/trips/{pk}/")
     suspend fun updateTrip(
         @Header("Authorization") token: String,
         @Path("pk") id: Int,
-        @Body trip: TripResponse
+        @Body trip: TripRequest
     ) : TripResponse
 
     @DELETE("api/trips/{pk}/")
@@ -75,14 +80,14 @@ interface ApiInterface {
     @POST("api/spots/")
     suspend fun createLocal(
         @Header("Authorization") token: String,
-        @Body local: LocalResponse
+        @Body local: LocalRequest
     ) : LocalResponse
 
     @PUT("api/spots/{pk}/")
     suspend fun updateLocal(
         @Header("Authorization") token: String,
         @Path("pk") id: Int,
-        @Body local: LocalResponse
+        @Body local: LocalRequest
     ) : LocalResponse
 
     @DELETE("api/spots/{pk}/")

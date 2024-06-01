@@ -34,4 +34,9 @@
     <string name="descriptionlocal_label">Description of Local</string>
     <string name="namelocal_label">Name of Local</string>
     <string name="deletelocal_button_label">Delete Local</string>
+    <string name="passwordnotidentical_label">Passwords are not identical</string>
+    <string name="emptyfields_label">Empty Fields</string>
+    <string name="changessuccess_label">Changes Saved</string>
+    <string name="notauth_label">Not Authorized</string>
+    <string name="error_label">Error</string>
 </resources>

@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import online.tripguru.tripguruapp.helpers.convertResponseToTrip
-import online.tripguru.tripguruapp.helpers.convertTripToResponse
 import online.tripguru.tripguruapp.local.dao.TripDao
 import online.tripguru.tripguruapp.local.database.AppDatabase
 import online.tripguru.tripguruapp.models.Trip
 import online.tripguru.tripguruapp.network.ApiInterface
+import online.tripguru.tripguruapp.network.Resource
+import online.tripguru.tripguruapp.network.TripRequest
+import online.tripguru.tripguruapp.network.TripResponse
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -19,8 +21,68 @@ class TripRepository @Inject constructor(
 ) {
     private val tripDao: TripDao = appDatabase.tripDao()
     private var tripSelected: LiveData<Trip?> = MutableLiveData<Trip?>()
-    val allTrips: LiveData<List<Trip>> = tripDao.getTrips()
 
+    fun getAllTrips(): LiveData<List<Trip>> {
+        return tripDao.getTrips()
+    }
+
+    suspend fun insertTrip(tripRequest: TripRequest) : Resource<TripResponse> {
+        return try {
+            val response = api.createTrip(userRepository.getUserToken(), tripRequest)
+            tripDao.insertTrip(convertResponseToTrip(response))
+            Resource.success(response)
+        } catch (e: HttpException) {
+            Log.e("TripRepository", "Error: ${e.message()}")
+            Resource.error(e.message(), null)
+        } catch (e: Exception) {
+            Log.e("TripRepository", "Unexpected Error: ${e.message}")
+            Resource.error(e.toString(), null)
+        }
+    }
+
+    suspend fun updateTrip(tripRequest: TripRequest) : Resource<TripResponse> {
+        return try {
+            val response = api.updateTrip(userRepository.getUserToken(), tripRequest.id!!, tripRequest)
+            tripDao.insertTrip(convertResponseToTrip(response))
+            Resource.success(response)
+        } catch (e: HttpException) {
+            Log.e("TripRepository", "Error: ${e.message()}")
+            Resource.error(e.message(), null)
+        } catch (e: Exception) {
+            Log.e("TripRepository", "Unexpected Error: ${e.message}")
+            Resource.error(e.toString(), null)
+        }
+    }
+
+    suspend fun deleteTrip(id: Int) : Resource<TripResponse> {
+        return try {
+            api.deleteTrip(userRepository.getUserToken(), id)
+            tripDao.deleteTrip(id)
+            updateSelectedTrip(null)
+            Resource.success(null)
+        } catch (e: HttpException) {
+            Log.e("TripRepository", "Error: ${e.message()}")
+            Resource.error(e.message(), null)
+        } catch (e: Exception) {
+            Log.e("TripRepository", "Unexpected Error: ${e.message}")
+            Resource.error(e.toString(), null)
+        }
+    }
+
+    suspend fun refreshAllTrips(): Resource<Boolean> {
+        return try {
+            tripDao.deleteAll()
+            val response = api.getTrips(userRepository.getUserToken())
+            tripDao.insertAll(response.map { convertResponseToTrip(it) })
+            Resource.success(true)
+        } catch (e: HttpException) {
+            Log.e("TripRepository", "Error: ${e.message()}")
+            return Resource.error(e.message(), false)
+        } catch (e: Exception) {
+            Log.e("TripRepository", "Unexpected Error: ${e.message}")
+            return Resource.error(e.toString(), false)
+        }
+    }
 
     fun updateSelectedTrip(trip: Trip?) {
         tripSelected.let {
@@ -31,53 +93,5 @@ class TripRepository @Inject constructor(
     fun getSelectedTrip(): LiveData<Trip?> {
         return tripSelected
     }
-
-    suspend fun refreshAllTrips(): LiveData<List<Trip>> {
-        if (userRepository.isOnline().value == true) {
-            try {
-                tripDao.deleteAll()
-                val response = api.getTrips(userRepository.getUserToken())
-                tripDao.insertAll(response.map { convertResponseToTrip(it) })
-            } catch (e: HttpException) {
-                Log.e("TripRepository", "Error: ${e.message()}")
-            }
-        }
-        return allTrips
-    }
-
-    suspend fun insertTrip(trip: Trip) {
-        try {
-            val tripRequest = convertTripToResponse(trip)
-            val tripResponse = api.createTrip(userRepository.getUserToken(), tripRequest)
-            tripDao.insertTrip(convertResponseToTrip(tripResponse))
-        } catch (e: HttpException) {
-            Log.e("TripRepository", "Error: ${e.message()}")
-        }
-    }
-
-    suspend fun updateTrip(trip: Trip) {
-        try {
-            val tripRequest = convertTripToResponse(trip)
-            val tripResponse = api.updateTrip(userRepository.getUserToken(), trip.id!!, tripRequest)
-            tripDao.insertTrip(convertResponseToTrip(tripResponse))
-        } catch (e: HttpException) {
-            Log.e("TripRepository", "Error: ${e.message()}")
-        } catch (e: Exception) {
-            Log.e("TripRepository", "Unexpected Error: ${e.message}")
-        }
-    }
-
-    suspend fun deleteTrip(trip: Trip) {
-        try {
-            api.deleteTrip(userRepository.getUserToken(), trip.id!!)
-            tripDao.deleteTrip(trip.id!!)
-            updateSelectedTrip(null)
-        } catch (e: HttpException) {
-            Log.e("TripRepository", "Error: ${e.message()}")
-        } catch (e: Exception) {
-            Log.e("TripRepository", "Unexpected Error: ${e.message}")
-        }
-    }
-
 }
 

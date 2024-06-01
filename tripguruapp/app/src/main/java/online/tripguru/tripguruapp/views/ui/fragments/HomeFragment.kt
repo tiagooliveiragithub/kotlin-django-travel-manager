@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.FragmentHomeBinding
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.models.Trip
+import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.MainViewModel
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 import online.tripguru.tripguruapp.views.adapters.LocalAdapterVertical
@@ -43,7 +44,6 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setRecyclerViews()
         listeners()
         observers()
@@ -69,39 +69,45 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
     }
 
     private fun observers() {
-        observeIfOnline()
-        observeRecyclerLists()
-    }
-
-    private fun observeIfOnline() {
         authViewModel.isOnline().observe(viewLifecycleOwner) { isConnected ->
             if (!isConnected) {
+                binding.buttonCreateTrip.isEnabled = false
                 Toast.makeText(
                     requireContext(),
                     "Disconnected from the internet",
                     Toast.LENGTH_LONG
                 ).show()
-                binding.buttonCreateTrip.isEnabled = false
             } else {
-                mainViewModel.refreshAllTrips()
-                mainViewModel.refreshAllLocals()
                 binding.buttonCreateTrip.isEnabled = true
+            }
+        }
+        mainViewModel.getAllTrips().observe(viewLifecycleOwner) {
+            adapterTrip.setTrips(it)
+        }
+        mainViewModel.getAllLocals().observe(viewLifecycleOwner) {
+            adapterLocal.setLocals(it)
+        }
+        mainViewModel.resultAllDataFetch.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                Resource.Status.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                Resource.Status.SUCCESS -> {
+                    binding.progressBar.visibility = View.GONE
+                }
+                Resource.Status.ERROR -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        requireContext(),
+                        "Error fetching data",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }
 
-    private fun observeRecyclerLists() {
-        mainViewModel.getAllTrips().observe(viewLifecycleOwner) { trips ->
-            trips?.let {
-                adapterTrip.setTrips(it)
-            }
-        }
-        mainViewModel.getAllLocals().observe(viewLifecycleOwner) { locals ->
-            locals?.let {
-                adapterLocal.setLocals(it)
-            }
-        }
-    }
+
 
     override fun onTripClick(trip: Trip) {
         mainViewModel.updateSelectedTrip(trip)
@@ -119,8 +125,10 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
 
     override fun onResume() {
         super.onResume()
-        // TODO: temporary solution to update the list after deleting a local
-        mainViewModel.refreshAllLocals()
+        // TODO : Temporary solution to refresh data
+        mainViewModel.refreshFetch()
     }
+
+
 
 }

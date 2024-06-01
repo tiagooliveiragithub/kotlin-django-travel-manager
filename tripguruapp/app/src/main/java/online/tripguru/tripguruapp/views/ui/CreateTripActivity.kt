@@ -8,6 +8,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityCreateTripBinding
 import online.tripguru.tripguruapp.models.Trip
+import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.MainViewModel
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 
@@ -31,23 +32,45 @@ class CreateTripActivity : AppCompatActivity() {
                 binding.editTextTitle.setText(trip.name)
                 binding.editTextDescription.setText(trip.description)
                 binding.buttonCreateTrip.text = getString(R.string.edittrip_button_label)
-                setupListenersEdit(trip)
+                setupListenersUpdate(trip)
             } else {
                 binding.buttonCreateTrip.text = getString(R.string.createtrip_button_label)
                 setupListenersCreate()
             }
         }
-        authViewModel.isAuthorized().observe(this) { isAuthorized ->
-            if (!isAuthorized) {
+        authViewModel.isOnline().observe(this) { isOnline ->
+            binding.buttonCreateTrip.isEnabled = isOnline
+        }
+        mainViewModel.resultCreateTrip.observe(this) { result ->
+            if (result.status == Resource.Status.SUCCESS) {
+                Toast.makeText(
+                    this,
+                    "Trip created successfully",
+                    Toast.LENGTH_LONG
+                ).show()
                 finish()
+            } else if (result.status == Resource.Status.ERROR) {
+                Toast.makeText(
+                    this,
+                    "Error creating trip",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
-        authViewModel.isOnline().observe(this) { isOnline ->
-            if (!isOnline) {
-                binding.buttonCreateTrip.isEnabled = false
-                Toast.makeText(this, "No internet available", Toast.LENGTH_SHORT).show()
-            } else {
-                binding.buttonCreateTrip.isEnabled = true
+        mainViewModel.resultUpdateTrip.observe(this) { result ->
+            if (result.status == Resource.Status.SUCCESS) {
+                Toast.makeText(
+                    this,
+                    "Trip updated successfully",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
+            } else if (result.status == Resource.Status.ERROR) {
+                Toast.makeText(
+                    this,
+                    "Error updating trip",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -57,16 +80,14 @@ class CreateTripActivity : AppCompatActivity() {
             val name = binding.editTextTitle.text.toString()
             val description = binding.editTextDescription.text.toString()
             mainViewModel.insertTrip(name, description)
-            finish()
         }
     }
 
-    private fun setupListenersEdit(trip: Trip) {
+    private fun setupListenersUpdate(trip: Trip) {
         binding.buttonCreateTrip.setOnClickListener {
             val name = binding.editTextTitle.text.toString()
             val description = binding.editTextDescription.text.toString()
             mainViewModel.updateTrip(trip.id!!, name, description)
-            finish()
         }
     }
 

@@ -31,4 +31,9 @@
     <string name="descriptionlocal_label">Descrição do Local</string>
     <string name="namelocal_label">Nome do Local</string>
     <string name="deletelocal_button_label">Eliminar Local</string>
+    <string name="passwordnotidentical_label">As senhas não coincidem</string>
+    <string name="emptyfields_label">Campos vazios</string>
+    <string name="changessuccess_label">Alterações Guardadas</string>
+    <string name="notauth_label">Não Autorizado</string>
+    <string name="error_label">Erro</string>
 </resources>

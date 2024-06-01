@@ -2,12 +2,13 @@ package online.tripguru.tripguruapp.views.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.ActivityLoginBinding
-import online.tripguru.tripguruapp.network.auth.RequestResult
+import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 
 @AndroidEntryPoint
@@ -20,51 +21,35 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         listeners()
-        observe()
+        observers()
     }
 
-    private fun observe() {
-        observeIfAuthorized()
-        observeSignInResult()
-    }
-
-    private fun observeIfAuthorized() {
-        userViewModel.isAuthorized().observe(this) { isAuthorized ->
-            if (isAuthorized) {
-                Intent(this, MainActivity::class.java).also {
-                    startActivity(it)
-                    finish()
-                }
-            }
-        }
-    }
-
-    private fun observeSignInResult() {
-        userViewModel.signInResult.observe(this) { result ->
-            when (result) {
-                is RequestResult.Authorized -> {
-                    Intent(this, MainActivity::class.java).also {
-                        startActivity(it)
-                        finish()
-                    }
-                }
-                is RequestResult.Unauthorized -> {
-                    Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show()
-                }
-                is RequestResult.UnknownError -> {
-                    Toast.makeText(this, "An unknown error occurred", Toast.LENGTH_SHORT).show()
-                }
-                is RequestResult.NoInternet -> {
-                    Toast.makeText(this, "No internet available", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+    private fun observers() {
         userViewModel.isSignedIn().observe(this) { isSignedIn ->
             if (isSignedIn) {
                 Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show()
                 Intent(this, MainActivity::class.java).also {
                     startActivity(it)
                     finish()
+                }
+            }
+        }
+        userViewModel.resultSignIn.observe(this) { result ->
+            when (result.status) {
+                Resource.Status.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                Resource.Status.SUCCESS -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, "Signed up", Toast.LENGTH_SHORT).show()
+                    Intent(this, MainActivity::class.java).also {
+                        startActivity(it)
+                        finish()
+                    }
+                }
+                Resource.Status.ERROR -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -1,13 +1,13 @@
 package online.tripguru.tripguruapp.views.ui
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.databinding.ActivityRegisterBinding
-import online.tripguru.tripguruapp.network.auth.RequestResult
+import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 
 @AndroidEntryPoint
@@ -20,45 +20,27 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         listeners()
         observers()
     }
 
     private fun observers() {
-        observeIfOnline()
-        observerSignUpResult()
-    }
-
-    private fun observeIfOnline() {
         userViewModel.isOnline().observe(this) { isOnline ->
-            if (!isOnline) {
-                binding.buttonSignUp.isEnabled = false
-                Toast.makeText(this, "No internet available", Toast.LENGTH_SHORT).show()
-            } else {
-                binding.buttonSignUp.isEnabled = true
-            }
+            binding.buttonSignUp.isEnabled = isOnline
 
         }
-    }
-
-    private fun observerSignUpResult() {
-        userViewModel.signUpResult.observe(this) { result ->
-            when (result) {
-                is RequestResult.Authorized -> {
-                    Intent(this, MainActivity::class.java).also {
-                        startActivity(it)
-                        finish()
-                    }
+        userViewModel.resultSignUp.observe(this) { result ->
+            when (result.status) {
+                Resource.Status.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
                 }
-                is RequestResult.Unauthorized -> {
-                    Toast.makeText(this, "Invalid Data for registration", Toast.LENGTH_SHORT).show()
+                Resource.Status.SUCCESS -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, "Signed up", Toast.LENGTH_SHORT).show()
                 }
-                is RequestResult.UnknownError -> {
-                    Toast.makeText(this, "An unknown error occurred", Toast.LENGTH_SHORT).show()
-                }
-                is RequestResult.NoInternet -> {
-                    Toast.makeText(this, "No internet available", Toast.LENGTH_SHORT).show()
+                Resource.Status.ERROR -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
