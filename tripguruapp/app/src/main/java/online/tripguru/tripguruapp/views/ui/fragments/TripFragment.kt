@@ -10,8 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.FragmentTripBinding
 import online.tripguru.tripguruapp.models.Local
+import online.tripguru.tripguruapp.models.Trip
 import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.MainViewModel
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
@@ -27,7 +29,6 @@ class TripFragment : Fragment(), OnLocalClickListener {
     private lateinit var binding: FragmentTripBinding
     private val mainViewModel: MainViewModel by activityViewModels()
     private val authViewModel: UserViewModel by activityViewModels()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,35 +54,53 @@ class TripFragment : Fragment(), OnLocalClickListener {
     }
 
     private fun observers() {
-        mainViewModel.getAllLocalsforSelectedTrip().observe(viewLifecycleOwner) {
-            localAdapter.setLocals(it)
-        }
         authViewModel.isOnline().observe(viewLifecycleOwner) { isConnected ->
             if (!isConnected) {
-                binding.buttonEditTripPage.isEnabled = false
-                binding.buttonCreateLocalPage.isEnabled = false
-                binding.buttonDeleteTrip.isEnabled = false
+                disableButtons()
             } else {
-                binding.buttonEditTripPage.isEnabled = true
-                binding.buttonCreateLocalPage.isEnabled = true
-                binding.buttonDeleteTrip.isEnabled = true
+                mainViewModel.resultAllDataFetch.observe(viewLifecycleOwner) { result ->
+                    when (result.status) {
+                        Resource.Status.LOADING -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            disableButtons()
+                        }
+                        Resource.Status.SUCCESS -> {
+                            binding.progressBar.visibility = View.GONE
+                            enableButtons()
+                        }
+                        Resource.Status.ERROR -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                            disableButtons()
+                        }
+                        Resource.Status.FIELDS -> {
+                            Toast.makeText(context, getString(result.fields!!), Toast.LENGTH_SHORT)
+                                .show()
+                            enableButtons()
+                        }
+                    }
+                }
+                mainViewModel.resultDeleteTrip.observe(viewLifecycleOwner) { result ->
+                    if (result.status == Resource.Status.SUCCESS) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Trip deleted successfully",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
         }
-        mainViewModel.getSelectedTrip().observe(viewLifecycleOwner) { trip ->
-            trip?.let {
-                binding.textViewTripName.text = it.name
+        mainViewModel.getSelectedTrip().observe(viewLifecycleOwner)  { selectedTrip ->
+            if (selectedTrip != null) {
+                setPageSelectedTripLayout(selectedTrip)
+                mainViewModel.getAllLocalsforSelectedTrip().observe(viewLifecycleOwner) { trips ->
+                    localAdapter.setLocals(trips)
+                }
+            } else {
+                setPageNoTripSelectedLayout()
             }
         }
-        mainViewModel.resultDeleteTrip.observe(viewLifecycleOwner) { result ->
-            if (result.status == Resource.Status.SUCCESS) {
-                Toast.makeText(
-                    requireContext(),
-                    "Trip deleted successfully",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-
     }
 
     private fun listeners() {
@@ -105,5 +124,36 @@ class TripFragment : Fragment(), OnLocalClickListener {
 
     private fun changeToHomeFragment() {
         (activity as MainActivity).replaceFragment(HomeFragment())
+    }
+
+    private fun setPageSelectedTripLayout(trip : Trip) {
+        binding.textViewTripName.text = trip.name
+        binding.buttonEditTripPage.visibility = View.VISIBLE
+        binding.buttonCreateLocalPage.visibility = View.VISIBLE
+        binding.buttonDeleteTrip.visibility = View.VISIBLE
+        binding.recyclerViewVertical.visibility = View.VISIBLE
+        binding.textViewTripLocals.visibility = View.VISIBLE
+    }
+
+    private fun setPageNoTripSelectedLayout() {
+        binding.textViewTripName.text = getString(R.string.notripselected_label)
+        binding.buttonEditTripPage.visibility = View.GONE
+        binding.buttonCreateLocalPage.visibility = View.GONE
+        binding.buttonDeleteTrip.visibility = View.GONE
+        binding.recyclerViewVertical.visibility = View.GONE
+        binding.textViewTripLocals.visibility = View.GONE
+        binding.textViewTripName.textAlignment = View.TEXT_ALIGNMENT_CENTER
+    }
+
+    private fun disableButtons() {
+        binding.buttonEditTripPage.isEnabled = false
+        binding.buttonCreateLocalPage.isEnabled = false
+        binding.buttonDeleteTrip.isEnabled = false
+    }
+
+    private fun enableButtons() {
+        binding.buttonEditTripPage.isEnabled = true
+        binding.buttonCreateLocalPage.isEnabled = true
+        binding.buttonDeleteTrip.isEnabled = true
     }
 }

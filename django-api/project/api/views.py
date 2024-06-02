@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import UserSerializer, TripSerializer, SpotSerializer
+from .serializers import UserSerializer, TripSerializer, SpotSerializer, CustomTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import CustomUser, Trip, Spot
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -108,3 +108,6 @@ def get_user(request):
         'last_accessed': user.last_accessed
     }
     return Response(data)
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

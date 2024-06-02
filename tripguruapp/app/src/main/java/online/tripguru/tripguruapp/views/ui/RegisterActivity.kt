@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
+import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityRegisterBinding
 import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
@@ -29,21 +30,35 @@ class RegisterActivity : AppCompatActivity() {
             binding.buttonSignUp.isEnabled = isOnline
 
         }
-        userViewModel.resultSignUp.observe(this) { result ->
-            when (result.status) {
-                Resource.Status.LOADING -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-                Resource.Status.SUCCESS -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Signed up", Toast.LENGTH_SHORT).show()
-                }
-                Resource.Status.ERROR -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+        userViewModel.isOnline().observe(this) { isConnected ->
+            if (!isConnected) {
+                Toast.makeText(this, getString(R.string.nointernet_label), Toast.LENGTH_SHORT).show()
+                binding.buttonSignUp.isEnabled = false
+            } else {
+                binding.buttonSignUp.isEnabled = true
+                userViewModel.resultSignUp.observe(this) { result ->
+                    when (result.status) {
+                        Resource.Status.LOADING -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
+                        Resource.Status.SUCCESS -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(this, getString(R.string.sign_up_label), Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                        Resource.Status.ERROR -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                        }
+                        Resource.Status.FIELDS -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(this, getString(result.fields!!), Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
         }
+
     }
 
     private fun listeners() {

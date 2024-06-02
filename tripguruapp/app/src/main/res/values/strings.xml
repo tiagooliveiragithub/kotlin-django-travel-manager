@@ -20,7 +20,7 @@
     <string name="deletetrip_button_label">Delete Trip</string>
     <string name="nametrip_label">Trip Name</string>
     <string name="hometext_label">Manage your trips here.</string>
-    <string name="hometitle_label">Hello Tiago!</string>
+    <string name="hometitle_label">Hello</string>
     <string name="yourlocals_label">Your Locals</string>
     <string name="triplocals_label">Trip Locals</string>
     <string name="saveprofile_label">Save Profile Changes</string>
@@ -39,4 +39,8 @@
     <string name="changessuccess_label">Changes Saved</string>
     <string name="notauth_label">Not Authorized</string>
     <string name="error_label">Error</string>
+    <string name="notripselected_label">No trip selected</string>
+    <string name="nointernet_label">Disconnected from Internet</string>
+    <string name="yesinternet_label">Connected to Internet</string>
+    <string name="loading_label">Loading...</string>
 </resources>

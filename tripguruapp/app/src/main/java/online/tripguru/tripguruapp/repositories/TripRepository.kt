@@ -20,7 +20,7 @@ class TripRepository @Inject constructor(
     private val userRepository: UserRepository
 ) {
     private val tripDao: TripDao = appDatabase.tripDao()
-    private var tripSelected: LiveData<Trip?> = MutableLiveData<Trip?>()
+    private var tripSelected: LiveData<Trip?> = MutableLiveData<Trip?>(null)
 
     fun getAllTrips(): LiveData<List<Trip>> {
         return tripDao.getTrips()
@@ -33,10 +33,10 @@ class TripRepository @Inject constructor(
             Resource.success(response)
         } catch (e: HttpException) {
             Log.e("TripRepository", "Error: ${e.message()}")
-            Resource.error(e.message(), null)
+            Resource.error(e.message())
         } catch (e: Exception) {
             Log.e("TripRepository", "Unexpected Error: ${e.message}")
-            Resource.error(e.toString(), null)
+            Resource.error(e.toString())
         }
     }
 
@@ -47,10 +47,10 @@ class TripRepository @Inject constructor(
             Resource.success(response)
         } catch (e: HttpException) {
             Log.e("TripRepository", "Error: ${e.message()}")
-            Resource.error(e.message(), null)
+            Resource.error(e.message())
         } catch (e: Exception) {
             Log.e("TripRepository", "Unexpected Error: ${e.message}")
-            Resource.error(e.toString(), null)
+            Resource.error(e.toString())
         }
     }
 
@@ -62,10 +62,10 @@ class TripRepository @Inject constructor(
             Resource.success(null)
         } catch (e: HttpException) {
             Log.e("TripRepository", "Error: ${e.message()}")
-            Resource.error(e.message(), null)
+            Resource.error(e.message())
         } catch (e: Exception) {
             Log.e("TripRepository", "Unexpected Error: ${e.message}")
-            Resource.error(e.toString(), null)
+            Resource.error(e.toString())
         }
     }
 
@@ -77,10 +77,10 @@ class TripRepository @Inject constructor(
             Resource.success(true)
         } catch (e: HttpException) {
             Log.e("TripRepository", "Error: ${e.message()}")
-            return Resource.error(e.message(), false)
+            return Resource.error(e.message())
         } catch (e: Exception) {
             Log.e("TripRepository", "Unexpected Error: ${e.message}")
-            return Resource.error(e.toString(), false)
+            return Resource.error(e.toString())
         }
     }
 

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
+import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityLoginBinding
 import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
@@ -25,13 +26,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun observers() {
-        userViewModel.isSignedIn().observe(this) { isSignedIn ->
-            if (isSignedIn) {
-                Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show()
-                Intent(this, MainActivity::class.java).also {
-                    startActivity(it)
-                    finish()
-                }
+        userViewModel.isOnline().observe(this) { isConnected ->
+            if (!isConnected) {
+                Toast.makeText(this, getString(R.string.nointernet_label), Toast.LENGTH_SHORT).show()
+            } else {
+                userViewModel.autoSignIn()
             }
         }
         userViewModel.resultSignIn.observe(this) { result ->
@@ -41,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 Resource.Status.SUCCESS -> {
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Signed up", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.login_button_label), Toast.LENGTH_SHORT).show()
                     Intent(this, MainActivity::class.java).also {
                         startActivity(it)
                         finish()
@@ -51,9 +50,14 @@ class LoginActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
                 }
+                Resource.Status.FIELDS -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, getString(result.fields!!), Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
+
     private fun listeners() {
         binding.buttonLogin.setOnClickListener {
             val username = binding.editTextUsername.text.toString()

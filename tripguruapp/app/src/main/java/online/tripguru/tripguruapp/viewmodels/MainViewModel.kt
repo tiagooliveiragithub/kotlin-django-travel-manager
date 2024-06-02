@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.models.Trip
 import online.tripguru.tripguruapp.network.LocalRequest
@@ -24,10 +25,8 @@ class MainViewModel @Inject constructor(
     private val localRepository: LocalRepository
 ) : ViewModel() {
     val resultCreateTrip = MutableLiveData<Resource<TripResponse>>()
-    val resultUpdateTrip = MutableLiveData<Resource<TripResponse>>()
     val resultDeleteTrip = MutableLiveData<Resource<TripResponse>>()
     val resultCreateLocal = MutableLiveData<Resource<LocalResponse>>()
-    val resultUpdateLocal = MutableLiveData<Resource<LocalResponse>>()
     val resultDeleteLocal = MutableLiveData<Resource<LocalResponse>>()
     val resultAllDataFetch = MutableLiveData<Resource<Boolean>>()
 
@@ -44,36 +43,44 @@ class MainViewModel @Inject constructor(
     }
 
     fun refreshFetch() {
-        resultAllDataFetch.postValue(Resource.loading(null))
+        resultAllDataFetch.postValue(Resource.loading())
         viewModelScope.launch(Dispatchers.IO) {
             val resultTrips = tripRepository.refreshAllTrips()
             val resultLocals = localRepository.refreshAllLocals()
             if (resultTrips.status == Resource.Status.SUCCESS && resultLocals.status == Resource.Status.SUCCESS) {
                 resultAllDataFetch.postValue(Resource.success(true))
             } else {
-                resultAllDataFetch.postValue(Resource.error("Error fetching data", null))
+                resultAllDataFetch.postValue(Resource.fields(R.string.error_label))
             }
         }
     }
 
     fun insertTrip(name: String, description: String) {
-        resultCreateTrip.postValue(Resource.loading(null))
+        resultCreateTrip.postValue(Resource.loading())
+        if (name.isEmpty() || description.isEmpty()) {
+            resultCreateTrip.postValue(Resource.fields(R.string.emptyfields_label))
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
             val result = tripRepository.insertTrip(TripRequest(id = null, name, description))
             resultCreateTrip.postValue(result)
         }
     }
     fun updateTrip(id: Int, name: String, description: String) {
-        resultUpdateTrip.postValue(Resource.loading(null))
+        resultCreateTrip.postValue(Resource.loading())
+        if (name.isEmpty() || description.isEmpty()) {
+            resultCreateTrip.postValue(Resource.fields(R.string.emptyfields_label))
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
             val result = tripRepository.updateTrip(TripRequest(id, name, description))
-            resultUpdateTrip.postValue(result)
+            resultCreateTrip.postValue(result)
         }
         tripRepository.updateSelectedTrip(Trip(id, name, description))
     }
 
     fun deleteTrip(id: Int) {
-        resultUpdateTrip.postValue(Resource.loading(null))
+        resultCreateTrip.postValue(Resource.loading())
         viewModelScope.launch(Dispatchers.IO) {
             val result = tripRepository.deleteTrip(id)
             resultDeleteTrip.postValue(result)
@@ -82,7 +89,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun insertLocal(name: String, description: String) {
-        resultCreateTrip.postValue(Resource.loading(null))
+        resultCreateLocal.postValue(Resource.loading())
+        if (name.isEmpty() || description.isEmpty()) {
+            resultCreateLocal.postValue(Resource.fields(R.string.emptyfields_label))
+            return
+        }
         val tripId = getSelectedTrip().value?.id ?: 0
         viewModelScope.launch(Dispatchers.IO) {
             val result = localRepository.insertLocal(LocalRequest(id = null, tripId = tripId, name, description))
@@ -91,15 +102,19 @@ class MainViewModel @Inject constructor(
     }
 
     fun updateLocal(id: Int, name: String, description: String) {
-        resultUpdateLocal.postValue(Resource.loading(null))
+        if(name.isEmpty() || description.isEmpty()) {
+            resultCreateLocal.postValue(Resource.fields(R.string.emptyfields_label))
+            return
+        }
+        resultCreateLocal.postValue(Resource.loading())
         viewModelScope.launch(Dispatchers.IO) {
             val result = localRepository.updateLocal(LocalRequest(id, null, name, description))
-            resultUpdateLocal.postValue(result)
+            resultCreateLocal.postValue(result)
         }
     }
 
     fun deleteLocal(id: Int) {
-        resultDeleteLocal.postValue(Resource.loading(null))
+        resultDeleteLocal.postValue(Resource.loading())
         viewModelScope.launch(Dispatchers.IO) {
             localRepository.deleteLocal(id)
             resultDeleteLocal.postValue(Resource.success(null))

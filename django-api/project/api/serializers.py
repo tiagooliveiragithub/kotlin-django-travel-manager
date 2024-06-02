@@ -1,6 +1,7 @@
 
 from rest_framework import serializers
 from .models import CustomUser, Trip, Spot
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,10 +39,13 @@ class SpotSerializer(serializers.ModelSerializer):
         fields = ['id', 'tripId', 'name', 'description', 'users']
         read_only_fields = ['created_at', 'id', 'users']
 
-    # def update(self, instance, validated_data):
-    #     instance.id = validated_data.get('id', instance.id)
-    #     instance.tripId = validated_data.get('tripId', instance.tripId)
-    #     instance.name = validated_data.get('name', instance.name)
-    #     instance.description = validated_data.get('description', instance.description)
-    #     instance.save()
-    #     return instance
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        
+        # Add custom claims
+        data['first_name'] = self.user.first_name
+        data['last_name'] = self.user.last_name
+        
+        return data

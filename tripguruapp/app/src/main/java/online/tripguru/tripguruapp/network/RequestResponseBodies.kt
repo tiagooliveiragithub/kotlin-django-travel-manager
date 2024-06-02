@@ -1,11 +1,20 @@
 package online.tripguru.tripguruapp.network
 
-data class LoginRequest(val username: String, val password: String)
-data class LoginResponse(val refresh: String, val access: String)
+data class LoginRequest(
+    val username: String,
+    val password: String
+)
+data class LoginResponse(
+    val refresh: String,
+    val access: String,
+    val first_name: String,
+    val last_name: String
+)
 
 data class TokenVerifyRequest (
     val token: String,
 )
+
 data class SignupRequest(
     val username: String,
     val firstname: String,

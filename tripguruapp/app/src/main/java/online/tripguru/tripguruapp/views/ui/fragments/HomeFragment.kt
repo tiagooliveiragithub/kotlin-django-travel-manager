@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.FragmentHomeBinding
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.models.Trip
@@ -29,7 +30,7 @@ import online.tripguru.tripguruapp.views.ui.MainActivity
 class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
 
     private val mainViewModel: MainViewModel by activityViewModels()
-    private val authViewModel: UserViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentHomeBinding
     private lateinit var adapterTrip: TripAdapter
     private lateinit var adapterLocal: LocalAdapterVertical
@@ -44,12 +45,13 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setRecyclerViews()
+        setPage()
         listeners()
         observers()
     }
 
-    private fun setRecyclerViews() {
+    private fun setPage() {
+        binding.textViewName.text = "${getString(R.string.hometitle_label)} ${userViewModel.getUserLocalDetails()}!"
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         adapterTrip = TripAdapter(this)
@@ -69,16 +71,42 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
     }
 
     private fun observers() {
-        authViewModel.isOnline().observe(viewLifecycleOwner) { isConnected ->
+        userViewModel.isOnline().observe(viewLifecycleOwner) { isConnected ->
             if (!isConnected) {
                 binding.buttonCreateTrip.isEnabled = false
-                Toast.makeText(
-                    requireContext(),
-                    "Disconnected from the internet",
-                    Toast.LENGTH_LONG
-                ).show()
             } else {
                 binding.buttonCreateTrip.isEnabled = true
+                mainViewModel.refreshFetch()
+                mainViewModel.resultAllDataFetch.observe(viewLifecycleOwner) { result ->
+                    when (result.status) {
+                        Resource.Status.LOADING -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.buttonCreateTrip.isEnabled = false
+                        }
+                        Resource.Status.SUCCESS -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.buttonCreateTrip.isEnabled = true
+                        }
+                        Resource.Status.ERROR -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                requireContext(),
+                                "Error fetching data",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            binding.buttonCreateTrip.isEnabled = false
+                        }
+                        Resource.Status.FIELDS -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                requireContext(),
+                                getString(result.fields!!),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            binding.buttonCreateTrip.isEnabled = false
+                        }
+                    }
+                }
             }
         }
         mainViewModel.getAllTrips().observe(viewLifecycleOwner) {
@@ -87,48 +115,16 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
         mainViewModel.getAllLocals().observe(viewLifecycleOwner) {
             adapterLocal.setLocals(it)
         }
-        mainViewModel.resultAllDataFetch.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                Resource.Status.LOADING -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-                Resource.Status.SUCCESS -> {
-                    binding.progressBar.visibility = View.GONE
-                }
-                Resource.Status.ERROR -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        requireContext(),
-                        "Error fetching data",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
     }
-
-
 
     override fun onTripClick(trip: Trip) {
         mainViewModel.updateSelectedTrip(trip)
-        changeToHomeFragment()
+        (activity as MainActivity).replaceFragment(TripFragment())
+        (activity as MainActivity).binding.bottomNavigation.selectedItemId = R.id.icon_trip
     }
 
     override fun onLocalClick(local: Local) {
         mainViewModel.updateSelectedLocal(local)
         startActivity(Intent(context, CreateLocalActivity::class.java))
     }
-
-    private fun changeToHomeFragment() {
-        (activity as MainActivity).replaceFragment(TripFragment())
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // TODO : Temporary solution to refresh data
-        mainViewModel.refreshFetch()
-    }
-
-
-
 }

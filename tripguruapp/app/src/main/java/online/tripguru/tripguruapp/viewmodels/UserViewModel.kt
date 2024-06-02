@@ -6,14 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.network.EditUserRequest
 import online.tripguru.tripguruapp.network.EditUserResponse
 import online.tripguru.tripguruapp.network.GetUserInfoResponse
 import online.tripguru.tripguruapp.network.LoginRequest
 import online.tripguru.tripguruapp.network.LoginResponse
+import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.network.SignupRequest
 import online.tripguru.tripguruapp.network.SignupResponse
-import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.repositories.UserRepository
 import javax.inject.Inject
 
@@ -27,9 +28,13 @@ class UserViewModel @Inject constructor(
     val resultGetUserInfo = MutableLiveData<Resource<GetUserInfoResponse>>()
 
     fun signIn(username: String, password: String) {
-        resultSignIn.postValue(Resource.loading(null))
+        resultSignIn.postValue(Resource.loading())
+        if(isOnline().value == false) {
+            resultSignIn.postValue(Resource.fields(R.string.nointernet_label))
+            return
+        }
         if(username.isEmpty() || password.isEmpty()) {
-            resultSignIn.postValue(Resource.error("Username and password cannot be empty", null))
+            resultSignIn.postValue(Resource.fields(R.string.emptyfields_label))
             return
         }
         viewModelScope.launch {
@@ -39,18 +44,18 @@ class UserViewModel @Inject constructor(
     }
 
     fun signUp(username: String, firstname: String, lastname: String, email: String, password: String, confirmPassword: String) {
-        resultSignUp.postValue(Resource.loading(null))
+        resultSignUp.postValue(Resource.loading())
         if(username.isEmpty() || firstname.isEmpty() || lastname.isEmpty()) {
-            resultSignUp.postValue(Resource.error("Username, first name and last name cannot be empty", null))
+            resultSignUp.postValue(Resource.fields(R.string.emptyfields_label))
             return
         } else if(email.isEmpty()) {
-            resultSignUp.postValue(Resource.error("Email cannot be empty", null))
+            resultSignUp.postValue(Resource.fields(R.string.emptyfields_label))
             return
         } else if(password.isEmpty() || confirmPassword.isEmpty()) {
-            resultSignUp.postValue(Resource.error("Password cannot be empty", null))
+            resultSignUp.postValue(Resource.fields(R.string.emptyfields_label))
             return
         } else if(password != confirmPassword) {
-            resultSignUp.postValue(Resource.error("Passwords do not match", null))
+            resultSignUp.postValue(Resource.fields(R.string.passwordnotidentical_label))
             return
         }
         viewModelScope.launch {
@@ -60,18 +65,18 @@ class UserViewModel @Inject constructor(
     }
 
     fun editUser(firstname: String, lastname: String, email: String, password: String, confirmPassword: String) {
-        resultEditProfile.postValue(Resource.loading(null))
+        resultEditProfile.postValue(Resource.loading())
         if(firstname.isEmpty() || lastname.isEmpty()) {
-            resultEditProfile.postValue(Resource.error("First name and last name cannot be empty", null))
+            resultEditProfile.postValue(Resource.fields(R.string.emptyfields_label))
             return
         } else if (email.isEmpty()) {
-            resultEditProfile.postValue(Resource.error("Email cannot be empty", null))
+            resultEditProfile.postValue(Resource.fields(R.string.emptyfields_label))
             return
         } else if (password.isEmpty() || confirmPassword.isEmpty())  {
-            resultEditProfile.postValue(Resource.error("Password cannot be empty", null))
+            resultEditProfile.postValue(Resource.fields(R.string.emptyfields_label))
             return
         } else if (password != confirmPassword) {
-            resultEditProfile.postValue(Resource.error("Passwords do not match", null))
+            resultEditProfile.postValue(Resource.fields(R.string.passwordnotidentical_label))
             return
         }
         viewModelScope.launch {
@@ -81,7 +86,7 @@ class UserViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
-        resultGetUserInfo.postValue(Resource.loading(null))
+        resultGetUserInfo.postValue(Resource.loading())
         viewModelScope.launch {
             val result = userRepository.getUserInfo()
             resultGetUserInfo.postValue(result)
@@ -96,10 +101,16 @@ class UserViewModel @Inject constructor(
         return userRepository.isOnline()
     }
 
-    fun isSignedIn() : LiveData<Boolean> {
+    fun autoSignIn() {
         viewModelScope.launch {
-            userRepository.isAuthorizedVerify()
+            val result = userRepository.isAuthorizedVerify()
+            if (result.status == Resource.Status.SUCCESS) {
+                resultSignIn.postValue(Resource.success(null))
+            }
         }
-        return userRepository.isSignedIn
+    }
+
+    fun getUserLocalDetails() : String {
+        return userRepository.getUserLocalDetails()
     }
 }

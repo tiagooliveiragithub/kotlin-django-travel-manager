@@ -3,7 +3,6 @@ package online.tripguru.tripguruapp.repositories
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import online.tripguru.tripguruapp.network.ApiInterface
 import online.tripguru.tripguruapp.network.ConnectivityLiveData
 import online.tripguru.tripguruapp.network.EditUserRequest
@@ -23,8 +22,6 @@ class UserRepository @Inject constructor(
     private val prefs: SharedPreferences,
     private val connectivityLiveData: ConnectivityLiveData
 ) {
-    val isSignedIn = MutableLiveData<Boolean>()
-
     suspend fun signIn(loginRequest: LoginRequest): Resource<LoginResponse> {
         return try {
             val response = api.signIn(loginRequest)
@@ -34,16 +31,22 @@ class UserRepository @Inject constructor(
             prefs.edit()
                 .putString("refresh", response.refresh)
                 .apply()
+            prefs.edit()
+                .putString("first_name", response.first_name)
+                .apply()
+            prefs.edit()
+                .putString("last_name", response.last_name)
+                .apply()
             Resource.success(response)
         } catch(e: HttpException) {
             if(e.code() == 401) {
-                Resource.error(e.message(), null)
+                Resource.error(e.message())
             } else {
-                Resource.error(e.message(), null)
+                Resource.error(e.message())
             }
         } catch (e: Exception) {
             Log.e("UserRepository", "signIn: ${e.message}", e)
-            Resource.error(e.toString(), null)
+            Resource.error(e.toString())
         }
     }
 
@@ -53,13 +56,13 @@ class UserRepository @Inject constructor(
             Resource.success(response)
         } catch(e: HttpException) {
             if(e.code() == 401) {
-                Resource.error(e.message(), null)
+                Resource.error(e.message())
             } else {
-                Resource.error(e.message(), null)
+                Resource.error(e.message())
             }
         } catch (e: Exception) {
             Log.e("UserRepository", "signUp: ${e.message}", e)
-            Resource.error(e.toString(), null)
+            Resource.error(e.toString())
         }
     }
 
@@ -69,13 +72,13 @@ class UserRepository @Inject constructor(
             Resource.success(response)
         } catch(e: HttpException) {
             if(e.code() == 401) {
-                Resource.error(e.message(), null)
+                Resource.error(e.message())
             } else {
-                Resource.error(e.message(), null)
+                Resource.error(e.message())
             }
         } catch (e: Exception) {
             Log.e("UserRepository", "editUser: ${e.message}", e)
-            Resource.error(e.toString(), null)
+            Resource.error(e.toString())
         }
     }
 
@@ -85,46 +88,48 @@ class UserRepository @Inject constructor(
             Resource.success(response)
         } catch(e: HttpException) {
             if(e.code() == 401) {
-                Resource.error(e.message(), null)
+                Resource.error(e.message())
             } else {
-                Resource.error(e.message(), null)
+                Resource.error(e.message())
             }
         } catch (e: Exception) {
             Log.e("UserRepository", "getUserInfo: ${e.message}", e)
-            Resource.error(e.toString(), null)
+            Resource.error(e.toString())
         }
     }
 
-    fun signOut() {
-        try {
+    fun signOut() : Resource<Unit> {
+        return try {
             prefs.edit()
                 .remove("access")
                 .apply()
             prefs.edit()
                 .remove("refresh")
                 .apply()
-            isSignedIn.postValue(false)
+            return Resource.success(Unit)
         } catch (e: Exception) {
             Log.e("AuthRepositoryImpl", "signOut: ${e.message}", e)
+            Resource.error(e.toString())
         }
     }
 
-     suspend fun isAuthorizedVerify(): LiveData<Boolean> {
-         try {
-            val token = prefs.getString("access", "") ?: ""
-            api.verifyToken(TokenVerifyRequest(token = token))
-            isSignedIn.postValue(true)
+     suspend fun isAuthorizedVerify() : Resource<LoginResponse> {
+         return try {
+             val token = prefs.getString("access", "") ?: ""
+             api.verifyToken(TokenVerifyRequest(token = token))
+             Resource.success(null)
         } catch(e: HttpException) {
-            if(e.code() == 401) {
-                isSignedIn.postValue(false)
-            } else {
-                isSignedIn.postValue(false)
-            }
+             if(e.code() == 401) {
+                 Log.e("AuthRepositoryImpl", "isAuthorizedVerify: Unauthorized")
+                 Resource.error(e.message())
+             } else {
+                 Log.e("AuthRepositoryImpl", "isAuthorizedVerify: ${e.message}", e)
+                 Resource.error(e.message())
+             }
         } catch (e: Exception) {
             Log.e("AuthRepositoryImpl", "isAuthorizedVerify: ${e.message}", e)
-            isSignedIn.postValue(false)
-        }
-        return isSignedIn
+            Resource.error(e.toString())
+         }
     }
 
     fun isOnline(): LiveData<Boolean> {
@@ -132,7 +137,23 @@ class UserRepository @Inject constructor(
     }
 
     fun getUserToken(): String {
-        val token = prefs.getString("access", "") ?: ""
-        return "Bearer $token"
+        return try {
+            val token = prefs.getString("access", "") ?: ""
+            "Bearer $token"
+        }catch (e: Exception) {
+            Log.e("UserRepository", "getUserToken: ${e.message}", e)
+            ""
+        }
+    }
+
+    fun getUserLocalDetails(): String {
+        return try {
+            val firstname = prefs.getString("first_name", "") ?: ""
+            val lastname = prefs.getString("last_name", "") ?: ""
+            "$firstname $lastname"
+        } catch (e: Exception) {
+            Log.e("UserRepository", "getUserLocalDetails: ${e.message}", e)
+            ""
+        }
     }
 }

@@ -31,9 +31,14 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pageSetup()
         observers()
         listeners()
 
+    }
+
+    private fun pageSetup() {
+        binding.textViewProfileName.text = userViewModel.getUserLocalDetails()
     }
 
     private fun observers() {
@@ -43,46 +48,58 @@ class ProfileFragment : Fragment() {
             } else {
                 binding.buttonSaveChanges.isEnabled = true
                 userViewModel.getUserInfo()
-            }
-        }
-        userViewModel.resultGetUserInfo.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                Resource.Status.LOADING -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-                Resource.Status.SUCCESS -> {
-                    binding.progressBar.visibility = View.GONE
-                    result.data?.let {
-                        binding.editTextFirstName.setText(it.first_name)
-                        binding.editTextLastName.setText(it.last_name)
-                        binding.editTextEmail.setText(it.email)
-                        binding.textViewProfileName.text = "${it.first_name} ${it.last_name}"
+                userViewModel.resultGetUserInfo.observe(viewLifecycleOwner) { result ->
+                    when (result.status) {
+                        Resource.Status.LOADING -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
+
+                        Resource.Status.SUCCESS -> {
+                            binding.progressBar.visibility = View.GONE
+                            result.data?.let {
+                                binding.editTextFirstName.setText(it.first_name)
+                                binding.editTextLastName.setText(it.last_name)
+                                binding.editTextEmail.setText(it.email)
+                            }
+                        }
+
+                        Resource.Status.ERROR -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                        }
+
+                        Resource.Status.FIELDS -> {
+                            Toast.makeText(context, getString(result.fields!!), Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
                 }
-                Resource.Status.ERROR -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        userViewModel.resultEditProfile.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                Resource.Status.LOADING -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-                Resource.Status.SUCCESS -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(context, "Profile updated", Toast.LENGTH_SHORT).show()
-                    result.data?.let {
-                        binding.editTextFirstName.setText(it.first_name)
-                        binding.editTextLastName.setText(it.last_name)
-                        binding.editTextEmail.setText(it.email)
-                        binding.textViewProfileName.text = "${it.first_name} ${it.last_name}"
+                userViewModel.resultEditProfile.observe(viewLifecycleOwner) { result ->
+                    when (result.status) {
+                        Resource.Status.LOADING -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
+
+                        Resource.Status.SUCCESS -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(context, "Profile updated", Toast.LENGTH_SHORT).show()
+                            result.data?.let {
+                                binding.editTextFirstName.setText(it.first_name)
+                                binding.editTextLastName.setText(it.last_name)
+                                binding.editTextEmail.setText(it.email)
+                            }
+                        }
+
+                        Resource.Status.ERROR -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                        }
+
+                        Resource.Status.FIELDS -> {
+                            Toast.makeText(context, getString(result.fields!!), Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
-                }
-                Resource.Status.ERROR -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

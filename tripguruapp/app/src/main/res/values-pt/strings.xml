@@ -18,7 +18,7 @@
     <string name="deletetrip_button_label">Eliminar Viagem</string>
     <string name="nametrip_label">Nome da Viagem</string>
     <string name="hometext_label">Gere as tuas viagens aqui.</string>
-    <string name="hometitle_label">Olá Tiago!</string>
+    <string name="hometitle_label">Olá</string>
     <string name="yourlocals_label">Os teus Locais</string>
     <string name="triplocals_label">Locais da Viagem</string>
     <string name="saveprofile_label">Salvar Mudanças no Perfil</string>
@@ -36,4 +36,8 @@
     <string name="changessuccess_label">Alterações Guardadas</string>
     <string name="notauth_label">Não Autorizado</string>
     <string name="error_label">Erro</string>
+    <string name="notripselected_label">Sem trip selecionada</string>
+    <string name="nointernet_label">Desconectado da Internet</string>
+    <string name="yesinternet_label">Conectado à Internet</string>
+    <string name="loading_label">A carregar...</string>
 </resources>

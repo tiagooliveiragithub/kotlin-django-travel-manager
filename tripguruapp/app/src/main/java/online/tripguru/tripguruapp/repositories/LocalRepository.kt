@@ -19,7 +19,7 @@ class LocalRepository (
     private val userRepository: UserRepository
 ) {
     private val localDao: LocalDao = appDatabase.localDao()
-    private var localSelected: LiveData<Local?> = MutableLiveData<Local?>()
+    private var localSelected: LiveData<Local?> = MutableLiveData<Local?>(null)
 
     fun getAllLocals(): LiveData<List<Local>> {
         return localDao.getLocals()
@@ -32,10 +32,10 @@ class LocalRepository (
             Resource.success(response)
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
-            Resource.error(e.message(), null)
+            Resource.error(e.message())
         } catch (e: Exception) {
             Log.e("LocalRepository", "Unexpected Error: ${e.message}")
-            Resource.error(e.message ?: "Unexpected Error", null)
+            Resource.error(e.message ?: "Unexpected Error")
         }
     }
 
@@ -46,10 +46,10 @@ class LocalRepository (
             Resource.success(response)
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
-            Resource.error(e.message(), null)
+            Resource.error(e.message())
         } catch (e: Exception) {
             Log.e("LocalRepository", "Unexpected Error: ${e.message}")
-            Resource.error(e.message ?: "Unexpected Error", null)
+            Resource.error(e.message ?: "Unexpected Error")
         }
     }
 
@@ -61,10 +61,10 @@ class LocalRepository (
             Resource.success(null)
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
-            Resource.error(e.message(), null)
+            Resource.error(e.message())
         } catch (e: Exception) {
             Log.e("LocalRepository", "Unexpected Error: ${e.message}")
-            Resource.error(e.message ?: "Unexpected Error", null)
+            Resource.error(e.message ?: "Unexpected Error")
         }
     }
 
@@ -76,10 +76,10 @@ class LocalRepository (
             Resource.success(true)
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
-            Resource.error(e.message(), false)
+            Resource.error(e.message())
         } catch (e: Exception) {
             Log.e("LocalRepository", "Unexpected Error: ${e.message}")
-            Resource.error(e.message ?: "Unexpected Error", false)
+            Resource.error(e.message ?: "Unexpected Error")
         }
     }
 

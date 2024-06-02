@@ -2,8 +2,8 @@ from django.urls import path, include
 
 from .views import CreateUserView, TripListCreateView, TripRetrieveUpdateDestroyView, \
                     SpotListCreateView, SpotRetrieveUpdateDestroyView, \
-                    update_user, get_user
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+                    update_user, get_user, CustomTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
     # Trips
@@ -20,7 +20,7 @@ urlpatterns = [
     path('users/info/', get_user, name='user-info'),
 
     # Token
-    path('token/', TokenObtainPairView.as_view(), name='token'),
+    path('token/', CustomTokenObtainPairView.as_view(), name='token'),
     path('token/refresh/', TokenRefreshView.as_view(), name='refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='verify'),
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),

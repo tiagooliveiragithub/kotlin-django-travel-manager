@@ -1,6 +1,7 @@
 package online.tripguru.tripguruapp.views.ui
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -27,52 +28,53 @@ class CreateTripActivity : AppCompatActivity() {
     }
 
     private fun observers() {
-        mainViewModel.getSelectedTrip().observe(this) { trip ->
-            if (trip != null) {
-                binding.editTextTitle.setText(trip.name)
-                binding.editTextDescription.setText(trip.description)
-                binding.buttonCreateTrip.text = getString(R.string.edittrip_button_label)
-                setupListenersUpdate(trip)
-            } else {
-                binding.buttonCreateTrip.text = getString(R.string.createtrip_button_label)
-                setupListenersCreate()
-            }
-        }
+
         authViewModel.isOnline().observe(this) { isOnline ->
-            binding.buttonCreateTrip.isEnabled = isOnline
-        }
-        mainViewModel.resultCreateTrip.observe(this) { result ->
-            if (result.status == Resource.Status.SUCCESS) {
-                Toast.makeText(
-                    this,
-                    "Trip created successfully",
-                    Toast.LENGTH_LONG
-                ).show()
-                finish()
-            } else if (result.status == Resource.Status.ERROR) {
-                Toast.makeText(
-                    this,
-                    "Error creating trip",
-                    Toast.LENGTH_LONG
-                ).show()
+            if (!isOnline) {
+                binding.buttonCreateTrip.visibility = View.GONE
+            } else {
+                binding.buttonCreateTrip.visibility = View.VISIBLE
+                mainViewModel.getSelectedTrip().observe(this) { selectedTrip ->
+                    if (selectedTrip != null) {
+                        binding.buttonCreateTrip.visibility = View.VISIBLE
+                        binding.editTextTitle.setText(selectedTrip.name)
+                        binding.editTextDescription.setText(selectedTrip.description)
+                        binding.buttonCreateTrip.text = getString(R.string.edittrip_button_label)
+                        setupListenersUpdate(selectedTrip)
+                    } else {
+                        binding.buttonCreateTrip.visibility = View.GONE
+                        binding.buttonCreateTrip.text = getString(R.string.createtrip_button_label)
+                        setupListenersCreate()
+                    }
+                }
+                mainViewModel.resultCreateTrip.observe(this) { result ->
+                    when (result.status) {
+                        Resource.Status.LOADING -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
+                        Resource.Status.SUCCESS -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                this,
+                                "Trip saved successfully",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            finish()
+                        }
+                        Resource.Status.ERROR -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                        }
+                        Resource.Status.FIELDS -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(this, getString(result.fields!!), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
+
         }
-        mainViewModel.resultUpdateTrip.observe(this) { result ->
-            if (result.status == Resource.Status.SUCCESS) {
-                Toast.makeText(
-                    this,
-                    "Trip updated successfully",
-                    Toast.LENGTH_LONG
-                ).show()
-                finish()
-            } else if (result.status == Resource.Status.ERROR) {
-                Toast.makeText(
-                    this,
-                    "Error updating trip",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
+
     }
 
     private fun setupListenersCreate() {
@@ -83,11 +85,11 @@ class CreateTripActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupListenersUpdate(trip: Trip) {
+    private fun setupListenersUpdate(selectedTrip: Trip) {
         binding.buttonCreateTrip.setOnClickListener {
             val name = binding.editTextTitle.text.toString()
             val description = binding.editTextDescription.text.toString()
-            mainViewModel.updateTrip(trip.id!!, name, description)
+            mainViewModel.updateTrip(selectedTrip.id!!, name, description)
         }
     }
 
