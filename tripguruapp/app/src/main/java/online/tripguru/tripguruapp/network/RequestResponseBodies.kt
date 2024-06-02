@@ -17,8 +17,8 @@ data class TokenVerifyRequest (
 
 data class SignupRequest(
     val username: String,
-    val firstname: String,
-    val lastname: String,
+    val first_name: String,
+    val last_name: String,
     val email: String,
     val password: String
 )
