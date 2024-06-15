@@ -34,47 +34,53 @@ class CreateTripActivity : AppCompatActivity() {
                 binding.buttonCreateTrip.visibility = View.GONE
             } else {
                 binding.buttonCreateTrip.visibility = View.VISIBLE
-                mainViewModel.getSelectedTrip().observe(this) { selectedTrip ->
-                    if (selectedTrip != null) {
-                        binding.buttonCreateTrip.visibility = View.VISIBLE
-                        binding.editTextTitle.setText(selectedTrip.name)
-                        binding.editTextDescription.setText(selectedTrip.description)
-                        binding.buttonCreateTrip.text = getString(R.string.edittrip_button_label)
-                        setupListenersUpdate(selectedTrip)
-                    } else {
-                        binding.buttonCreateTrip.visibility = View.GONE
-                        binding.buttonCreateTrip.text = getString(R.string.createtrip_button_label)
-                        setupListenersCreate()
-                    }
-                }
-                mainViewModel.resultCreateTrip.observe(this) { result ->
-                    when (result.status) {
-                        Resource.Status.LOADING -> {
-                            binding.progressBar.visibility = View.VISIBLE
-                        }
-                        Resource.Status.SUCCESS -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(
-                                this,
-                                "Trip saved successfully",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            finish()
-                        }
-                        Resource.Status.ERROR -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
-                        }
-                        Resource.Status.FIELDS -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(this, getString(result.fields!!), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+                selectedTripObserver()
+                createTripResultObserver()
             }
 
         }
 
+    }
+
+    private fun selectedTripObserver() {
+        mainViewModel.getSelectedTrip().observe(this) { selectedTrip ->
+            if (selectedTrip != null) {
+                binding.editTextTitle.setText(selectedTrip.name)
+                binding.editTextDescription.setText(selectedTrip.description)
+                binding.buttonCreateTrip.text = getString(R.string.edittrip_button_label)
+                setupListenersUpdate(selectedTrip)
+            } else {
+                binding.buttonCreateTrip.text = getString(R.string.createtrip_button_label)
+                setupListenersCreate()
+            }
+        }
+    }
+
+    private fun createTripResultObserver() {
+        mainViewModel.resultCreateTrip.observe(this) { result ->
+            when (result.status) {
+                Resource.Status.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                Resource.Status.SUCCESS -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this,
+                        "Trip saved successfully",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                }
+                Resource.Status.ERROR -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                }
+                Resource.Status.FIELDS -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, getString(result.fields!!), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun setupListenersCreate() {

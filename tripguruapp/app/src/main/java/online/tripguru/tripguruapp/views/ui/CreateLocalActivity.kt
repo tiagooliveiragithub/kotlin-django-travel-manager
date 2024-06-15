@@ -30,57 +30,19 @@ class CreateLocalActivity : AppCompatActivity() {
     private fun observers() {
         authViewModel.isOnline().observe(this) { isOnline ->
             if (!isOnline) {
-                Toast.makeText(this, getString(R.string.nointernet_label), Toast.LENGTH_SHORT).show()
                 binding.buttonDeleteLocal.visibility = View.GONE
                 binding.buttonCreateLocal.visibility = View.GONE
             } else {
-                Toast.makeText(this, getString(R.string.yesinternet_label), Toast.LENGTH_SHORT).show()
                 binding.buttonCreateLocal.visibility = View.VISIBLE
                 binding.buttonDeleteLocal.visibility = View.VISIBLE
-                mainViewModel.resultCreateLocal.observe(this) { result ->
-                    when (result.status) {
-                        Resource.Status.LOADING -> {
-                            binding.progressBar.visibility = View.VISIBLE
-                        }
-                        Resource.Status.SUCCESS -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(
-                                this,
-                                "Local saved successfully",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            finish()
-                        }
-                        Resource.Status.FIELDS -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(
-                                this,
-                                getString(result.fields!!),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        Resource.Status.ERROR -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(
-                                this,
-                                result.message,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-                }
-                mainViewModel.resultDeleteLocal.observe(this) { result ->
-                    if (result.status == Resource.Status.SUCCESS) {
-                        Toast.makeText(
-                            this,
-                            "Local deleted successfully",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        finish()
-                    }
-                }
+                selectedLocalObserver()
+                createLocalResultObserver()
+                deleteLocalResultObserver()
             }
         }
+    }
+
+    private fun selectedLocalObserver() {
         mainViewModel.getSelectedLocal().observe(this) { selectedLocal ->
             if (selectedLocal != null) {
                 binding.buttonDeleteLocal.visibility = View.VISIBLE
@@ -95,6 +57,69 @@ class CreateLocalActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun createLocalResultObserver() {
+        mainViewModel.resultCreateLocal.observe(this) { result ->
+            when (result.status) {
+                Resource.Status.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                Resource.Status.SUCCESS -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this,
+                        "Local saved successfully",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                }
+                Resource.Status.FIELDS -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this,
+                        getString(result.fields!!),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                Resource.Status.ERROR -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this,
+                        result.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun deleteLocalResultObserver() {
+        mainViewModel.resultDeleteLocal.observe(this) { result ->
+            when (result.status) {
+                Resource.Status.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                Resource.Status.SUCCESS -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this,
+                        "Local deleted successfully",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                }
+                else -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this,
+                        result.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
 
     private fun setupListenersCreate() {
         binding.buttonCreateLocal.setOnClickListener {
