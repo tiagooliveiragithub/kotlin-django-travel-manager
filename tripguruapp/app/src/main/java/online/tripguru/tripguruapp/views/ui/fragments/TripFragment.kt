@@ -58,7 +58,6 @@ class TripFragment : Fragment(), OnLocalClickListener {
                 disableButtons()
             } else {
                 selectedTripObserver()
-                createAllDataFetchResultObserver()
                 deleteTripResultObserver()
             }
         }
@@ -74,7 +73,7 @@ class TripFragment : Fragment(), OnLocalClickListener {
                 binding.buttonDeleteTrip.visibility = View.VISIBLE
                 binding.recyclerViewVertical.visibility = View.VISIBLE
                 binding.textViewTripLocals.visibility = View.VISIBLE
-                mainViewModel.getAllLocalsforSelectedTrip().observe(viewLifecycleOwner) { trips ->
+                mainViewModel.getAllLocalsForSelectedTrip().observe(viewLifecycleOwner) { trips ->
                     localAdapter.setLocals(trips)
                 }
             } else {
@@ -89,26 +88,6 @@ class TripFragment : Fragment(), OnLocalClickListener {
         }
     }
 
-    private fun createAllDataFetchResultObserver() {
-        mainViewModel.resultAllDataFetch.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                Resource.Status.LOADING -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    disableButtons()
-                }
-                Resource.Status.SUCCESS -> {
-                    binding.progressBar.visibility = View.GONE
-                    enableButtons()
-                }
-                else -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(context, "Error fetching data", Toast.LENGTH_LONG).show()
-                    activity?.finish()
-                }
-            }
-        }
-    }
-
     private fun deleteTripResultObserver() {
         mainViewModel.resultDeleteTrip.observe(viewLifecycleOwner) { result ->
             when (result.status) {
@@ -119,7 +98,7 @@ class TripFragment : Fragment(), OnLocalClickListener {
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(
                         context,
-                        "Local deleted successfully",
+                        R.string.successdeletetrip_label,
                         Toast.LENGTH_LONG
                     ).show()
                     changeToHomeFragment()

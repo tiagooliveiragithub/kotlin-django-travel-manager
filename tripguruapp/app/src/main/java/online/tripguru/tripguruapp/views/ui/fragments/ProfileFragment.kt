@@ -8,18 +8,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.FragmentProfileBinding
 import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 import online.tripguru.tripguruapp.views.ui.LoginActivity
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
     private val userViewModel: UserViewModel by activityViewModels()
+    @Inject lateinit var glide: RequestManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +41,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun pageSetup() {
-        binding.textViewProfileName.text = userViewModel.getUserLocalDetails()
+        binding.textViewProfileName.text = userViewModel.getUserOfflineDetails()
     }
 
     private fun observers() {
@@ -53,25 +56,20 @@ class ProfileFragment : Fragment() {
                         Resource.Status.LOADING -> {
                             binding.progressBar.visibility = View.VISIBLE
                         }
-
                         Resource.Status.SUCCESS -> {
                             binding.progressBar.visibility = View.GONE
                             result.data?.let {
                                 binding.editTextFirstName.setText(it.first_name)
                                 binding.editTextLastName.setText(it.last_name)
                                 binding.editTextEmail.setText(it.email)
+                                glide.load(("https://apicm.tiagooliveira.dev/" + it.avatar)).into(binding.profileImage)
                             }
                         }
-
                         Resource.Status.ERROR -> {
                             binding.progressBar.visibility = View.GONE
                             Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
                         }
 
-                        Resource.Status.FIELDS -> {
-                            Toast.makeText(context, getString(result.fields!!), Toast.LENGTH_SHORT)
-                                .show()
-                        }
                     }
                 }
                 userViewModel.resultEditProfile.observe(viewLifecycleOwner) { result ->
@@ -79,25 +77,18 @@ class ProfileFragment : Fragment() {
                         Resource.Status.LOADING -> {
                             binding.progressBar.visibility = View.VISIBLE
                         }
-
                         Resource.Status.SUCCESS -> {
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(context, "Profile updated", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, R.string.saveprofile_label, Toast.LENGTH_SHORT).show()
                             result.data?.let {
                                 binding.editTextFirstName.setText(it.first_name)
                                 binding.editTextLastName.setText(it.last_name)
                                 binding.editTextEmail.setText(it.email)
                             }
                         }
-
                         Resource.Status.ERROR -> {
                             binding.progressBar.visibility = View.GONE
                             Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
-                        }
-
-                        Resource.Status.FIELDS -> {
-                            Toast.makeText(context, getString(result.fields!!), Toast.LENGTH_SHORT)
-                                .show()
                         }
                     }
                 }

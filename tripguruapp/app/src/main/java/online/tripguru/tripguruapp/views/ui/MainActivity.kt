@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
         replaceFragment(HomeFragment())
         buttonNavigationListener()
-
         observers()
     }
 

@@ -40,4 +40,11 @@
     <string name="nointernet_label">Desconectado da Internet</string>
     <string name="yesinternet_label">Conectado à Internet</string>
     <string name="loading_label">A carregar...</string>
+    <string name="error_fetching_data_label">Error fetching data</string>
+    <string name="loginsuccess_label">Entrou</string>
+    <string name="noavatar_label">Sem Avatar Selecionada</string>
+    <string name="successdeletelocal_label">Local Eliminado com Sucesso</string>
+    <string name="successdeletetrip_label">Viagem Eliminada com Sucesso</string>
+    <string name="successtrip_label">Viagem Guarda com Sucesso</string>
+    <string name="successlocal_label">Local Guardo com Sucesso</string>
 </resources>

@@ -68,18 +68,10 @@ class CreateLocalActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(
                         this,
-                        "Local saved successfully",
+                        R.string.successlocal_label,
                         Toast.LENGTH_LONG
                     ).show()
                     finish()
-                }
-                Resource.Status.FIELDS -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        this,
-                        getString(result.fields!!),
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
                 Resource.Status.ERROR -> {
                     binding.progressBar.visibility = View.GONE
@@ -103,7 +95,7 @@ class CreateLocalActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(
                         this,
-                        "Local deleted successfully",
+                        R.string.successdeletelocal_label,
                         Toast.LENGTH_LONG
                     ).show()
                     finish()

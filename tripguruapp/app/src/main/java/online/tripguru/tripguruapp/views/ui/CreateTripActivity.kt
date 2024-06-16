@@ -66,7 +66,7 @@ class CreateTripActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(
                         this,
-                        "Trip saved successfully",
+                        R.string.successtrip_label,
                         Toast.LENGTH_LONG
                     ).show()
                     finish()
@@ -74,10 +74,6 @@ class CreateTripActivity : AppCompatActivity() {
                 Resource.Status.ERROR -> {
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
-                }
-                Resource.Status.FIELDS -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, getString(result.fields!!), Toast.LENGTH_SHORT).show()
                 }
             }
         }

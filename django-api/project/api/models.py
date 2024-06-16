@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=100, null=False, blank=False)
     last_name = models.CharField(max_length=100, null=False, blank=False)
     email = models.EmailField(max_length=100, unique=True)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', null=False, blank=False)
     last_accessed = models.DateTimeField(auto_now=True)
 
     def __str__(self):

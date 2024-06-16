@@ -43,4 +43,11 @@
     <string name="nointernet_label">Disconnected from Internet</string>
     <string name="yesinternet_label">Connected to Internet</string>
     <string name="loading_label">Loading...</string>
+    <string name="error_fetching_data_label">Error fetching data</string>
+    <string name="loginsuccess_label">Logged</string>
+    <string name="noavatar_label">Without Avatar Selected</string>
+    <string name="successdeletelocal_label">Local Deleted Successfully</string>
+    <string name="successdeletetrip_label">Trip Deleted Successfully</string>
+    <string name="successtrip_label">Trip Saved Successfully</string>
+    <string name="successlocal_label">Local Saved Successfully</string>
 </resources>

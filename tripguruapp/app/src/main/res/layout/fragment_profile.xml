@@ -16,7 +16,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white">
+
             <ImageView
+                android:id="@+id/profileImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/ic_launcher_background" />

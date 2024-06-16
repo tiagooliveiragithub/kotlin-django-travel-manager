@@ -51,7 +51,7 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
     }
 
     private fun setPage() {
-        binding.textViewName.text = "${getString(R.string.hometitle_label)} ${userViewModel.getUserLocalDetails()}!"
+        binding.textViewName.text = "${getString(R.string.hometitle_label)} ${userViewModel.getUserOfflineDetails()}!"
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         adapterTrip = TripAdapter(this)
@@ -91,16 +91,7 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
                             binding.progressBar.visibility = View.GONE
                             Toast.makeText(
                                 requireContext(),
-                                "Error fetching data",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            binding.buttonCreateTrip.isEnabled = false
-                        }
-                        Resource.Status.FIELDS -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(
-                                requireContext(),
-                                getString(result.fields!!),
+                                R.string.error_fetching_data_label,
                                 Toast.LENGTH_LONG
                             ).show()
                             binding.buttonCreateTrip.isEnabled = false

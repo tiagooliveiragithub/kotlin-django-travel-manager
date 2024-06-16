@@ -105,7 +105,8 @@ def get_user(request):
         'first_name': user.first_name,
         'last_name': user.last_name,
         'email': user.email,
-        'last_accessed': user.last_accessed
+        'last_accessed': user.last_accessed,
+        'avatar': user.avatar.url if user.avatar else None,
     }
     return Response(data)
 

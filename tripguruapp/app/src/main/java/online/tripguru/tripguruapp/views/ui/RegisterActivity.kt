@@ -1,8 +1,11 @@
 package online.tripguru.tripguruapp.views.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,8 +17,9 @@ import online.tripguru.tripguruapp.viewmodels.UserViewModel
 @AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityRegisterBinding
+    private lateinit var binding: ActivityRegisterBinding
     private val userViewModel: UserViewModel by viewModels()
+    private var avatarUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +36,8 @@ class RegisterActivity : AppCompatActivity() {
         }
         userViewModel.isOnline().observe(this) { isConnected ->
             if (!isConnected) {
-                Toast.makeText(this, getString(R.string.nointernet_label), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.nointernet_label), Toast.LENGTH_SHORT)
+                    .show()
                 binding.buttonSignUp.isEnabled = false
             } else {
                 binding.buttonSignUp.isEnabled = true
@@ -43,16 +48,16 @@ class RegisterActivity : AppCompatActivity() {
                         }
                         Resource.Status.SUCCESS -> {
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(this, getString(R.string.sign_up_label), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                getString(R.string.sign_up_label),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             finish()
                         }
                         Resource.Status.ERROR -> {
                             binding.progressBar.visibility = View.GONE
                             Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
-                        }
-                        Resource.Status.FIELDS -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(this, getString(result.fields!!), Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -62,6 +67,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun listeners() {
+        buttonAvatarListener()
         buttonSignUpListener()
         textViewAlreadyRegisteredListener()
     }
@@ -74,13 +80,34 @@ class RegisterActivity : AppCompatActivity() {
             val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPassword.text.toString()
             val confirmPassword = binding.editTextConfirmPassword.text.toString()
-            userViewModel.signUp(username, firstname, lastname, email, password, confirmPassword)
+            userViewModel.signUp(
+                username,
+                firstname,
+                lastname,
+                email,
+                password,
+                confirmPassword,
+                avatarUri,
+            );
         }
     }
+
 
     private fun textViewAlreadyRegisteredListener() {
         binding.textViewAlreadyRegistered.setOnClickListener {
             finish()
         }
     }
+
+    private fun buttonAvatarListener() {
+         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uriImageSelected ->
+            if (uriImageSelected != null) {
+                avatarUri = uriImageSelected
+            }
+        }
+        binding.buttonAvatar.setOnClickListener {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+    }
+
 }

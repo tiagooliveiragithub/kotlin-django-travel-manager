@@ -11,7 +11,7 @@ import online.tripguru.tripguruapp.network.GetUserInfoResponse
 import online.tripguru.tripguruapp.network.LoginRequest
 import online.tripguru.tripguruapp.network.LoginResponse
 import online.tripguru.tripguruapp.network.Resource
-import online.tripguru.tripguruapp.network.SignupRequest
+import online.tripguru.tripguruapp.network.SignupFormRequest
 import online.tripguru.tripguruapp.network.SignupResponse
 import online.tripguru.tripguruapp.network.TokenVerifyRequest
 import retrofit2.HttpException
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class UserRepository @Inject constructor(
     private val api: ApiInterface,
     private val prefs: SharedPreferences,
-    private val connectivityLiveData: ConnectivityLiveData
+    private val connectivityLiveData: ConnectivityLiveData,
 ) {
     suspend fun signIn(loginRequest: LoginRequest): Resource<LoginResponse> {
         return try {
@@ -50,9 +50,15 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun signUp(signupRequest: SignupRequest): Resource<SignupResponse> {
+    suspend fun signUp(signupFormRequest: SignupFormRequest): Resource<SignupResponse> {
         return try {
-            val response = api.signUp(signupRequest)
+            val response = api.signUp(
+                signupFormRequest.username,
+                signupFormRequest.first_name,
+                signupFormRequest.last_name,
+                signupFormRequest.email,
+                signupFormRequest.password,
+                signupFormRequest.avatar)
             Resource.success(response)
         } catch(e: HttpException) {
             if(e.code() == 401) {
@@ -127,9 +133,9 @@ class UserRepository @Inject constructor(
                  Resource.error(e.message())
              }
         } catch (e: Exception) {
-            Log.e("AuthRepositoryImpl", "isAuthorizedVerify: ${e.message}", e)
-            Resource.error(e.toString())
-         }
+             Log.e("AuthRepositoryImpl", "isAuthorizedVerify: ${e.message}", e)
+             Resource.error(e.toString())
+        }
     }
 
     fun isOnline(): LiveData<Boolean> {
@@ -146,7 +152,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun getUserLocalDetails(): String {
+    fun getUserOfflineDetails(): String {
         return try {
             val firstname = prefs.getString("first_name", "") ?: ""
             val lastname = prefs.getString("last_name", "") ?: ""
