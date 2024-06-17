@@ -62,7 +62,7 @@ class ProfileFragment : Fragment() {
                                 binding.editTextFirstName.setText(it.first_name)
                                 binding.editTextLastName.setText(it.last_name)
                                 binding.editTextEmail.setText(it.email)
-                                glide.load(("http://10.0.2.2:8000/" + it.avatar)).into(binding.profileImage)
+                                glide.load(("https://apicm.tiagooliveira.dev/" + it.avatar)).into(binding.profileImage)
                             }
                         }
                         Resource.Status.ERROR -> {

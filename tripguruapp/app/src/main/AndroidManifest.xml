@@ -21,9 +21,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="tiramisu">
         <activity
-            android:name=".views.ui.GalleryLocalActivity"
-            android:exported="false" />
-        <activity
             android:name=".views.ui.CreateLocalActivity"
             android:exported="false"/>
 
