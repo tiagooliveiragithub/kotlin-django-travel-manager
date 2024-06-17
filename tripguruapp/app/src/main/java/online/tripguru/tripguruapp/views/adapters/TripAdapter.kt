@@ -34,7 +34,6 @@ class TripAdapter (
 
     override fun getItemCount(): Int = tripList.size
 
-    // Método para atualizar a lista de viagens
     fun setTrips(trips: List<Trip>) {
         tripList = trips
         notifyDataSetChanged()

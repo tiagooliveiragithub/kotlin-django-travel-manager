@@ -11,7 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityRegisterBinding
-import online.tripguru.tripguruapp.network.Resource
+import online.tripguru.tripguruapp.helpers.Resource
+import online.tripguru.tripguruapp.network.SignupResponse
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 
 @AndroidEntryPoint
@@ -25,90 +26,70 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        listeners()
-        observers()
+        setupListeners()
+        setupObservers()
     }
 
-    private fun observers() {
-        userViewModel.isOnline().observe(this) { isOnline ->
-            binding.buttonSignUp.isEnabled = isOnline
+    private fun setupListeners() {
+        binding.buttonAvatar.setOnClickListener { pickAvatar() }
+        binding.buttonSignUp.setOnClickListener { registerUser() }
+        binding.textViewAlreadyRegistered.setOnClickListener { finish() }
+    }
 
-        }
+    private fun setupObservers() {
         userViewModel.isOnline().observe(this) { isConnected ->
-            if (!isConnected) {
-                Toast.makeText(this, getString(R.string.nointernet_label), Toast.LENGTH_SHORT)
+            updateUiForOnlineStatus(isConnected)
+        }
+    }
+
+    private fun updateUiForOnlineStatus(isConnected: Boolean) {
+        binding.buttonSignUp.isEnabled = isConnected
+        if (isConnected) {
+            setupSignUpObserver()
+        }
+    }
+
+    private fun setupSignUpObserver() {
+        userViewModel.resultSignUp.observe(this) { result ->
+            handleSignUpResult(result)
+        }
+    }
+
+    private fun handleSignUpResult(result: Resource<SignupResponse>) {
+        when (result.status) {
+            Resource.Status.LOADING -> {
+                binding.progressBar.visibility = View.VISIBLE
+            }
+            Resource.Status.SUCCESS -> {
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, getString(R.string.sign_up_label), Toast.LENGTH_SHORT)
                     .show()
-                binding.buttonSignUp.isEnabled = false
-            } else {
-                binding.buttonSignUp.isEnabled = true
-                userViewModel.resultSignUp.observe(this) { result ->
-                    when (result.status) {
-                        Resource.Status.LOADING -> {
-                            binding.progressBar.visibility = View.VISIBLE
-                        }
-                        Resource.Status.SUCCESS -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(
-                                this,
-                                getString(R.string.sign_up_label),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            finish()
-                        }
-                        Resource.Status.ERROR -> {
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+                finish()
+            }
+            Resource.Status.ERROR -> {
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
-    private fun listeners() {
-        buttonAvatarListener()
-        buttonSignUpListener()
-        textViewAlreadyRegisteredListener()
-    }
-
-    private fun buttonSignUpListener() {
-        binding.buttonSignUp.setOnClickListener {
-            val username = binding.editTextUsername.text.toString()
-            val firstname = binding.editTextFirstName.text.toString()
-            val lastname = binding.editTextLastName.text.toString()
-            val email = binding.editTextEmail.text.toString()
-            val password = binding.editTextPassword.text.toString()
-            val confirmPassword = binding.editTextConfirmPassword.text.toString()
-            userViewModel.signUp(
-                username,
-                firstname,
-                lastname,
-                email,
-                password,
-                confirmPassword,
-                avatarUri,
-            );
-        }
-    }
-
-
-    private fun textViewAlreadyRegisteredListener() {
-        binding.textViewAlreadyRegistered.setOnClickListener {
-            finish()
-        }
-    }
-
-    private fun buttonAvatarListener() {
-         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uriImageSelected ->
-            if (uriImageSelected != null) {
-                avatarUri = uriImageSelected
-                binding.buttonAvatar.text  = "Avatar selected"
+    private fun pickAvatar() {
+        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                avatarUri = uri
+                binding.buttonAvatar.text = getString(R.string.avatar_selected_label)
             }
         }
-        binding.buttonAvatar.setOnClickListener {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        }
+        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
+    private fun registerUser() {
+        val username = binding.editTextUsername.text.toString()
+        val firstname = binding.editTextFirstName.text.toString()
+        val lastname = binding.editTextLastName.text.toString()
+        val email = binding.editTextEmail.text.toString()
+        val password = binding.editTextPassword.text.toString()
+        val confirmPassword = binding.editTextConfirmPassword.text.toString()
+        userViewModel.signUp(username, firstname, lastname, email, password, confirmPassword, avatarUri)
+    }
 }

@@ -3,12 +3,12 @@ package online.tripguru.tripguruapp.repositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.helpers.convertResponseToTrip
-import online.tripguru.tripguruapp.local.dao.TripDao
-import online.tripguru.tripguruapp.local.database.AppDatabase
+import online.tripguru.tripguruapp.localstorage.dao.TripDao
+import online.tripguru.tripguruapp.localstorage.database.AppDatabase
 import online.tripguru.tripguruapp.models.Trip
 import online.tripguru.tripguruapp.network.ApiInterface
-import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.network.TripRequest
 import online.tripguru.tripguruapp.network.TripResponse
 import retrofit2.HttpException
@@ -69,12 +69,12 @@ class TripRepository @Inject constructor(
         }
     }
 
-    suspend fun refreshAllTrips(): Resource<Boolean> {
+    suspend fun refreshAllTrips(): Resource<List<TripResponse>> {
         return try {
             tripDao.deleteAll()
             val response = api.getTrips(userRepository.getUserToken())
             tripDao.insertAll(response.map { convertResponseToTrip(it) })
-            Resource.success(true)
+            Resource.success(response)
         } catch (e: HttpException) {
             Log.e("TripRepository", "Error: ${e.message()}")
             return Resource.error(e.message())

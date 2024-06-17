@@ -16,15 +16,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import online.tripguru.tripguruapp.R
+import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.helpers.getFileFromUri
 import online.tripguru.tripguruapp.models.Local
-import online.tripguru.tripguruapp.models.Trip
 import online.tripguru.tripguruapp.network.LocalImageResponse
 import online.tripguru.tripguruapp.network.LocalRequest
 import online.tripguru.tripguruapp.network.LocalResponse
-import online.tripguru.tripguruapp.network.Resource
-import online.tripguru.tripguruapp.network.TripRequest
-import online.tripguru.tripguruapp.network.TripResponse
 import online.tripguru.tripguruapp.repositories.LocalRepository
 import online.tripguru.tripguruapp.repositories.LocationRepository
 import online.tripguru.tripguruapp.repositories.TripRepository
@@ -32,84 +29,35 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val tripRepository: TripRepository,
+class LocalViewModel @Inject constructor(
     private val localRepository: LocalRepository,
+    private val tripRepository: TripRepository,
     private val locationRepository: LocationRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-    val resultCreateTrip = MutableLiveData<Resource<TripResponse>>()
-    val resultDeleteTrip = MutableLiveData<Resource<TripResponse>>()
+    val resultRefreshLocals = MutableLiveData<Resource<List<LocalResponse>>>()
     val resultCreateLocal = MutableLiveData<Resource<LocalResponse>>()
     val resultDeleteLocal = MutableLiveData<Resource<LocalResponse>>()
-    val resultAllDataFetch = MutableLiveData<Resource<Boolean>>()
     val resultImageFetch = MutableLiveData<Resource<List<LocalImageResponse>>>()
-
     val currentLocation = MutableLiveData<Location?>()
     val currentAddress = MutableLiveData<String?>()
 
-    // Fetch data
-    fun getAllTrips(): LiveData<List<Trip>> {
-        return tripRepository.getAllTrips()
+    fun refreshAllLocals() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = localRepository.refreshAllLocals()
+            resultRefreshLocals.postValue(result)
+        }
     }
 
-    fun getAllLocals(): LiveData<List<Local>> {
+    fun getAllOfflineLocals(): LiveData<List<Local>> {
         return localRepository.getAllLocals()
     }
 
     fun getAllLocalsForSelectedTrip(): LiveData<List<Local>> {
-        return localRepository.getLocalsForTrip(getSelectedTrip().value?.id ?: 0)
+        val selectedTrip = tripRepository.getSelectedTrip().value ?: return MutableLiveData()
+        return localRepository.getLocalsForTrip(selectedTrip.id!!)
     }
 
-    fun refreshFetch() {
-        resultAllDataFetch.postValue(Resource.loading())
-        viewModelScope.launch(Dispatchers.IO) {
-            val resultTripsFetch = tripRepository.refreshAllTrips()
-            val resultLocalsFetch = localRepository.refreshAllLocals()
-            if (resultTripsFetch.status == Resource.Status.SUCCESS && resultLocalsFetch.status == Resource.Status.SUCCESS) {
-                resultAllDataFetch.postValue(Resource.success(true))
-            } else {
-                resultAllDataFetch.postValue(Resource.error(context.getString(R.string.error_fetching_data_label)))
-            }
-        }
-    }
-
-    // Trip CRUD
-    fun insertTrip(name: String, description: String) {
-        resultCreateTrip.postValue(Resource.loading())
-        if (name.isEmpty() || description.isEmpty()) {
-            Toast.makeText(context, R.string.emptyfields_label, Toast.LENGTH_SHORT).show()
-            return
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = tripRepository.insertTrip(TripRequest(id = null, name, description))
-            resultCreateTrip.postValue(result)
-        }
-    }
-
-    fun updateTrip(id: Int, name: String, description: String) {
-        resultCreateTrip.postValue(Resource.loading())
-        if (name.isEmpty() || description.isEmpty()) {
-            Toast.makeText(context, R.string.emptyfields_label, Toast.LENGTH_SHORT).show()
-            return
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = tripRepository.updateTrip(TripRequest(id, name, description))
-            resultCreateTrip.postValue(result)
-        }
-        tripRepository.updateSelectedTrip(Trip(id, name, description))
-    }
-
-    fun deleteTrip(id: Int) {
-        resultCreateTrip.postValue(Resource.loading())
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = tripRepository.deleteTrip(id)
-            resultDeleteTrip.postValue(result)
-        }
-        tripRepository.updateSelectedTrip(null)
-    }
-
-    // Local CRUD
     fun insertLocal(name: String, description: String) {
         resultCreateLocal.postValue(Resource.loading())
         if (name.isEmpty() || description.isEmpty()) {
@@ -161,7 +109,7 @@ class MainViewModel @Inject constructor(
             localRepository.deleteLocal(id)
             resultDeleteLocal.postValue(Resource.success(null))
         }
-        updateSelectedLocal(null)
+        localRepository.updateSelectedLocal(null)
     }
 
     fun getLocalImages(localId: Int) {
@@ -203,15 +151,6 @@ class MainViewModel @Inject constructor(
                 currentAddress.postValue("Address lookup failed: ${e.message}")
             }
         }
-    }
-
-    // Selected trip and local
-    fun updateSelectedTrip(trip: Trip?) {
-        tripRepository.updateSelectedTrip(trip)
-    }
-
-    fun getSelectedTrip(): LiveData<Trip?> {
-        return tripRepository.getSelectedTrip()
     }
 
     fun updateSelectedLocal(local: Local?) {

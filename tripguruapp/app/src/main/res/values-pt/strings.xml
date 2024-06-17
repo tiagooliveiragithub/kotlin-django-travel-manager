@@ -47,4 +47,6 @@
     <string name="successdeletetrip_label">Viagem Eliminada com Sucesso</string>
     <string name="successtrip_label">Viagem Guarda com Sucesso</string>
     <string name="successlocal_label">Local Guardo com Sucesso</string>
+    <string name="avatar_selected_label">Avatar Selecionado</string>
+    <string name="image_selected_label">Imagem Selecionada</string>
 </resources>

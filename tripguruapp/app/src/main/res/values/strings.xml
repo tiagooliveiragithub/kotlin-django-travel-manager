@@ -50,4 +50,6 @@
     <string name="successdeletetrip_label">Trip Deleted Successfully</string>
     <string name="successtrip_label">Trip Saved Successfully</string>
     <string name="successlocal_label">Local Saved Successfully</string>
+    <string name="avatar_selected_label">Avatar Selected</string>
+    <string name="image_selected_label">Image Selected</string>
 </resources>

@@ -17,7 +17,7 @@ import online.tripguru.tripguruapp.network.EditUserResponse
 import online.tripguru.tripguruapp.network.GetUserInfoResponse
 import online.tripguru.tripguruapp.network.LoginRequest
 import online.tripguru.tripguruapp.network.LoginResponse
-import online.tripguru.tripguruapp.network.Resource
+import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.network.SignupResponse
 import online.tripguru.tripguruapp.repositories.UserRepository
 import javax.inject.Inject

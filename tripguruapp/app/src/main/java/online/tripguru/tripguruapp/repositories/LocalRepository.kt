@@ -4,15 +4,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import okhttp3.MultipartBody
+import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.helpers.convertResponseToLocal
-import online.tripguru.tripguruapp.local.dao.LocalDao
-import online.tripguru.tripguruapp.local.database.AppDatabase
+import online.tripguru.tripguruapp.localstorage.dao.LocalDao
+import online.tripguru.tripguruapp.localstorage.database.AppDatabase
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.network.ApiInterface
 import online.tripguru.tripguruapp.network.LocalImageResponse
 import online.tripguru.tripguruapp.network.LocalRequest
 import online.tripguru.tripguruapp.network.LocalResponse
-import online.tripguru.tripguruapp.network.Resource
 import retrofit2.HttpException
 
 class LocalRepository (
@@ -22,6 +22,21 @@ class LocalRepository (
 ) {
     private val localDao: LocalDao = appDatabase.localDao()
     private var localSelected: LiveData<Local?> = MutableLiveData<Local?>(null)
+
+    suspend fun refreshAllLocals(): Resource<List<LocalResponse>> {
+        return try {
+            localDao.deleteAll()
+            val response = api.getLocals(userRepository.getUserToken())
+            localDao.insertAll(response.map { convertResponseToLocal(it) })
+            Resource.success(response)
+        } catch (e: HttpException) {
+            Log.e("LocalRepository", "Error: ${e.message()}")
+            Resource.error(e.message())
+        } catch (e: Exception) {
+            Log.e("LocalRepository", "Unexpected Error: ${e.message}")
+            Resource.error(e.message ?: "Unexpected Error")
+        }
+    }
 
     fun getAllLocals(): LiveData<List<Local>> {
         return localDao.getLocals()
@@ -61,21 +76,6 @@ class LocalRepository (
             localDao.deleteLocal(id)
             updateSelectedLocal(null)
             Resource.success(null)
-        } catch (e: HttpException) {
-            Log.e("LocalRepository", "Error: ${e.message()}")
-            Resource.error(e.message())
-        } catch (e: Exception) {
-            Log.e("LocalRepository", "Unexpected Error: ${e.message}")
-            Resource.error(e.message ?: "Unexpected Error")
-        }
-    }
-
-    suspend fun refreshAllLocals(): Resource<Boolean> {
-        return try {
-            localDao.deleteAll()
-            val response = api.getLocals(userRepository.getUserToken())
-            localDao.insertAll(response.map { convertResponseToLocal(it) })
-            Resource.success(true)
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
             Resource.error(e.message())

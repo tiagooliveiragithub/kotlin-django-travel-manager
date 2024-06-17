@@ -12,11 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.FragmentTripBinding
+import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.models.Local
-import online.tripguru.tripguruapp.network.Resource
-import online.tripguru.tripguruapp.viewmodels.MainViewModel
+import online.tripguru.tripguruapp.viewmodels.LocalViewModel
+import online.tripguru.tripguruapp.viewmodels.TripViewModel
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
-import online.tripguru.tripguruapp.views.adapters.LocalAdapterVertical
+import online.tripguru.tripguruapp.views.adapters.LocalAdapter
 import online.tripguru.tripguruapp.views.adapters.OnLocalClickListener
 import online.tripguru.tripguruapp.views.ui.CreateLocalActivity
 import online.tripguru.tripguruapp.views.ui.CreateTripActivity
@@ -24,9 +25,10 @@ import online.tripguru.tripguruapp.views.ui.MainActivity
 
 @AndroidEntryPoint
 class TripFragment : Fragment(), OnLocalClickListener {
-    private lateinit var localAdapter: LocalAdapterVertical
+    private lateinit var localAdapter: LocalAdapter
     private lateinit var binding: FragmentTripBinding
-    private val mainViewModel: MainViewModel by activityViewModels()
+    private val tripViewModel: TripViewModel by activityViewModels()
+    private val localViewModel: LocalViewModel by activityViewModels()
     private val authViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -39,33 +41,25 @@ class TripFragment : Fragment(), OnLocalClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setUpRecyclerView()
-        listeners()
-        observers()
+        setRecyclerView()
+        setListeners()
+        setObservers()
     }
 
-    private fun setUpRecyclerView() {
-        val recyclerView = binding.recyclerViewVertical
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        localAdapter = LocalAdapterVertical(this)
-        recyclerView.adapter = localAdapter
-    }
-
-    private fun observers() {
+    private fun setObservers() {
         authViewModel.isOnline().observe(viewLifecycleOwner) { isConnected ->
             if (!isConnected) {
                 disableButtons()
             } else {
+                enableButtons()
                 selectedTripObserver()
                 deleteTripResultObserver()
             }
         }
-
     }
 
     private fun selectedTripObserver() {
-        mainViewModel.getSelectedTrip().observe(viewLifecycleOwner) { selectedTrip ->
+        tripViewModel.getSelectedTrip().observe(viewLifecycleOwner) { selectedTrip ->
             if (selectedTrip != null) {
                 binding.textViewTripName.text = selectedTrip.name
                 binding.buttonEditTripPage.visibility = View.VISIBLE
@@ -73,7 +67,7 @@ class TripFragment : Fragment(), OnLocalClickListener {
                 binding.buttonDeleteTrip.visibility = View.VISIBLE
                 binding.recyclerViewVertical.visibility = View.VISIBLE
                 binding.textViewTripLocals.visibility = View.VISIBLE
-                mainViewModel.getAllLocalsForSelectedTrip().observe(viewLifecycleOwner) { trips ->
+                localViewModel.getAllLocalsForSelectedTrip().observe(viewLifecycleOwner) { trips ->
                     localAdapter.setLocals(trips)
                 }
             } else {
@@ -89,7 +83,7 @@ class TripFragment : Fragment(), OnLocalClickListener {
     }
 
     private fun deleteTripResultObserver() {
-        mainViewModel.resultDeleteTrip.observe(viewLifecycleOwner) { result ->
+        tripViewModel.resultDeleteTrip.observe(viewLifecycleOwner) { result ->
             when (result.status) {
                 Resource.Status.LOADING -> {
                     binding.progressBar.visibility = View.VISIBLE
@@ -115,16 +109,16 @@ class TripFragment : Fragment(), OnLocalClickListener {
         }
     }
 
-    private fun listeners() {
+    private fun setListeners() {
         binding.buttonEditTripPage.setOnClickListener {
             startActivity(Intent(context, CreateTripActivity::class.java))
         }
         binding.buttonCreateLocalPage.setOnClickListener {
-            mainViewModel.updateSelectedLocal(null)
+            localViewModel.updateSelectedLocal(null)
             startActivity(Intent(context, CreateLocalActivity::class.java))
         }
         binding.buttonDeleteTrip.setOnClickListener {
-            mainViewModel.deleteTrip(mainViewModel.getSelectedTrip().value?.id!!)
+            tripViewModel.deleteTrip(tripViewModel.getSelectedTrip().value?.id!!)
             changeToHomeFragment()
         }
     }
@@ -142,12 +136,19 @@ class TripFragment : Fragment(), OnLocalClickListener {
     }
 
     override fun onLocalClick(local: Local) {
-        mainViewModel.updateSelectedLocal(local)
+        localViewModel.updateSelectedLocal(local)
         startActivity(Intent(context, CreateLocalActivity::class.java))
     }
 
     private fun changeToHomeFragment() {
         (activity as MainActivity).replaceFragment(HomeFragment())
+    }
+
+    private fun setRecyclerView() {
+        val recyclerView = binding.recyclerViewVertical
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        localAdapter = LocalAdapter(this)
+        recyclerView.adapter = localAdapter
     }
 
 }

@@ -1,4 +1,4 @@
-package online.tripguru.tripguruapp.local.dao
+package online.tripguru.tripguruapp.localstorage.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

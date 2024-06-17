@@ -30,5 +30,4 @@ class LocationRepository @Inject constructor(
             onFailure(SecurityException("Location permission not granted"))
         }
     }
-
 }

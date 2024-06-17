@@ -1,9 +1,9 @@
-package online.tripguru.tripguruapp.local.database
+package online.tripguru.tripguruapp.localstorage.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import online.tripguru.tripguruapp.local.dao.LocalDao
-import online.tripguru.tripguruapp.local.dao.TripDao
+import online.tripguru.tripguruapp.localstorage.dao.LocalDao
+import online.tripguru.tripguruapp.localstorage.dao.TripDao
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.models.Trip
 

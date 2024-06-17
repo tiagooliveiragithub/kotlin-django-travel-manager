@@ -12,16 +12,15 @@ import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.FragmentProfileBinding
-import online.tripguru.tripguruapp.network.Resource
+import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 import online.tripguru.tripguruapp.views.ui.LoginActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
-
-    private lateinit var binding: FragmentProfileBinding
     private val userViewModel: UserViewModel by activityViewModels()
+    private lateinit var binding: FragmentProfileBinding
     @Inject lateinit var glide: RequestManager
 
     override fun onCreateView(
@@ -35,16 +34,15 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pageSetup()
-        observers()
-        listeners()
-
+        setListeners()
+        setObservers()
     }
 
     private fun pageSetup() {
         binding.textViewProfileName.text = userViewModel.getUserOfflineDetails()
     }
 
-    private fun observers() {
+    private fun setObservers() {
         userViewModel.isOnline().observe(viewLifecycleOwner) { isOnline ->
             if (!isOnline) {
                 binding.buttonSaveChanges.isEnabled = false
@@ -96,7 +94,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun listeners() {
+    private fun setListeners() {
         binding.buttonSaveChanges.setOnClickListener {
             val firstname = binding.editTextFirstName.text.toString()
             val lastname = binding.editTextLastName.text.toString()

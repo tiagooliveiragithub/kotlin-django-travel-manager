@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import online.tripguru.tripguruapp.databinding.BoxItemVerticalBinding
 import online.tripguru.tripguruapp.models.Local
 
-class LocalAdapterVertical (
+class LocalAdapter (
     private val onLocalClickListener: OnLocalClickListener
-) : RecyclerView.Adapter<LocalAdapterVertical.LocalViewHolder>() {
+) : RecyclerView.Adapter<LocalAdapter.LocalViewHolder>() {
 
     private var localList = listOf<Local>()
 

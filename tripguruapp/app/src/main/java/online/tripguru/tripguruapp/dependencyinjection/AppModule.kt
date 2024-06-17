@@ -14,7 +14,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import online.tripguru.tripguruapp.local.database.AppDatabase
+import online.tripguru.tripguruapp.localstorage.database.AppDatabase
 import online.tripguru.tripguruapp.network.ApiInterface
 import online.tripguru.tripguruapp.network.ConnectivityLiveData
 import online.tripguru.tripguruapp.repositories.LocalRepository
@@ -51,6 +51,20 @@ object AppModule {
         return LocalRepository(appDatabase, api, userRepository)
     }
 
+    @Provides
+    @Singleton
+    fun provideUserRepository(api: ApiInterface, prefs: SharedPreferences, connectivityLiveData: ConnectivityLiveData): UserRepository {
+        return UserRepository(api, prefs, connectivityLiveData)
+    }
+
+    @Provides
+    fun provideLocationRepository(
+        fusedLocationProviderClient: FusedLocationProviderClient,
+        @ApplicationContext context: Context
+    ): LocationRepository {
+        return LocationRepository(fusedLocationProviderClient, context)
+    }
+
     @Singleton
     @Provides
     fun provideApi(): ApiInterface {
@@ -65,12 +79,6 @@ object AppModule {
     @Singleton
     fun provideSharedPref(app: Application): SharedPreferences {
         return app.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-    }
-
-    @Provides
-    @Singleton
-    fun provideUserRepository(api: ApiInterface, prefs: SharedPreferences, connectivityLiveData: ConnectivityLiveData): UserRepository {
-        return UserRepository(api, prefs, connectivityLiveData)
     }
 
     @Provides
@@ -90,14 +98,6 @@ object AppModule {
         @ApplicationContext context: Context
     ): FusedLocationProviderClient {
         return LocationServices.getFusedLocationProviderClient(context)
-    }
-
-    @Provides
-    fun provideLocationRepository(
-        fusedLocationProviderClient: FusedLocationProviderClient,
-        @ApplicationContext context: Context
-    ): LocationRepository {
-        return LocationRepository(fusedLocationProviderClient, context)
     }
 
 }
