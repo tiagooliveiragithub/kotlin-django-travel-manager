@@ -25,8 +25,6 @@
         android:hint="@string/name_hint"
         android:inputType="text" />
 
-
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,154 +40,54 @@
         android:hint="@string/description_hint"
         android:inputType="text" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Category"
-        android:textSize="15sp"
-        android:textColor="@color/light_letter"
-        />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginVertical="3dp"
-            android:layout_marginEnd="4dp"
-            android:text="Park"
-            android:textSize="10dp"
-            android:backgroundTint="@color/purple"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="3dp"
-            android:text="Museum"
-            android:textColor="#2E3A59"
-            android:textSize="10dp"
-            android:backgroundTint="@color/light"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="3dp"
-            android:text="Restaurant"
-            android:textColor="#2E3A59"
-            android:textSize="10dp"
-            android:backgroundTint="@color/light"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="15dp">
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginVertical="3dp"
-            android:layout_marginEnd="4dp"
-            android:text="Bar"
-            android:textColor="#2E3A59"
-            android:textSize="10dp"
-            android:backgroundTint="@color/light"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="3dp"
-            android:text="Party"
-            android:textColor="#2E3A59"
-            android:textSize="10dp"
-            android:backgroundTint="@color/light"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginVertical="3dp"
-            android:text="Garden"
-            android:textColor="#2E3A59"
-            android:textSize="10sp"
-            android:backgroundTint="@color/light"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
-
-    </LinearLayout>
+        android:orientation="horizontal"/>
 
     <TextView
+        android:id="@+id/textViewGallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Precise Localization (optional)"
-        android:textSize="15sp"
-        android:textColor="@color/light_letter"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="15dp">
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginVertical="3dp"
-            android:layout_marginEnd="4dp"
-            android:text="+ Coords"
-            android:textColor="#2E3A59"
-            android:textSize="10sp"
-            android:backgroundTint="@color/light"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
-
-    </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:text="Gallery (optional)"
         android:textSize="15sp"
-        android:textColor="@color/light_letter"/>
+        android:textColor="@color/light_letter"
+        android:visibility="gone"/>
+
     <LinearLayout
+        android:id="@+id/galleryImages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginVertical="3dp"
-            android:layout_marginEnd="4dp"
-            android:text="+ Image"
-            android:textColor="#2E3A59"
-            android:textSize="10sp"
-            android:backgroundTint="@color/light"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
-
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/border"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:padding="8dp"/>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonAddImage"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginBottom="15dp"
+        android:text="Add Image"
+        android:textSize="10sp"
+        android:backgroundTint="@color/light"
+        app:cornerRadius="5dp"
+        android:padding="10dp"
+        android:textColor="#2E3A59"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/buttonCreateLocal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:text="@string/createlocal_button_label"
         android:backgroundTint="@color/purple"
         app:cornerRadius="5dp"

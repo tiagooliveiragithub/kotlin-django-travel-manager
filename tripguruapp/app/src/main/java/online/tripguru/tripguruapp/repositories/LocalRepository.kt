@@ -3,11 +3,13 @@ package online.tripguru.tripguruapp.repositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import okhttp3.MultipartBody
 import online.tripguru.tripguruapp.helpers.convertResponseToLocal
 import online.tripguru.tripguruapp.local.dao.LocalDao
 import online.tripguru.tripguruapp.local.database.AppDatabase
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.network.ApiInterface
+import online.tripguru.tripguruapp.network.LocalImageResponse
 import online.tripguru.tripguruapp.network.LocalRequest
 import online.tripguru.tripguruapp.network.LocalResponse
 import online.tripguru.tripguruapp.network.Resource
@@ -74,6 +76,33 @@ class LocalRepository (
             val response = api.getLocals(userRepository.getUserToken())
             localDao.insertAll(response.map { convertResponseToLocal(it) })
             Resource.success(true)
+        } catch (e: HttpException) {
+            Log.e("LocalRepository", "Error: ${e.message()}")
+            Resource.error(e.message())
+        } catch (e: Exception) {
+            Log.e("LocalRepository", "Unexpected Error: ${e.message}")
+            Resource.error(e.message ?: "Unexpected Error")
+        }
+    }
+
+    suspend fun getLocalImages(localId: Int): Resource<List<LocalImageResponse>> {
+        return try {
+            val response = api.getLocalImages(userRepository.getUserToken(), localId)
+
+            Resource.success(response)
+        } catch (e: HttpException) {
+            Log.e("LocalRepository", "Error: ${e.message()}")
+            Resource.error(e.message())
+        } catch (e: Exception) {
+            Log.e("LocalRepository", "Unexpected Error: ${e.message}")
+            Resource.error(e.message ?: "Unexpected Error")
+        }
+    }
+
+    suspend fun uploadImage(localId: Int, imageUriPart: MultipartBody.Part): Resource<LocalImageResponse> {
+        return try {
+            val response = api.uploadLocalImage(userRepository.getUserToken(), localId, imageUriPart)
+            Resource.success(response)
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
             Resource.error(e.message())

@@ -103,6 +103,7 @@ class RegisterActivity : AppCompatActivity() {
          val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uriImageSelected ->
             if (uriImageSelected != null) {
                 avatarUri = uriImageSelected
+                binding.buttonAvatar.text  = "Avatar selected"
             }
         }
         binding.buttonAvatar.setOnClickListener {

@@ -79,5 +79,17 @@ data class LocalResponse(
     val description: String,
 )
 
+data class LocalImageFormRequest(
+    val spot_pk: Int,
+    val avatar: MultipartBody.Part
+)
+
+data class LocalImageResponse(
+    val id: Int,
+    val image: String,
+    val created_at: String,
+    val spot: Int
+)
+
 
 

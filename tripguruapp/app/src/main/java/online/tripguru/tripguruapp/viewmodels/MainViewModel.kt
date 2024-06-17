@@ -1,6 +1,7 @@
 package online.tripguru.tripguruapp.viewmodels
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,8 +12,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import online.tripguru.tripguruapp.R
+import online.tripguru.tripguruapp.helpers.getFileFromUri
 import online.tripguru.tripguruapp.models.Local
 import online.tripguru.tripguruapp.models.Trip
+import online.tripguru.tripguruapp.network.LocalImageResponse
 import online.tripguru.tripguruapp.network.LocalRequest
 import online.tripguru.tripguruapp.network.LocalResponse
 import online.tripguru.tripguruapp.network.Resource
@@ -33,6 +36,7 @@ class MainViewModel @Inject constructor(
     val resultCreateLocal = MutableLiveData<Resource<LocalResponse>>()
     val resultDeleteLocal = MutableLiveData<Resource<LocalResponse>>()
     val resultAllDataFetch = MutableLiveData<Resource<Boolean>>()
+    val resultImageFetch = MutableLiveData<Resource<List<LocalImageResponse>>>()
 
     // Fetch data
 
@@ -111,7 +115,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateLocal(id: Int, name: String, description: String) {
+    fun updateLocal(id: Int, name: String, description: String, imageUri: Uri?) {
         if(name.isEmpty() || description.isEmpty()) {
             Toast.makeText(context, R.string.emptyfields_label, Toast.LENGTH_SHORT).show()
             return
@@ -120,6 +124,14 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val result = localRepository.updateLocal(LocalRequest(id, null, name, description))
             resultCreateLocal.postValue(result)
+        }
+
+        if(imageUri != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                localRepository.uploadImage(
+                    localId = id,
+                    imageUriPart = getFileFromUri(context, imageUri, "image"))
+            }
         }
     }
 
@@ -130,6 +142,14 @@ class MainViewModel @Inject constructor(
             resultDeleteLocal.postValue(Resource.success(null))
         }
         updateSelectedLocal(null)
+    }
+
+    fun getLocalImages(localId: Int) {
+        resultImageFetch.postValue(Resource.loading())
+        viewModelScope.launch(Dispatchers.IO) {
+            var result = localRepository.getLocalImages(localId)
+            resultImageFetch.postValue(result)
+        }
     }
 
     // Selected trip and local

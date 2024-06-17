@@ -9,5 +9,5 @@ data class Local(
     var id: Int? = null,
     var tripId: Int? = null,
     var name: String,
-    var description: String
+    var description: String,
 )

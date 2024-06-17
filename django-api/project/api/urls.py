@@ -2,7 +2,8 @@ from django.urls import path, include
 
 from .views import CreateUserView, TripListCreateView, TripRetrieveUpdateDestroyView, \
                     SpotListCreateView, SpotRetrieveUpdateDestroyView, \
-                    update_user, get_user, CustomTokenObtainPairView
+                    update_user, get_user, CustomTokenObtainPairView, \
+                    PhotoListCreateView, PhotoRetrieveUpdateDestroyView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
@@ -13,6 +14,8 @@ urlpatterns = [
     # Spot
     path('spots/', SpotListCreateView.as_view(), name='spot-list-create'),
     path('spots/<int:pk>/', SpotRetrieveUpdateDestroyView.as_view(), name='spot-edit'),
+    path('spots/<int:spot_pk>/photos/', PhotoListCreateView.as_view(), name='photo_list_create'),
+    path('spots/<int:spot_pk>/photos/<int:pk>/', PhotoRetrieveUpdateDestroyView.as_view(), name='photo_detail'),
 
     # User
     path('users/register/', CreateUserView.as_view(), name='register'),

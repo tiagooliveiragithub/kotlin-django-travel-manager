@@ -1,12 +1,14 @@
 from rest_framework import generics
-from .serializers import UserSerializer, TripSerializer, SpotSerializer, CustomTokenObtainPairSerializer
+from .serializers import UserSerializer, TripSerializer, SpotSerializer, \
+ CustomTokenObtainPairSerializer, PhotoSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import CustomUser, Trip, Spot
+from .models import CustomUser, Trip, Spot, Photo
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+## Trip views
 
 class TripListCreateView(generics.ListCreateAPIView):
     serializer_class = TripSerializer
@@ -39,6 +41,7 @@ class TripDeleteView(generics.DestroyAPIView):
         user = self.request.user
         return user.trips.all()
 
+## Spot views
 
 class SpotListCreateView(generics.ListCreateAPIView):
     serializer_class = SpotSerializer
@@ -70,11 +73,17 @@ class SpotDeleteView(generics.DestroyAPIView):
         user = self.request.user
         return user.spots.all()
 
+## User views
 
 class CreateUserView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -110,5 +119,25 @@ def get_user(request):
     }
     return Response(data)
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
+## Photo views
+
+class PhotoListCreateView(generics.ListCreateAPIView):
+    serializer_class = PhotoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Photo.objects.filter(spot__users=self.request.user, spot_id=self.kwargs['spot_pk'])
+
+    def perform_create(self, serializer):
+        spot = Spot.objects.get(pk=self.kwargs['spot_pk'])
+        if(serializer.is_valid()):
+            serializer.save(spot=spot)
+        else:
+            print(serializer.errors)
+
+class PhotoRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PhotoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Photo.objects.filter(spot__users=self.request.user, spot_id=self.kwargs['spot_pk'])

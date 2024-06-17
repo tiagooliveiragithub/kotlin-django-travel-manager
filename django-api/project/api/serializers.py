@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import CustomUser, Trip, Spot
+from .models import CustomUser, Trip, Spot, Photo
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserSerializer(serializers.ModelSerializer):
@@ -49,3 +49,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['last_name'] = self.user.last_name
         
         return data
+
+
+class PhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ['id', 'image', 'created_at', 'spot']

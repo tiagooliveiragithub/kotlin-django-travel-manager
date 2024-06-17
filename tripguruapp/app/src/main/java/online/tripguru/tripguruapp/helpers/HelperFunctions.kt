@@ -37,11 +37,11 @@ fun convertToSingUpForm(context: Context, username: String, firstname: String, l
     val lastnamePart = createPartFromString(lastname)
     val emailPart = createPartFromString(email)
     val passwordPart = createPartFromString(password)
-    val avatarPart = getFileFromUri(context, avatar)
+    val avatarPart = getFileFromUri(context, avatar, "avatar")
     return SignupFormRequest(usernamePart, firstnamePart, lastnamePart, emailPart, passwordPart, avatarPart)
 }
 
-fun getFileFromUri(context: Context, uri: Uri): MultipartBody.Part {
+fun getFileFromUri(context: Context, uri: Uri, name: String): MultipartBody.Part {
     val filesDir = context.filesDir
     val file = File(filesDir, "image.jpg")
     val inputStream = context.contentResolver.openInputStream(uri)
@@ -54,10 +54,9 @@ fun getFileFromUri(context: Context, uri: Uri): MultipartBody.Part {
     }
 
     val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-    return MultipartBody.Part.createFormData("avatar", file.name, requestBody)
+    return MultipartBody.Part.createFormData(name, file.name, requestBody)
 }
 
 fun createPartFromString(value: String): RequestBody {
     return value.toRequestBody("text/plain".toMediaTypeOrNull())
 }
-

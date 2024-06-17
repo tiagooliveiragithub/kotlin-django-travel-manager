@@ -105,4 +105,18 @@ interface ApiInterface {
         @Header("Authorization") token: String,
         @Path("pk") id: Int
     )
+
+    @GET("api/spots/{spot_pk}/photos/")
+    suspend fun getLocalImages(
+        @Header("Authorization") token: String,
+        @Path("spot_pk") spotId: Int
+    ): List<LocalImageResponse>
+
+    @Multipart
+    @POST("api/spots/{spot_pk}/photos/")
+    suspend fun uploadLocalImage(
+        @Header("Authorization") token: String,
+        @Path("spot_pk") localId: Int,
+        @Part image: MultipartBody.Part
+    ): LocalImageResponse
 }
