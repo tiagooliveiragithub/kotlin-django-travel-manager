@@ -36,7 +36,7 @@ class TripSerializer(serializers.ModelSerializer):
 class SpotSerializer(serializers.ModelSerializer):
     class Meta:
         model = Spot
-        fields = ['id', 'tripId', 'name', 'description', 'users']
+        fields = ['id', 'tripId', 'name', 'description', 'users', 'latitude', 'longitude', 'address']
         read_only_fields = ['created_at', 'id', 'users']
 
 

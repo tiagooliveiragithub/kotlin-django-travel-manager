@@ -70,6 +70,9 @@ data class LocalRequest(
     val tripId: Int?,
     val name: String,
     val description: String,
+    val latitude: Double?,
+    val longitude: Double?,
+    val address: String?
 )
 
 data class LocalResponse(
@@ -77,11 +80,9 @@ data class LocalResponse(
     val tripId: Int,
     val name: String,
     val description: String,
-)
-
-data class LocalImageFormRequest(
-    val spot_pk: Int,
-    val avatar: MultipartBody.Part
+    val latitude: Double,
+    val longitude: Double,
+    val address: String
 )
 
 data class LocalImageResponse(

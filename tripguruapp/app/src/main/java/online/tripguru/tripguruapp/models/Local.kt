@@ -10,4 +10,7 @@ data class Local(
     var tripId: Int? = null,
     var name: String,
     var description: String,
+    var latitude: Double? = null,
+    var longitude: Double? = null,
+    var address: String? = null
 )

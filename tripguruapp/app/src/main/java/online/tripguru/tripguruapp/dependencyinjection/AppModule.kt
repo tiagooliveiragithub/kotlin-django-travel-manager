@@ -7,6 +7,8 @@ import android.net.ConnectivityManager
 import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,6 +18,7 @@ import online.tripguru.tripguruapp.local.database.AppDatabase
 import online.tripguru.tripguruapp.network.ApiInterface
 import online.tripguru.tripguruapp.network.ConnectivityLiveData
 import online.tripguru.tripguruapp.repositories.LocalRepository
+import online.tripguru.tripguruapp.repositories.LocationRepository
 import online.tripguru.tripguruapp.repositories.TripRepository
 import online.tripguru.tripguruapp.repositories.UserRepository
 import retrofit2.Retrofit
@@ -52,7 +55,7 @@ object AppModule {
     @Provides
     fun provideApi(): ApiInterface {
         return Retrofit.Builder()
-            .baseUrl("https://apicm.tiagooliveira.dev/")
+            .baseUrl("http://10.0.2.2:8000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiInterface::class.java)
@@ -80,6 +83,21 @@ object AppModule {
     @Singleton
     fun provideGlideInstance(application: Application): RequestManager {
         return Glide.with(application)
+    }
+
+    @Provides
+    fun provideFusedLocationProviderClient(
+        @ApplicationContext context: Context
+    ): FusedLocationProviderClient {
+        return LocationServices.getFusedLocationProviderClient(context)
+    }
+
+    @Provides
+    fun provideLocationRepository(
+        fusedLocationProviderClient: FusedLocationProviderClient,
+        @ApplicationContext context: Context
+    ): LocationRepository {
+        return LocationRepository(fusedLocationProviderClient, context)
     }
 
 }

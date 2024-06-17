@@ -87,6 +87,11 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     kapt("com.github.bumptech.glide:compiler:4.12.0")
 
-    implementation("androidx.activity:activity:1.7.0")
+    implementation("androidx.activity:activity:1.9.0")
+
+    // Fused Location Provider
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    implementation("org.osmdroid:osmdroid-android:6.1.11")
 
 }

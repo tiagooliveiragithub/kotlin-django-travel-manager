@@ -32,6 +32,9 @@ class Spot(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(CustomUser, related_name='spots', blank=True)
     tripId = models.ForeignKey(Trip, related_name='spots', on_delete=models.SET_NULL, null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    address = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return self.name

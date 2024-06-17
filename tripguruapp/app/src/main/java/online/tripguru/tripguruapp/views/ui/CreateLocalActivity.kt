@@ -18,6 +18,10 @@ import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.viewmodels.MainViewModel
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 import online.tripguru.tripguruapp.views.adapters.PhotoAdapter
+import org.osmdroid.api.IMapController
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 
 @AndroidEntryPoint
 class CreateLocalActivity : AppCompatActivity() {
@@ -27,6 +31,7 @@ class CreateLocalActivity : AppCompatActivity() {
     private val authViewModel: UserViewModel by viewModels()
     private lateinit var adapter: PhotoAdapter
     private var imageUri: Uri? = null
+    private lateinit var mapView: MapView
 
     private lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
 
@@ -35,8 +40,10 @@ class CreateLocalActivity : AppCompatActivity() {
         binding = ActivityCreateLocalBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setMap()
         setPickMedia()
         observers()
+        setUpRecyclerView()
     }
 
     private fun observers() {
@@ -47,9 +54,13 @@ class CreateLocalActivity : AppCompatActivity() {
             } else {
                 binding.buttonCreateLocal.visibility = View.VISIBLE
                 binding.buttonDeleteLocal.visibility = View.VISIBLE
+                setupLocationObserver()
                 selectedLocalObserver()
                 createLocalResultObserver()
                 deleteLocalResultObserver()
+                buttonListeners()
+                setupImageObserver()
+                setupLocationObserver()
             }
         }
     }
@@ -58,16 +69,13 @@ class CreateLocalActivity : AppCompatActivity() {
         mainViewModel.getSelectedLocal().observe(this) { selectedLocal ->
             if (selectedLocal != null) {
                 binding.buttonDeleteLocal.visibility = View.VISIBLE
-                binding.textViewGallery.visibility = View.VISIBLE
-                binding.galleryImages.visibility = View.VISIBLE
-                binding.buttonAddImage.visibility = View.VISIBLE
                 binding.editTextName.setText(selectedLocal.name)
                 binding.editTextDescription.setText(selectedLocal.description)
+                binding.textViewAddress.text = selectedLocal.address
                 binding.buttonCreateLocal.text = getString(R.string.editlocal_button_label)
-                setUpRecyclerView(selectedLocal)
+                mainViewModel.getLocalImages(selectedLocal.id!!)
                 setupListenersEdit(selectedLocal)
-                buttonAvatarListener()
-                setupImageObserver()
+                updateMapWithLocation(selectedLocal.latitude, selectedLocal.longitude)
             } else {
                 binding.buttonDeleteLocal.visibility = View.GONE
                 binding.buttonCreateLocal.text = getString(R.string.createlocal_button_label)
@@ -149,8 +157,7 @@ class CreateLocalActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpRecyclerView(selectedLocal: Local) {
-        mainViewModel.getLocalImages(selectedLocal.id!!)
+    private fun setUpRecyclerView() {
         adapter = PhotoAdapter()
         binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
         binding.recyclerView.adapter = adapter
@@ -179,9 +186,12 @@ class CreateLocalActivity : AppCompatActivity() {
         }
     }
 
-    private fun buttonAvatarListener() {
+    private fun buttonListeners() {
         binding.buttonAddImage.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+        binding.buttonAddLocation.setOnClickListener {
+            mainViewModel.fetchCurrentLocation()
         }
     }
 
@@ -189,6 +199,39 @@ class CreateLocalActivity : AppCompatActivity() {
         pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uriImageSelected ->
             imageUri = uriImageSelected
             binding.buttonAddImage.text = "Image Selected"
+        }
+    }
+
+    private fun updateMapWithLocation(latitude: Double?, longitude: Double?) {
+        if (latitude == null || longitude == null) return
+
+        val startPoint = GeoPoint(latitude, longitude)
+        val mapController: IMapController = mapView.controller
+        mapController.setCenter(startPoint)
+
+        val startMarker = Marker(mapView)
+        startMarker.position = startPoint
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        mapView.overlays.clear()
+        mapView.overlays.add(startMarker)
+        mapView.invalidate()
+    }
+
+    private fun setMap() {
+        mapView = binding.map
+        mapView.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK)
+        mapView.setMultiTouchControls(true)
+        mapView.controller.setZoom(18.0)
+    }
+
+    private fun setupLocationObserver() {
+        mainViewModel.currentLocation.observe(this) { location ->
+            if (location != null) {
+                updateMapWithLocation(location.latitude, location.longitude)
+            }
+        }
+        mainViewModel.currentAddress.observe(this) { address ->
+            binding.textViewAddress.text = address
         }
     }
 

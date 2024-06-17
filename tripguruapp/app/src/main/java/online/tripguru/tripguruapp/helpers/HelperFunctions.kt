@@ -27,7 +27,10 @@ fun convertResponseToLocal(localResponse: LocalResponse): Local {
         id = localResponse.id,
         tripId = localResponse.tripId,
         name = localResponse.name,
-        description = localResponse.description
+        description = localResponse.description,
+        latitude = localResponse.latitude,
+        longitude = localResponse.longitude,
+        address = localResponse.address
     )
 }
 

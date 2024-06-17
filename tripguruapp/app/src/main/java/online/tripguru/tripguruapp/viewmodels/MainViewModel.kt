@@ -1,6 +1,9 @@
 package online.tripguru.tripguruapp.viewmodels
 
 import android.content.Context
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -11,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.helpers.getFileFromUri
 import online.tripguru.tripguruapp.models.Local
@@ -22,13 +26,16 @@ import online.tripguru.tripguruapp.network.Resource
 import online.tripguru.tripguruapp.network.TripRequest
 import online.tripguru.tripguruapp.network.TripResponse
 import online.tripguru.tripguruapp.repositories.LocalRepository
+import online.tripguru.tripguruapp.repositories.LocationRepository
 import online.tripguru.tripguruapp.repositories.TripRepository
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val tripRepository: TripRepository,
     private val localRepository: LocalRepository,
+    private val locationRepository: LocationRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     val resultCreateTrip = MutableLiveData<Resource<TripResponse>>()
@@ -38,18 +45,20 @@ class MainViewModel @Inject constructor(
     val resultAllDataFetch = MutableLiveData<Resource<Boolean>>()
     val resultImageFetch = MutableLiveData<Resource<List<LocalImageResponse>>>()
 
-    // Fetch data
+    val currentLocation = MutableLiveData<Location?>()
+    val currentAddress = MutableLiveData<String?>()
 
-    fun getAllTrips() : LiveData<List<Trip>> {
+    // Fetch data
+    fun getAllTrips(): LiveData<List<Trip>> {
         return tripRepository.getAllTrips()
     }
 
-    fun getAllLocals() : LiveData<List<Local>> {
+    fun getAllLocals(): LiveData<List<Local>> {
         return localRepository.getAllLocals()
     }
 
     fun getAllLocalsForSelectedTrip(): LiveData<List<Local>> {
-        return localRepository.getLocalsForTrip(getSelectedTrip().value!!.id ?: 0)
+        return localRepository.getLocalsForTrip(getSelectedTrip().value?.id ?: 0)
     }
 
     fun refreshFetch() {
@@ -66,7 +75,6 @@ class MainViewModel @Inject constructor(
     }
 
     // Trip CRUD
-
     fun insertTrip(name: String, description: String) {
         resultCreateTrip.postValue(Resource.loading())
         if (name.isEmpty() || description.isEmpty()) {
@@ -78,6 +86,7 @@ class MainViewModel @Inject constructor(
             resultCreateTrip.postValue(result)
         }
     }
+
     fun updateTrip(id: Int, name: String, description: String) {
         resultCreateTrip.postValue(Resource.loading())
         if (name.isEmpty() || description.isEmpty()) {
@@ -101,36 +110,47 @@ class MainViewModel @Inject constructor(
     }
 
     // Local CRUD
-
     fun insertLocal(name: String, description: String) {
         resultCreateLocal.postValue(Resource.loading())
         if (name.isEmpty() || description.isEmpty()) {
             Toast.makeText(context, R.string.emptyfields_label, Toast.LENGTH_SHORT).show()
             return
         }
-        val tripId = getSelectedTrip().value?.id ?: 0
+
+        val latitude = currentLocation.value?.latitude
+        val longitude = currentLocation.value?.longitude
+        val address = currentAddress.value
+        val tripId = tripRepository.getSelectedTrip().value?.id
+
         viewModelScope.launch(Dispatchers.IO) {
-            val result = localRepository.insertLocal(LocalRequest(id = null, tripId = tripId, name, description))
+            val result = localRepository.insertLocal(LocalRequest(null, tripId, name, description, latitude, longitude, address))
             resultCreateLocal.postValue(result)
         }
     }
 
     fun updateLocal(id: Int, name: String, description: String, imageUri: Uri?) {
-        if(name.isEmpty() || description.isEmpty()) {
+        if (name.isEmpty() || description.isEmpty()) {
             Toast.makeText(context, R.string.emptyfields_label, Toast.LENGTH_SHORT).show()
             return
         }
+
+        val latitude = currentLocation.value?.latitude
+        val longitude = currentLocation.value?.longitude
+        val address = currentAddress.value
+        val tripId = tripRepository.getSelectedTrip().value?.id
+
         resultCreateLocal.postValue(Resource.loading())
         viewModelScope.launch(Dispatchers.IO) {
-            val result = localRepository.updateLocal(LocalRequest(id, null, name, description))
+            val result = localRepository.updateLocal(LocalRequest(id, tripId, name, description, latitude, longitude, address))
             resultCreateLocal.postValue(result)
         }
 
-        if(imageUri != null) {
+        if (imageUri != null) {
             viewModelScope.launch(Dispatchers.IO) {
                 localRepository.uploadImage(
                     localId = id,
-                    imageUriPart = getFileFromUri(context, imageUri, "image"))
+                    imageUriPart = getFileFromUri(context, imageUri, "image")
+                )
             }
         }
     }
@@ -147,13 +167,45 @@ class MainViewModel @Inject constructor(
     fun getLocalImages(localId: Int) {
         resultImageFetch.postValue(Resource.loading())
         viewModelScope.launch(Dispatchers.IO) {
-            var result = localRepository.getLocalImages(localId)
+            val result = localRepository.getLocalImages(localId)
             resultImageFetch.postValue(result)
         }
     }
 
-    // Selected trip and local
+    fun fetchCurrentLocation() {
+        viewModelScope.launch {
+            locationRepository.getCurrentLocation(
+                onSuccess = { location ->
+                    currentLocation.postValue(location)
+                    if (location != null) {
+                        fetchAddress(location)
+                    }
+                },
+                onFailure = { exception ->
+                    Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
+    }
 
+    private fun fetchAddress(location: Location) {
+        viewModelScope.launch {
+            try {
+                val addresses: List<Address> = withContext(Dispatchers.IO) {
+                    Geocoder(context, Locale.getDefault()).getFromLocation(location.latitude, location.longitude, 1)!!
+                }
+                if (addresses.isNotEmpty()) {
+                    currentAddress.postValue(addresses[0].getAddressLine(0))
+                } else {
+                    currentAddress.postValue("Address not found")
+                }
+            } catch (e: Exception) {
+                currentAddress.postValue("Address lookup failed: ${e.message}")
+            }
+        }
+    }
+
+    // Selected trip and local
     fun updateSelectedTrip(trip: Trip?) {
         tripRepository.updateSelectedTrip(trip)
     }
@@ -169,6 +221,4 @@ class MainViewModel @Inject constructor(
     fun getSelectedLocal(): LiveData<Local?> {
         return localRepository.getSelectedLocal()
     }
-
-
 }
