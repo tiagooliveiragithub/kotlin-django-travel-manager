@@ -1,27 +1,31 @@
 package online.tripguru.tripguruapp.views.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import online.tripguru.tripguruapp.databinding.BoxItemBinding
-import online.tripguru.tripguruapp.models.Trip
+import online.tripguru.tripguruapp.localstorage.models.Trip
 
 
-class TripAdapter (
-    private val onTripClickListener: OnTripClickListener
+class TripAdapter(
+    private val onTripClickListener: OnTripClickListener,
 ): RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
     private var tripList = listOf<Trip>()
 
-    inner class TripViewHolder(private val binding: BoxItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class TripViewHolder(private val binding: BoxItemBinding, private val context : Context) : RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: Trip) {
             binding.textViewTitle.text = trip.name
-            binding.textViewDescription.text = trip.description
+            binding.textViewDate.text = trip.startDate
+
+            Glide.with(itemView.context).load(trip.image).into(binding.tripImage)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
         val itemList = BoxItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TripViewHolder(itemList)
+        return TripViewHolder(itemList, parent.context)
     }
 
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {

@@ -15,7 +15,7 @@
     <string name="sign_up_label">Create an account here</string>
     <string name="editlocal_button_label">Update Local</string>
     <string name="createlocal_button_label">Create Local</string>
-    <string name="edittrip_button_label">Edit Trip</string>
+    <string name="edittrip_button_label">Trip Details</string>
     <string name="createtrip_button_label">Create Trip</string>
     <string name="deletetrip_button_label">Delete Trip</string>
     <string name="nametrip_label">Trip Name</string>
@@ -52,4 +52,11 @@
     <string name="successlocal_label">Local Saved Successfully</string>
     <string name="avatar_selected_label">Avatar Selected</string>
     <string name="image_selected_label">Image Selected</string>
+    <string name="sharedwith_label">"Shared with: "</string>
+    <string name="successsharetrip_label">Shared Users Updated</string>
+    <string name="searchlocals_label">Search New Locals</string>
+    <string name="startdate_label">Start Date</string>
+    <string name="enddate_label">End Date</string>
+    <string name="from_label">From</string>
+    <string name="to_label">to</string>
 </resources>

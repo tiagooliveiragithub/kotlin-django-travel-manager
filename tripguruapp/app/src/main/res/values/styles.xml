@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom Button Style -->
+    <style name="GuruButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:padding">7dp</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Custom DatePicker Style -->
+    <style name="GuruDatePicker" parent="Widget.MaterialComponents.MaterialCalendar">
+        <item name="android:datePickerMode">calendar</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_marginBottom">15dp</item>
+    </style>
+</resources>

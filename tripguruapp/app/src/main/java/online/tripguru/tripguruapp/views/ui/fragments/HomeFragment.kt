@@ -5,14 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.FragmentHomeBinding
-import online.tripguru.tripguruapp.models.Local
-import online.tripguru.tripguruapp.models.Trip
+import online.tripguru.tripguruapp.localstorage.models.Local
+import online.tripguru.tripguruapp.localstorage.models.Trip
 import online.tripguru.tripguruapp.viewmodels.LocalViewModel
 import online.tripguru.tripguruapp.viewmodels.TripViewModel
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
@@ -81,11 +82,13 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
     }
 
     private fun updateUiForOnlineStatus(isConnected: Boolean) {
-        binding.buttonCreateTrip.isEnabled = isConnected
-        if (isConnected) {
-            tripViewModel.refreshAllTrips()
-            localViewModel.refreshAllLocals()
+        if (!isConnected) {
+            Toast.makeText(context, getString(R.string.nointernet_label), Toast.LENGTH_SHORT).show()
+            binding.buttonCreateTrip.isEnabled = false
+        } else {
+            binding.buttonCreateTrip.isEnabled = true
         }
+
     }
 
     override fun onTripClick(trip: Trip) {

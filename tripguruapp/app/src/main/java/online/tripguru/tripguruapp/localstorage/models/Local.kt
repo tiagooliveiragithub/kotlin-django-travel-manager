@@ -1,4 +1,4 @@
-package online.tripguru.tripguruapp.models
+package online.tripguru.tripguruapp.localstorage.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -12,5 +12,6 @@ data class Local(
     var description: String,
     var latitude: Double? = null,
     var longitude: Double? = null,
-    var address: String? = null
+    var address: String? = null,
+    var images: List<String>? = null
 )

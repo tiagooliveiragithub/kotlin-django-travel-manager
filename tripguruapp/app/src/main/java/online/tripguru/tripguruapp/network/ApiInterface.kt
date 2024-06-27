@@ -76,16 +76,43 @@ interface ApiInterface {
         @Path("pk") id: Int
     )
 
+    @POST("api/trips/{pk}/add_user/{username}/")
+    suspend fun shareTrip(
+        @Header("Authorization") token: String,
+        @Path("pk") id: Int,
+        @Path("username") username: String
+    ) : TripResponse
+
+    @POST("api/trips/{pk}/remove_user/{username}/")
+    suspend fun removeShareTrip(
+        @Header("Authorization") token: String,
+        @Path("pk") id: Int,
+        @Path("username") username: String
+    ) : TripResponse
+
+    @Multipart
+    @POST("api/trips/{pk}/photo/")
+    suspend fun uploadTripImage(
+        @Header("Authorization") token: String,
+        @Path("pk") tripId: Int,
+        @Part image: MultipartBody.Part
+    ) : ImageResponse
+
     @GET("api/spots/")
+    suspend fun getUserLocals(
+        @Header("Authorization") token: String
+    ): List<LocalResponse>
+
+    @GET("api/spots/all/")
     suspend fun getLocals(
         @Header("Authorization") token: String
     ): List<LocalResponse>
 
-    @GET("api/spots/{pk}")
-    suspend fun getLocal(
+    @GET("api/trips/{pk}/locals/")
+    suspend fun getLocalsForTrip(
         @Header("Authorization") token: String,
         @Path("pk") id: Int
-    ): LocalResponse
+    ): List<LocalResponse>
 
     @POST("api/spots/")
     suspend fun createLocal(
@@ -110,7 +137,7 @@ interface ApiInterface {
     suspend fun getLocalImages(
         @Header("Authorization") token: String,
         @Path("spot_pk") spotId: Int
-    ): List<LocalImageResponse>
+    ): List<ImageResponse>
 
     @Multipart
     @POST("api/spots/{spot_pk}/photos/")
@@ -118,5 +145,5 @@ interface ApiInterface {
         @Header("Authorization") token: String,
         @Path("spot_pk") localId: Int,
         @Part image: MultipartBody.Part
-    ): LocalImageResponse
+    ): ImageResponse
 }

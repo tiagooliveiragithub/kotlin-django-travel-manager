@@ -13,7 +13,7 @@
     <string name="sign_up_label">Cria uma conta aqui</string>
     <string name="editlocal_button_label">Editar Local</string>
     <string name="createlocal_button_label">Criar Local</string>
-    <string name="edittrip_button_label">Editar Viagem</string>
+    <string name="edittrip_button_label">Detalhes da Viagem</string>
     <string name="createtrip_button_label">Criar Viagem</string>
     <string name="deletetrip_button_label">Eliminar Viagem</string>
     <string name="nametrip_label">Nome da Viagem</string>
@@ -49,4 +49,11 @@
     <string name="successlocal_label">Local Guardo com Sucesso</string>
     <string name="avatar_selected_label">Avatar Selecionado</string>
     <string name="image_selected_label">Imagem Selecionada</string>
+    <string name="sharedwith_label">"Partilhado com: "</string>
+    <string name="successsharetrip_label">Utilizadores Compartilhados Atualizado</string>
+    <string name="searchlocals_label">Procurar Novos Locais</string>
+    <string name="startdate_label">Data Inicio</string>
+    <string name="enddate_label">Data Fim</string>
+    <string name="from_label">De</string>
+    <string name="to_label">até</string>
 </resources>

@@ -11,13 +11,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import online.tripguru.tripguruapp.R
+import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.helpers.convertToSingUpForm
 import online.tripguru.tripguruapp.network.EditUserRequest
 import online.tripguru.tripguruapp.network.EditUserResponse
 import online.tripguru.tripguruapp.network.GetUserInfoResponse
 import online.tripguru.tripguruapp.network.LoginRequest
 import online.tripguru.tripguruapp.network.LoginResponse
-import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.network.SignupResponse
 import online.tripguru.tripguruapp.repositories.UserRepository
 import javax.inject.Inject

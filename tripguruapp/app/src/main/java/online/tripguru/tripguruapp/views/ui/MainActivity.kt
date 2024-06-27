@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityMainBinding
+import online.tripguru.tripguruapp.viewmodels.LocalViewModel
+import online.tripguru.tripguruapp.viewmodels.TripViewModel
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 import online.tripguru.tripguruapp.views.ui.fragments.HomeFragment
 import online.tripguru.tripguruapp.views.ui.fragments.ProfileFragment
@@ -19,6 +21,8 @@ import online.tripguru.tripguruapp.views.ui.fragments.TripFragment
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val userViewModel: UserViewModel by viewModels()
+    private val tripViewModel: TripViewModel by viewModels()
+    private val localViewModel: LocalViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +38,9 @@ class MainActivity : AppCompatActivity() {
         userViewModel.isOnline().observe(this) { isConnected ->
             if (!isConnected) {
                 Toast.makeText(this, getString(R.string.nointernet_label), Toast.LENGTH_SHORT).show()
+            } else {
+                tripViewModel.refreshAllTrips()
+                localViewModel.refreshAllLocals()
             }
         }
     }

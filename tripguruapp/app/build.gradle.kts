@@ -91,7 +91,9 @@ dependencies {
 
     // Fused Location Provider
     implementation("com.google.android.gms:play-services-location:21.3.0")
-
     implementation("org.osmdroid:osmdroid-android:6.1.11")
+
+    // Material Button
+    implementation("com.google.android.material:material:1.4.0")
 
 }

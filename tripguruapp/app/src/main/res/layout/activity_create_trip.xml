@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".views.ui.CreateTripActivity">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="35dp"
+        tools:context=".views.ui.CreateTripActivity">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_hint"
-            android:textSize="15sp"
-            android:textColor="@color/light_letter"/>
+            android:textColor="@color/colorTextPrimary"/>
 
         <EditText
             android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
             android:hint="@string/name_hint"
             android:inputType="text" />
 
@@ -32,31 +29,81 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/description_hint"
-            android:textSize="15sp"
-            android:textColor="@color/light_letter"/>
+            android:textColor="@color/colorTextPrimary"/>
 
         <EditText
             android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/description_hint"
-            android:inputType="text" />
+            android:inputType="text"
+            android:layout_marginBottom="15dp"/>
+
+        <TextView
+            android:id="@+id/textViewGallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Image (optional)"
+            android:textColor="@color/colorTextPrimary"
+            android:layout_marginBottom="5dp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/imageView"
+            android:scaleType="centerCrop"
+            android:background="@drawable/border"
+            android:padding="15dp"/>
+
+        <Button
+            style="@style/GuruButton"
+            android:id="@+id/buttonAddImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Image"
+            android:layout_marginBottom="15dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/startdate_label"
+            android:textColor="@color/colorTextPrimary"
+            android:layout_marginBottom="5dp"/>
+
+        <DatePicker
+            style="@style/GuruDatePicker"
+            android:id="@+id/startDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enddate_label"
+            android:textColor="@color/colorTextPrimary"
+            android:layout_marginBottom="5dp"/>
+
+        <DatePicker
+            style="@style/GuruDatePicker"
+            android:id="@+id/endDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"/>
 
         <Button
             android:id="@+id/buttonCreateTrip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:text="@string/createtrip_button_label"
-            android:backgroundTint="@color/purple"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
+            style="@style/GuruButton"/>
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_gravity="center" />
-    </LinearLayout>
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

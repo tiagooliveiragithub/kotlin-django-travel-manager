@@ -14,9 +14,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import online.tripguru.tripguruapp.R
 import online.tripguru.tripguruapp.databinding.ActivityCreateLocalBinding
 import online.tripguru.tripguruapp.helpers.Resource
-import online.tripguru.tripguruapp.models.Local
-import online.tripguru.tripguruapp.network.LocalImageResponse
-import online.tripguru.tripguruapp.network.LocalResponse
+import online.tripguru.tripguruapp.localstorage.models.Local
+import online.tripguru.tripguruapp.network.ImageResponse
 import online.tripguru.tripguruapp.viewmodels.LocalViewModel
 import online.tripguru.tripguruapp.viewmodels.UserViewModel
 import online.tripguru.tripguruapp.views.adapters.PhotoAdapter
@@ -29,7 +28,7 @@ import org.osmdroid.views.overlay.Marker
 class CreateLocalActivity : AppCompatActivity() {
 
     private val localViewModel: LocalViewModel by viewModels()
-    private val authViewModel: UserViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
     private lateinit var binding: ActivityCreateLocalBinding
     private lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
     private lateinit var adapter: PhotoAdapter
@@ -49,11 +48,8 @@ class CreateLocalActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        authViewModel.isOnline().observe(this) { isOnline ->
+        userViewModel.isOnline().observe(this) { isOnline ->
             updateUiForOnlineStatus(isOnline)
-        }
-        localViewModel.getSelectedLocal().observe(this) { selectedLocal ->
-            updateUiForSelectedLocal(selectedLocal)
         }
         localViewModel.resultCreateLocal.observe(this) { result ->
             handleCreateLocalResult(result)
@@ -73,28 +69,42 @@ class CreateLocalActivity : AppCompatActivity() {
     }
 
     private fun updateUiForOnlineStatus(isOnline: Boolean) {
-        binding.buttonDeleteLocal.visibility = if (isOnline) View.VISIBLE else View.GONE
-        binding.buttonCreateLocal.visibility = if (isOnline) View.VISIBLE else View.GONE
-    }
 
-    private fun updateUiForSelectedLocal(selectedLocal: Local?) {
-        if (selectedLocal != null) {
-            binding.buttonDeleteLocal.visibility = View.VISIBLE
-            binding.editTextName.setText(selectedLocal.name)
-            binding.editTextDescription.setText(selectedLocal.description)
-            binding.textViewAddress.text = selectedLocal.address
-            binding.buttonCreateLocal.text = getString(R.string.editlocal_button_label)
-            localViewModel.getLocalImages(selectedLocal.id!!)
-            setupListenersEdit(selectedLocal)
-            updateMapWithLocation(selectedLocal.latitude, selectedLocal.longitude)
-        } else {
-            binding.buttonDeleteLocal.visibility = View.GONE
-            binding.buttonCreateLocal.text = getString(R.string.createlocal_button_label)
-            setupListenersCreate()
+        if(!isOnline) {
+            Toast.makeText(this, getString(R.string.nointernet_label), Toast.LENGTH_SHORT).show()
         }
+
+        localViewModel.getSelectedLocal().observe(this) { selectedLocal ->
+            if (selectedLocal != null) {
+                if (isOnline) {
+                    binding.buttonDeleteLocal.visibility = View.VISIBLE
+                    binding.buttonCreateLocal.visibility = View.VISIBLE
+                } else {
+                    binding.buttonDeleteLocal.visibility = View.GONE
+                    binding.buttonCreateLocal.visibility = View.GONE
+                }
+                binding.editTextName.setText(selectedLocal.name)
+                binding.editTextDescription.setText(selectedLocal.description)
+                binding.textViewAddress.text = selectedLocal.address
+                adapter.setPhotoItems(selectedLocal.images)
+                binding.buttonCreateLocal.text = getString(R.string.editlocal_button_label)
+                setupListenersEdit()
+                updateMapWithLocation(selectedLocal.latitude, selectedLocal.longitude)
+            } else {
+                if (isOnline) {
+                    binding.buttonCreateLocal.visibility = View.VISIBLE
+                } else {
+                    binding.buttonDeleteLocal.visibility = View.GONE
+                    binding.buttonCreateLocal.visibility = View.GONE
+                }
+                binding.buttonCreateLocal.text = getString(R.string.createlocal_button_label)
+                setupListenersCreate()
+            }
+        }
+
     }
 
-    private fun handleCreateLocalResult(result: Resource<LocalResponse>) {
+    private fun handleCreateLocalResult(result: Resource<Local>) {
         when (result.status) {
             Resource.Status.LOADING -> {
                 binding.progressBar.visibility = View.VISIBLE
@@ -102,6 +112,7 @@ class CreateLocalActivity : AppCompatActivity() {
             Resource.Status.SUCCESS -> {
                 binding.progressBar.visibility = View.GONE
                 Toast.makeText(this, R.string.successlocal_label, Toast.LENGTH_LONG).show()
+                localViewModel.updateSelectedLocal(result.data)
                 finish()
             }
             Resource.Status.ERROR -> {
@@ -111,7 +122,7 @@ class CreateLocalActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleDeleteLocalResult(result: Resource<LocalResponse>) {
+    private fun handleDeleteLocalResult(result: Resource<Local>) {
         when (result.status) {
             Resource.Status.LOADING -> {
                 binding.progressBar.visibility = View.VISIBLE
@@ -119,6 +130,7 @@ class CreateLocalActivity : AppCompatActivity() {
             Resource.Status.SUCCESS -> {
                 binding.progressBar.visibility = View.GONE
                 Toast.makeText(this, R.string.successdeletelocal_label, Toast.LENGTH_LONG).show()
+                localViewModel.updateSelectedLocal(null)
                 finish()
             }
             else -> {
@@ -128,14 +140,14 @@ class CreateLocalActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleImageFetchResult(result: Resource<List<LocalImageResponse>>) {
+    private fun handleImageFetchResult(result: Resource<List<ImageResponse>>) {
         when (result.status) {
             Resource.Status.LOADING -> {
                 binding.progressBar.visibility = View.VISIBLE
             }
             Resource.Status.SUCCESS -> {
                 binding.progressBar.visibility = View.GONE
-                adapter.setPhotoUrls(result.data?.map { it.image })
+                adapter.setPhotoItems(result.data?.map { it.image })
             }
             Resource.Status.ERROR -> {
                 binding.progressBar.visibility = View.GONE
@@ -148,18 +160,18 @@ class CreateLocalActivity : AppCompatActivity() {
         binding.buttonCreateLocal.setOnClickListener {
             val name = binding.editTextName.text.toString()
             val description = binding.editTextDescription.text.toString()
-            localViewModel.insertLocal(name, description)
+            localViewModel.insertLocal(name, description, imageUri)
         }
     }
 
-    private fun setupListenersEdit(selectedLocal: Local) {
+    private fun setupListenersEdit() {
         binding.buttonCreateLocal.setOnClickListener {
             val name = binding.editTextName.text.toString()
             val description = binding.editTextDescription.text.toString()
-            localViewModel.updateLocal(selectedLocal.id!!, name, description, imageUri)
+            localViewModel.updateLocal(name, description, imageUri)
         }
         binding.buttonDeleteLocal.setOnClickListener {
-            localViewModel.deleteLocal(selectedLocal.id!!)
+            localViewModel.deleteLocal()
         }
     }
 
@@ -182,6 +194,8 @@ class CreateLocalActivity : AppCompatActivity() {
         pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uriImageSelected ->
             imageUri = uriImageSelected
             binding.buttonAddImage.text = getString(R.string.image_selected_label)
+            binding.buttonAddImage.backgroundTintList = getColorStateList(R.color.colorTextDisabled)
+            adapter.addPhotoItem(uriImageSelected!!)
         }
     }
 
