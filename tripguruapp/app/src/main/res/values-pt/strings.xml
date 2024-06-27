@@ -5,15 +5,15 @@
     <string name="last_name_hint">Último Nome</string>
     <string name="password_hint">Senha</string>
     <string name="confirm_password_hint">Confirme a Senha</string>
-    <string name="avatar_button_label">foto</string>
+    <string name="avatar_button_label">Foto</string>
     <string name="signup_button_label">Criar</string>
     <string name="already_registered_label">Já registado? Clica aqui</string>
     <string name="login_button_label">Entrar</string>
     <string name="forgot_password_label">Esqueceste a tua senha?</string>
     <string name="sign_up_label">Cria uma conta aqui</string>
-    <string name="editlocal_button_label">Editar Local</string>
+    <string name="editlocal_button_label">Salvar Mudanças no Local</string>
     <string name="createlocal_button_label">Criar Local</string>
-    <string name="edittrip_button_label">Detalhes da Viagem</string>
+    <string name="edittrip_button_label">Salvar Mudanças na Viagem</string>
     <string name="createtrip_button_label">Criar Viagem</string>
     <string name="deletetrip_button_label">Eliminar Viagem</string>
     <string name="nametrip_label">Nome da Viagem</string>
@@ -22,6 +22,7 @@
     <string name="yourlocals_label">Os teus Locais</string>
     <string name="triplocals_label">Locais da Viagem</string>
     <string name="saveprofile_label">Salvar Mudanças no Perfil</string>
+    <string name="profilename_label">Nome de Perfil</string>
     <string name="profile_label">Perfil</string>
     <string name="yourtrips_label">As tuas Viagens</string>
     <string name="signout_label" >Sair da Conta</string>
@@ -32,11 +33,11 @@
     <string name="namelocal_label">Nome do Local</string>
     <string name="deletelocal_button_label">Eliminar Local</string>
     <string name="passwordnotidentical_label">As senhas não coincidem</string>
-    <string name="emptyfields_label">Campos vazios</string>
+    <string name="emptyfields_label">Existem campos vazios</string>
     <string name="changessuccess_label">Alterações Guardadas</string>
     <string name="notauth_label">Não Autorizado</string>
     <string name="error_label">Erro</string>
-    <string name="notripselected_label">Sem trip selecionada</string>
+    <string name="notripselected_label">Sem viagens selecionadas</string>
     <string name="nointernet_label">Desconectado da Internet</string>
     <string name="yesinternet_label">Conectado à Internet</string>
     <string name="loading_label">A carregar...</string>
@@ -49,11 +50,12 @@
     <string name="successlocal_label">Local Guardo com Sucesso</string>
     <string name="avatar_selected_label">Avatar Selecionado</string>
     <string name="image_selected_label">Imagem Selecionada</string>
-    <string name="sharedwith_label">"Partilhado com: "</string>
+    <string name="sharedwith_label">"Partilhada com: "</string>
     <string name="successsharetrip_label">Utilizadores Compartilhados Atualizado</string>
     <string name="searchlocals_label">Procurar Novos Locais</string>
     <string name="startdate_label">Data Inicio</string>
-    <string name="enddate_label">Data Fim</string>
+    <string name="enddate_label">Data de Fim</string>
     <string name="from_label">De</string>
     <string name="to_label">até</string>
+    <string name="emptyemail_label">Insira o seu email</string>
 </resources>
