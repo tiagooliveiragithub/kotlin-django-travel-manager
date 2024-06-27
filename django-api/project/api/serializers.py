@@ -27,17 +27,39 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
+class OtherUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'first_name', 'last_name']
+
+
 class TripSerializer(serializers.ModelSerializer):
+    users = serializers.SerializerMethodField()
+
     class Meta:
         model = Trip
-        fields = ['id', 'name', 'description', 'users']
-        read_only_fields = ['id','date','users']
+        fields = ['id', 'name', 'description', 'users', 'start_date', 'end_date', 'image']
+
+    def get_users(self, obj):
+        request = self.context.get('request', None)
+        if request:
+            return obj.users.exclude(id=request.user.id).values('username', 'email')
+        return obj.users.values('id', 'username', 'email')
+
+        
 
 class SpotSerializer(serializers.ModelSerializer):
+    photos = serializers.SerializerMethodField()
+
     class Meta:
         model = Spot
-        fields = ['id', 'tripId', 'name', 'description', 'users', 'latitude', 'longitude', 'address']
-        read_only_fields = ['created_at', 'id', 'users']
+        fields = ['id', 'tripId', 'name', 'description', 'latitude', 'longitude', 'address', 'created_at', 'photos']
+        read_only_fields = ['created_at', 'id']
+
+    def get_photos(self, obj):
+        request = self.context.get('request')
+        photos = obj.photos.all()
+        return [request.build_absolute_uri(photo.image.url) for photo in photos]
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -49,7 +71,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['last_name'] = self.user.last_name
         
         return data
-
+        
 
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:

@@ -7,8 +7,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import online.tripguru.tripguruapp.models.Local
-import online.tripguru.tripguruapp.models.Trip
+import online.tripguru.tripguruapp.localstorage.models.Local
+import online.tripguru.tripguruapp.localstorage.models.Trip
 import online.tripguru.tripguruapp.network.LocalResponse
 import online.tripguru.tripguruapp.network.SignupFormRequest
 import online.tripguru.tripguruapp.network.TripResponse
@@ -18,7 +18,11 @@ fun convertResponseToTrip(tripResponse: TripResponse): Trip {
     return Trip(
         id = tripResponse.id,
         name = tripResponse.name,
-        description = tripResponse.description
+        description = tripResponse.description,
+        startDate = tripResponse.start_date,
+        endDate = tripResponse.end_date,
+        image = tripResponse.image,
+        owners = tripResponse.users.joinToString(", ") { it.username }
     )
 }
 
@@ -30,7 +34,8 @@ fun convertResponseToLocal(localResponse: LocalResponse): Local {
         description = localResponse.description,
         latitude = localResponse.latitude,
         longitude = localResponse.longitude,
-        address = localResponse.address
+        address = localResponse.address,
+        images = localResponse.photos
     )
 }
 

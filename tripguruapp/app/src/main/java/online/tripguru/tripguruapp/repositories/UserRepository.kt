@@ -3,6 +3,7 @@ package online.tripguru.tripguruapp.repositories
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
+import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.network.ApiInterface
 import online.tripguru.tripguruapp.network.ConnectivityLiveData
 import online.tripguru.tripguruapp.network.EditUserRequest
@@ -10,10 +11,8 @@ import online.tripguru.tripguruapp.network.EditUserResponse
 import online.tripguru.tripguruapp.network.GetUserInfoResponse
 import online.tripguru.tripguruapp.network.LoginRequest
 import online.tripguru.tripguruapp.network.LoginResponse
-import online.tripguru.tripguruapp.helpers.Resource
 import online.tripguru.tripguruapp.network.SignupFormRequest
 import online.tripguru.tripguruapp.network.SignupResponse
-import online.tripguru.tripguruapp.network.TokenVerifyRequest
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -75,6 +74,12 @@ class UserRepository @Inject constructor(
     suspend fun editUser(editUserRequest: EditUserRequest): Resource<EditUserResponse> {
         return try {
             val response = api.editUser(request = editUserRequest, token = getUserToken())
+            prefs.edit()
+                .putString("first_name", response.first_name)
+                .apply()
+            prefs.edit()
+                .putString("last_name", response.last_name)
+                .apply()
             Resource.success(response)
         } catch(e: HttpException) {
             if(e.code() == 401) {
@@ -121,8 +126,7 @@ class UserRepository @Inject constructor(
 
      suspend fun isAuthorizedVerify() : Resource<LoginResponse> {
          return try {
-             val token = prefs.getString("access", "") ?: ""
-             api.verifyToken(TokenVerifyRequest(token = token))
+             if(prefs.getString("access", "") == "") return Resource.error("Unauthorized")
              Resource.success(null)
         } catch(e: HttpException) {
              if(e.code() == 401) {

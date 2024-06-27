@@ -24,6 +24,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupObservers()
         setupListeners()
+        userViewModel.autoSignIn()
     }
 
     private fun setupListeners() {
@@ -49,8 +50,6 @@ class LoginActivity : AppCompatActivity() {
     private fun handleOnlineStatus(isConnected: Boolean) {
         if (!isConnected) {
             Toast.makeText(this, getString(R.string.nointernet_label), Toast.LENGTH_SHORT).show()
-        } else {
-            userViewModel.autoSignIn()
         }
     }
 

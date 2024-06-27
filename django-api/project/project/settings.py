@@ -158,6 +158,8 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'ROTATE_ACCESS_TOKENS': False,
 }
 
 CORS_ALLOW_ALL_ORIGINS = True

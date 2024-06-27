@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,145 +9,118 @@
         android:orientation="vertical"
         android:padding="35dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textColor="@color/light_letter"
+        android:layout_height="wrap_content"
         tools:context=".views.ui.CreateLocalActivity">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name_hint"
-            android:textSize="15sp"
-            android:textColor="@color/light_letter"/>
+            android:textColor="@color/colorTextPrimary"/>
 
         <EditText
             android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
             android:hint="@string/name_hint"
-            android:inputType="text" />
+            android:inputType="text"
+            android:layout_marginBottom="15dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/description_hint"
-            android:textSize="15sp"
-            android:textColor="@color/light_letter"/>
+            android:textColor="@color/colorTextPrimary"/>
 
         <EditText
             android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
             android:hint="@string/description_hint"
-            android:inputType="text" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"/>
+            android:inputType="text"
+            android:layout_marginBottom="15dp"/>
 
         <TextView
             android:id="@+id/textViewGallery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:text="Gallery (optional)"
-            android:textSize="15sp"
-            android:textColor="@color/light_letter"/>
+            android:textColor="@color/colorTextPrimary"
+            android:layout_marginBottom="5dp"/>
 
-        <LinearLayout
-            android:id="@+id/galleryImages"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:background="@drawable/border"
-            android:orientation="vertical">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:padding="8dp"/>
-        </LinearLayout>
+            android:padding="8dp"
+            android:textAlignment="center" />
 
         <Button
             android:id="@+id/buttonAddImage"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content"
             android:text="Add Image"
-            android:textSize="10sp"
-            android:backgroundTint="@color/light"
-            app:cornerRadius="5dp"
-            android:padding="10dp"
-            android:textColor="#2E3A59" />
+            style="@style/GuruButton"
+            android:layout_marginBottom="15dp"/>
+
         <TextView
             android:id="@+id/textViewLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:text="Location (optional)"
-            android:textSize="15sp"
-            android:textColor="@color/light_letter"/>
+            android:textColor="#2E3A59"
+            android:layout_marginBottom="5dp"/>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:background="@drawable/border">
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:padding="15dp"
+            android:layout_marginBottom="5dp">
             <org.osmdroid.views.MapView
                 android:id="@+id/map"
-                android:layout_margin="15dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="200dp"
+                android:layout_width="match_parent"/>
         </LinearLayout>
+
 
         <TextView
             android:id="@+id/textViewAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:layout_marginBottom="5dp"
-            android:text="Address Here"
-            android:textColor="#2E3A59" />
+            android:hint="Address here"/>
 
         <Button
+            style="@style/GuruButton"
             android:id="@+id/buttonAddLocation"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginBottom="15dp"
+            android:layout_height="wrap_content"
             android:text="Add Current Location"
-            android:textSize="10sp"
-            android:backgroundTint="@color/light"
-            app:cornerRadius="5dp"
-            android:padding="10dp"
-            android:textColor="#2E3A59"/>
-
-
+            android:layout_marginBottom="15dp"/>
 
         <Button
+            style="@style/GuruButton"
             android:id="@+id/buttonCreateLocal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/createlocal_button_label"
-            android:backgroundTint="@color/purple"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
+            android:text="@string/createlocal_button_label"/>
 
         <Button
+            style="@style/GuruButton"
             android:id="@+id/buttonDeleteLocal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/deletelocal_button_label"
-            android:backgroundTint="@color/red"
-            app:cornerRadius="5dp"
-            android:padding="10dp"/>
+            android:backgroundTint="@color/colorError"/>
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_gravity="center" />
+
     </LinearLayout>
 
 </ScrollView>

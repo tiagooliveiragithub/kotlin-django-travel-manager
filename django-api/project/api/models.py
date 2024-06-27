@@ -20,8 +20,11 @@ class Trip(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateField(null=False, blank=False, default=timezone.now)
+    end_date = models.DateField(null=False, blank=False, default=timezone.now)
     date = models.DateField(null=True, blank=True, default=timezone.now)
     users = models.ManyToManyField(CustomUser, related_name='trips', blank=True)
+    image = models.ImageField(upload_to='trips/', null=True, blank=True)
 
     def __str__(self):
         return self.name

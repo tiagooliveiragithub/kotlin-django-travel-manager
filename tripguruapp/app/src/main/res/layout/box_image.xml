@@ -6,13 +6,18 @@
     android:layout_height="100dp"
     android:layout_margin="8dp"
     android:clickable="true"
-    android:focusable="true"
-    android:backgroundTint="@color/purple">
+    android:focusable="true">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/overlay_gradient"/>
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background" />
+        android:scaleType="centerCrop" />
+
+
 </androidx.cardview.widget.CardView>

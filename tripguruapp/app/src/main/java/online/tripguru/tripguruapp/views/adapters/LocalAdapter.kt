@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import online.tripguru.tripguruapp.databinding.BoxItemVerticalBinding
-import online.tripguru.tripguruapp.models.Local
+import online.tripguru.tripguruapp.localstorage.models.Local
 
 class LocalAdapter (
     private val onLocalClickListener: OnLocalClickListener
