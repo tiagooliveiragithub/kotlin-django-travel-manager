@@ -54,7 +54,7 @@ class UserViewModel @Inject constructor(
             Toast.makeText(context, R.string.emptyfields_label, Toast.LENGTH_SHORT).show()
             return
         } else if(email.isEmpty()) {
-            Toast.makeText(context, R.string.emptyfields_label, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.emptyemail_label, Toast.LENGTH_SHORT).show()
             return
         } else if(password.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(context, R.string.emptyfields_label, Toast.LENGTH_SHORT).show()

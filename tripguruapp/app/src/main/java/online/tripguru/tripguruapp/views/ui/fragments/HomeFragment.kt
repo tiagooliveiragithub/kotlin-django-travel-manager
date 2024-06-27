@@ -49,6 +49,8 @@ class HomeFragment : Fragment(), OnTripClickListener, OnLocalClickListener {
         setupPage()
         setupListeners()
         setupObservers()
+        tripViewModel.refreshAllTrips()
+        localViewModel.refreshAllLocals()
     }
 
     private fun setupPage() {

@@ -49,7 +49,6 @@ class LocalRepository (
 
     suspend fun refreshAllLocals(): Resource<List<LocalResponse>> {
         return try {
-            localDao.deleteAll()
             val response = api.getUserLocals(userRepository.getUserToken())
             localDao.insertAll(response.map { convertResponseToLocal(it) })
             Resource.success(response)

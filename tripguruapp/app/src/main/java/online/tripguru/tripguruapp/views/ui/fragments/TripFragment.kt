@@ -177,7 +177,6 @@ class TripFragment : Fragment(), OnLocalClickListener {
     }
 
     private fun disableButtons() {
-        binding.buttonEditTripPage.isEnabled = false
         binding.buttonCreateLocal.isEnabled = false
         binding.buttonDeleteTrip.isEnabled = false
         binding.buttonShareTrip.isEnabled = false
@@ -185,7 +184,6 @@ class TripFragment : Fragment(), OnLocalClickListener {
     }
 
     private fun enableButtons() {
-        binding.buttonEditTripPage.isEnabled = true
         binding.buttonCreateLocal.isEnabled = true
         binding.buttonDeleteTrip.isEnabled = true
         binding.buttonShareTrip.isEnabled = true

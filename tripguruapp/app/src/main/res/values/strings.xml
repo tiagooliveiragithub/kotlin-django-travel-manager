@@ -7,7 +7,7 @@
     <string name="email_hint" translatable="false">Email</string>
     <string name="password_hint">Password</string>
     <string name="confirm_password_hint">Confirm Password</string>
-    <string name="avatar_button_label">avatar</string>
+    <string name="avatar_button_label">Avatar</string>
     <string name="signup_button_label">Sign Up</string>
     <string name="already_registered_label">Already Registered? Click here</string>
     <string name="login_button_label">Login</string>
@@ -15,7 +15,7 @@
     <string name="sign_up_label">Create an account here</string>
     <string name="editlocal_button_label">Update Local</string>
     <string name="createlocal_button_label">Create Local</string>
-    <string name="edittrip_button_label">Trip Details</string>
+    <string name="edittrip_button_label">Update Trip</string>
     <string name="createtrip_button_label">Create Trip</string>
     <string name="deletetrip_button_label">Delete Trip</string>
     <string name="nametrip_label">Trip Name</string>
@@ -24,7 +24,7 @@
     <string name="yourlocals_label">Your Locals</string>
     <string name="triplocals_label">Trip Locals</string>
     <string name="saveprofile_label">Save Profile Changes</string>
-    <string name="profilename_label" translatable="false">Tiago Oliveira</string>
+    <string name="profilename_label">Profile Name</string>
     <string name="profile_label">Profile</string>
     <string name="yourtrips_label">Your Trips</string>
     <string name="signout_label">Sign Out</string>
@@ -35,11 +35,11 @@
     <string name="namelocal_label">Name of Local</string>
     <string name="deletelocal_button_label">Delete Local</string>
     <string name="passwordnotidentical_label">Passwords are not identical</string>
-    <string name="emptyfields_label">Empty Fields</string>
+    <string name="emptyfields_label">There are empty fields</string>
     <string name="changessuccess_label">Changes Saved</string>
     <string name="notauth_label">Not Authorized</string>
     <string name="error_label">Error</string>
-    <string name="notripselected_label">No trip selected</string>
+    <string name="notripselected_label">Without trips selected</string>
     <string name="nointernet_label">Disconnected from Internet</string>
     <string name="yesinternet_label">Connected to Internet</string>
     <string name="loading_label">Loading...</string>
@@ -59,4 +59,5 @@
     <string name="enddate_label">End Date</string>
     <string name="from_label">From</string>
     <string name="to_label">to</string>
+    <string name="emptyemail_label">Insert your email</string>
 </resources>
