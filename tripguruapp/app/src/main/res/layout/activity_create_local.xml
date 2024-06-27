@@ -57,11 +57,11 @@
             android:textAlignment="center" />
 
         <Button
+            style="@style/GuruButton"
             android:id="@+id/buttonAddImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Image"
-            style="@style/GuruButton"
             android:layout_marginBottom="15dp"/>
 
         <TextView

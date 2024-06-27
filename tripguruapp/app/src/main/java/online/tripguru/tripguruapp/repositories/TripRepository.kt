@@ -29,7 +29,6 @@ class TripRepository @Inject constructor(
 
     suspend fun refreshAllTrips(): Resource<List<TripResponse>> {
         return try {
-            tripDao.deleteAll()
             val response = api.getTrips(userRepository.getUserToken())
             tripDao.insertAll(response.map { convertResponseToTrip(it) })
             Resource.success(response)
