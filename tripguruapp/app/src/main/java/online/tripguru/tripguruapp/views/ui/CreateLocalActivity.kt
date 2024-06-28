@@ -1,5 +1,6 @@
 package online.tripguru.tripguruapp.views.ui
 
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -45,6 +46,7 @@ class CreateLocalActivity : AppCompatActivity() {
         setPickMedia()
         setupObservers()
         setupButtonsListeners()
+
     }
 
     private fun setupObservers() {
@@ -60,8 +62,8 @@ class CreateLocalActivity : AppCompatActivity() {
         localViewModel.resultImageFetch.observe(this) { result ->
             handleImageFetchResult(result)
         }
-        localViewModel.currentLocation.observe(this) { location ->
-            updateMapWithLocation(location?.latitude, location?.longitude)
+       localViewModel.currentLocation.observe(this) { location ->
+           updateMapWithLocation(location?.latitude, location?.longitude)
         }
         localViewModel.currentAddress.observe(this) { address ->
             binding.textViewAddress.text = address
@@ -89,10 +91,15 @@ class CreateLocalActivity : AppCompatActivity() {
                 adapter.setPhotoItems(selectedLocal.images)
                 binding.buttonCreateLocal.text = getString(R.string.editlocal_button_label)
                 setupListenersEdit()
+                localViewModel.currentLocation.postValue(Location("").apply {
+                    latitude = selectedLocal.latitude!!
+                    longitude = selectedLocal.longitude!!
+                })
                 updateMapWithLocation(selectedLocal.latitude, selectedLocal.longitude)
             } else {
                 if (isOnline) {
                     binding.buttonCreateLocal.visibility = View.VISIBLE
+                    binding.buttonDeleteLocal.visibility = View.GONE
                 } else {
                     binding.buttonDeleteLocal.visibility = View.GONE
                     binding.buttonCreateLocal.visibility = View.GONE
