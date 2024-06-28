@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.ui.fragments.TripFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="35dp"
+        android:background="@color/night">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/nametrip_label"
+            android:textColor="@color/light_letter_night"
+            android:textSize="30sp"
+            android:id="@+id/textViewTripName"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:text="@string/edittrip_button_label"
+                android:textColor="@color/light_letter_night"
+                android:id="@+id/buttonEditTripPage"
+                android:backgroundTint="@color/purple"
+                app:cornerRadius="5dp"
+                android:padding="10dp"/>
+            <Button
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:text="@string/createlocal_button_label"
+                android:textColor="@color/light_letter_night"
+                android:id="@+id/buttonCreateLocalPage"
+                android:backgroundTint="@color/purple"
+                app:cornerRadius="5dp"
+                android:padding="10dp"
+                android:layout_marginHorizontal="5dp"/>
+
+            <Button
+                android:id="@+id/buttonDeleteTrip"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/red"
+                android:text="@string/deletetrip_button_label"
+                android:textColor="@color/light_letter_night"
+                app:cornerRadius="5dp"
+                android:padding="10dp"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/textViewTripLocals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="20dp"
+            android:text="@string/triplocals_label"
+            android:textColor="@color/light_letter_night"
+            android:textSize="20sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewVertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </LinearLayout>
+</FrameLayout>

@@ -23,8 +23,6 @@ urlpatterns = [
     path('spots/<int:spot_pk>/photos/', PhotoListCreateView.as_view(), name='photo_list_create'),
     path('spots/<int:spot_pk>/photos/<int:pk>/', PhotoRetrieveUpdateDestroyView.as_view(), name='photo_detail'),
     path('spots/all/', AllSpotsListView.as_view(), name='all-spots'),
-    
-
 
     # User
     path('users/register/', CreateUserView.as_view(), name='register'),

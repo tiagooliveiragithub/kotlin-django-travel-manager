@@ -50,6 +50,7 @@ class LocalRepository (
     suspend fun refreshAllLocals(): Resource<List<LocalResponse>> {
         return try {
             val response = api.getUserLocals(userRepository.getUserToken())
+            localDao.deleteAll()
             localDao.insertAll(response.map { convertResponseToLocal(it) })
             Resource.success(response)
         } catch (e: HttpException) {
@@ -79,6 +80,7 @@ class LocalRepository (
         return try {
             val response = api.createLocal(userRepository.getUserToken(), localRequest)
             val local = convertResponseToLocal(response)
+            localsForTrip.postValue(localsForTrip.value?.plus(local))
             localDao.insertLocal(local)
             Resource.success(local)
         } catch (e: HttpException) {
@@ -95,6 +97,7 @@ class LocalRepository (
             val response = api.updateLocal(userRepository.getUserToken(), localRequest.id!!, localRequest)
             val local = convertResponseToLocal(response)
             localDao.insertLocal(local)
+            localsForTrip.postValue(localsForTrip.value?.map { if (it.id == local.id) local else it })
             Resource.success(local)
         } catch (e: HttpException) {
             Log.e("LocalRepository", "Error: ${e.message()}")
@@ -109,10 +112,8 @@ class LocalRepository (
         return try {
             api.deleteLocal(userRepository.getUserToken(), id)
             localDao.deleteLocal(id)
+            localsForTrip.postValue(localsForTrip.value?.filter { it.id != id })
             Resource.success(null)
-        } catch (e: HttpException) {
-            Log.e("LocalRepository", "Error: ${e.message()}")
-            Resource.error(e.message())
         } catch (e: Exception) {
             Log.e("LocalRepository", "Unexpected Error: ${e.message}")
             Resource.error(e.message ?: "Unexpected Error")
