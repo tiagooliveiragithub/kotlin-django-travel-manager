@@ -1,6 +1,6 @@
 # IPVC-CM-Project
 
-The Travel Management App consists of an Android client and a Django RestAPI backend. While significant progress was made, the project was not complete.
+This project consists of an Android client and a Django RestAPI backend. While significant progress was made, the project was not complete.
 
 ![Travel Management App](print.jpg)
 
