@@ -1,6 +1,8 @@
 # IPVC-CM-Project
 
-The Travel Management App was a project developed for the Mobile Development subject as part of the IPVC Computer Engineer Bachelor. The application consists of an Android client and a Django RestAPI backend. While significant progress was made, the project was not fully completed due to time constraints.
+The Travel Management App consists of an Android client and a Django RestAPI backend. While significant progress was made, the project was not complete.
+
+![Travel Management App](print.jpg)
 
 ## API Setup
 
@@ -12,8 +14,9 @@ The Travel Management App was a project developed for the Mobile Development sub
 
 ### Clone the repository
 
-- git clone [git@github.com:tiagooliveiragithub/ipvc-cm-project.git](https://github.com/tiagooliveiragithub/ipvc-cm-p)
-- cd ipvc-cm-project
+- git clone [git@github.com:tiagooliveiragithub/kotlin-django-travel-manager.git](git@github.com:tiagooliveiragithub/kotlin-django-travel-manager.git)
+- cd kotlin-django-travel-manager
+
 
 ### Set up virtual environment
    
